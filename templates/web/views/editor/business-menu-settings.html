@@ -1,0 +1,207 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hideBusinessMenuSettings()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h" data-ng-hide="isCategory">{{ translate('MENU_SETTINGS') }}</span>
+      <span class="divider-padding no-padding-h" data-ng-if="isCategory">{{category.name}} {{ translate('SHARE_WITH') }}</span>
+    </ion-item>
+    <br>
+    <div class="webtabs" data-ng-if="menu.id != -1 && NEW_FEATURES.SHARED_MENUS" data-ng-hide="isCategory">
+      <div class="tab" data-ng-class="{ 'active': tab == 0 }" data-ng-click="changeTab(0)">
+          {{ translate('DETAILS') }}
+      </div>
+      <div class="tab" data-ng-class="{ 'active': tab == 1 }" data-ng-click="changeTab(1)">
+          {{ translate('SHARED_WITH') }}
+      </div>
+  </div> 
+    <div class="form editable" data-ng-if="tab == 0">
+      <div class="group">
+        <label>{{ translate('MENU_NAME') }}</label>
+        <input data-ng-model="menu.name" class="editable" type="text" data-ng-change="updateMenu(menu, categories)">
+      </div>
+      <div class="group">
+        <label>{{ translate('DELIVERY_TYPE') }}</label>
+        <ul>
+          <li>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="menu.delivery" data-ng-change="updateMenu(menu, categories)">{{ translate('DELIVERY') }}
+            </ion-checkbox>
+          </li>
+          <li>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="menu.pickup" data-ng-change="updateMenu(menu, categories)">{{ translate('PICKUP') }}
+            </ion-checkbox>
+          </li>
+          <li>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="menu.eatin" data-ng-change="updateMenu(menu, categories)">{{ translate('EATIN') }}
+            </ion-checkbox>
+          </li>
+          <li>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="menu.curbside" data-ng-change="updateMenu(menu, categories)">{{ translate('CURBSIDE') }}
+            </ion-checkbox>
+          </li>
+          <li>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="menu.driver_thru" data-ng-change="updateMenu(menu, categories)">{{ translate('DRIVER_THRU') }}
+            </ion-checkbox>
+          </li>
+        </ul>
+      </div>
+      <div class="group">
+        <label>{{ translate('USE_BUSINESS_SCHEDULE') }}</label>
+        <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none; height: 25px;" data-ng-model="menu.use_business_schedule" data-ng-change="updateMenu(menu, categories)"></ion-checkbox>
+      </div>
+      <div class="group" data-ng-hide="menu.use_business_schedule" style="padding-bottom: 5px;">
+        <label>{{ translate('SCHEDULE') }}</label>
+        <button class="btn btn-primary btn-sm" data-ng-click="editSchedule()">{{ translate('EDIT_BUTTON') }}</button>
+        <!--<ion-item class="detail-item schedule editable" data-ng-repeat="day in menu.schedule track by $index">
+          <span class="float-left mg-top-sm">{{getWeekdayName($index)}}</span>
+          <span class="float-right">
+            <select class="editable" data-ng-model="day.open.hour">
+              <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == day.open.hour">{{hour.text}}
+              </option>
+            </select> :
+            <select class="editable" data-ng-model="day.open.minute">
+              <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == day.open.minute">{{minute.text}}
+              </option>
+            </select> -
+            <select class="editable" data-ng-model="day.close.hour">
+              <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == day.close.hour">{{hour.text}}
+              </option>
+            </select> :
+            <select class="editable" data-ng-model="day.close.minute">
+              <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == day.close.minute">{{minute.text}}
+              </option>
+            </select>
+          </span>
+        </ion-item>-->
+      </div>
+      <div class="group" style="padding-bottom: 5px;">
+        <!-- <div class="w50"> -->
+          <label>{{ translate('COMMENTS') }}</label>
+          <input data-ng-model="menu.comment" class="editable" type="text" data-ng-change="updateMenu(menu, categories)">
+        <!-- </div> -->
+      </div>
+      <div class="group">
+        <label>{{ translate('ALL_PRODUCTS') }}</label>
+        <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none; height: 25px;" data-ng-model="menu.all_products" data-ng-change="updateMenu(menu, categories)"></ion-checkbox>
+      </div>
+      <div class="group" data-ng-hide="menu.all_products">
+        <label>{{ translate('PRODUCTS') }}</label>
+        <ul class="tree">
+          <li data-ng-repeat="category in categories | orderBy:'rank*1'">
+            <button data-ng-click="toggleCategory(category.id)"><i class="fa fa-chevron-down" data-ng-if="curCategory == category.id"></i><i class="fa" data-ng-class="{'fa-chevron-right': !arabic_rtl, 'fa-chevron-left': arabic_rtl}" data-ng-if="curCategory != category.id"></i></button>
+            <!-- <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="selectedBusiness[cdeal.id]" data-ng-change="">{{category.name}}
+            </ion-checkbox> -->
+            <div class="treecheckbox" data-ng-class="{ 'check': category.all, 'indeterminate': !category.all && !category.none }" data-ng-click="toggleAll(category);updateMenu(menu, categories)">
+              <div class="icheckbox">
+                <i class="fa fa-check" data-ng-if="category.all"></i>
+                <i class="fa fa-minus" data-ng-if="!category.all && !category.none"></i>
+              </div>
+              <span>{{category.name}} <strong data-ng-if="category.business_id != deal.id">(shared)</strong></span>
+            </div>
+            <ul data-ng-if="curCategory == category.id">
+              <li data-ng-repeat="product in category.products" data-ng-if="product.id">
+                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="product.selected" data-ng-change="toggleProduct(category);updateMenu(menu, categories)">{{product.id}}. {{product.name}}
+                </ion-checkbox> 
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!-- <ul>
+          <li data-ng-repeat="product in deal.products" data-ng-if="cdeal.provider == curUser.id || curUser.level == 0">
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="selectedBusiness[cdeal.id]" data-ng-change="">{{product.name}}
+            </ion-checkbox>
+          </li>
+        </ul> -->
+      </div>
+      
+      <!--<div>
+        <label>Tax percentage</label>
+        <input data-ng-model="deal.taxpercnt" class="editable" type="text" data-ng-change="changeTax()">
+      </div> -->
+      <ng-container data-ng-if="ADDONS.metafields_editor && menu.id > 0">
+        <div class="group">
+          <label>{{ translate('CUSTOM_FIELDS') }}</label>
+        </div>
+        <div class="custom_files" data-ng-repeat="item in menu.metafields track by $index">
+            <div class="c_field">
+                <div class="col-xs-3">
+                        <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <form>
+                            <ng-container data-ng-if="isBoolVal(item.value_type)">
+                                <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                            </ng-container>
+                            <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                                <div class="txt_wrapper">{{ item.value }}</div>
+                            </ng-container>
+                            <button class="editable" data-ng-click="removeMenuCustom(item)"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="custom_files">
+            <div class="c_field">
+                <div class="col-xs-3">
+                    <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                    </select>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                            <select class="editable" data-ng-model="newField.value">
+                                <option value="1">True</option>
+                                <option value="0">False</option>
+                            </select>
+                        </ng-container>
+                        <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                            <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getKeyEvent($event)">
+                            <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                        </ng-container>
+                        <button class="editable" data-ng-click="addMenuCustom(menu)"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </ng-container>
+      <div>
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="addMenu(menu, categories)" data-ng-if="menu.id == -1">{{ translate('ADD').toUpperCase() }}</button>
+            <!--<button class="btn btn-primary" data-ng-click="updateMenu(menu, categories)" data-ng-if="menu.id != -1">{{ translate('SAVE').toUpperCase() }}</button>-->
+        </center>
+      </div>
+    </div>
+    <div class="form editable" select-content data-ng-if="tab == 1">
+      <div class="group">
+          <label>{{ translate('BUSINESS') }}*</label>
+          <ul>
+              <li>
+                  <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_business.all" data-ng-change="toggleAllBusiness()">{{ translate('ALL') }}
+                  </ion-checkbox>
+              </li>
+              <li data-ng-repeat="cdeal in business | orderBy:'id*1'">
+                  <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_business[cdeal.id]" data-ng-change="toggleBusiness(cdeal)">{{cdeal.id}}. {{cdeal.name}}
+                  </ion-checkbox>
+              </li>
+          </ul>
+      </div>
+  </div>
+  </ion-content>
+</ion-modal-view>

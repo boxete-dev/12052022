@@ -1,0 +1,250 @@
+  <div class="container-fluid full">
+    <div class="col-xs-12 col-lg-9 col-md-8 col-sm-8 full business">
+      <div class="cover" style="background-image: url({{optimizeImage(deal.header, 'h_800,c_limit')}}), url({{dummyHeader}});">
+        <!-- <img class="principal" data-ng-cache data-ng-src="{{HeaderUrl}}" err-src="{{dummyHeader}}" data-ng-if="item.isImgH == 1">
+        <img class="principal" data-ng-src="{{dummyHeader}}" data-ng-if="item.isImgH == 0"> -->
+        <div id="header_image" class="drag">
+          <div class="edit">
+            <p>
+              <i class="fa fa-picture-o"></i><br>
+              {{ translate('DRAG_DROP_IMAGE_HERE') }} (1920x700 px)
+            </p>
+            <input id="header_image_file" type="file" style="display: none;">
+          </div>
+        </div>
+        <img class="logo preload" data-ng-if="!dummyLogo">
+        <img class="logo" data-ng-cache data-ng-src="{{optimizeImage(deal.logo, 'h_500,c_limit')}}" err-src="{{rootTheme}}/img/dummy_logo.png" data-ng-if="deal.logo">
+        <img class="logo" data-ng-src="{{dummyLogo}}" data-ng-if="item.isImg == 0">
+        <div class="logo">
+          <div id="logo_image" class="drag">
+            <div class="edit xs">
+              <!-- <p> -->
+                <i class="fa fa-picture-o"></i><br>
+                512x512
+              <!-- </p> -->
+              <input id="logo_image_file" type="file" style="display: none;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid business-content editor">
+        <h3 class="title preload" data-ng-if="deal.name == undefined">Title</h3>
+        <!-- <h3 class="title">{{deal.name}}</h3> -->
+        <input class="title"  data-ng-if="deal.name" type="text" name="title" value="{{deal.name}}" autocorrect="off" spellcheck="false" data-ng-init="curName = deal.name" data-ng-model="curName" data-ng-change="changeBusinessName(curName)"></input>
+        <p class="description preload" data-ng-if="deal.id == undefined">fff</p>
+        <!-- <p class="sescription" data-ng-hide="deal.id == undefined">
+          {{ getFormattedTime(deal.openTime.opens) }} - {{ getFormattedTime(deal.openTime.closes) }}<br> -->
+          <!-- <div class="rating" data-ng-if="ADDONS.order_reviews && item.restData.review.total">
+            <div class="base">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+            <div class="points" style="width: {{getWidthRating(item.restData.review.total)}}px;">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+          </div> <span data-ng-if="ADDONS.order_reviews && item.restData.review.total">({{item.restData.review.total | number:DECIMAL.length | separator}} {{translate('MOBILE_MENU_LIST_RATINGS')}})
+           · </span> --><!-- <i class="fa fa-info-circle btn-more-info" aria-hidden="true" data-ng-click="moreInfo()"></i> -->
+        <!-- </p> -->
+      </div>
+      <div>
+        <div class="offset-categories editor">
+          <div id="categories-tabss" data-ng-if="deal.categories == undefined">
+            <ul class="nav nav-tabs preload">
+              <li>
+                <a class="active" href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+            </ul>
+          </div>
+          <div id="categories-tabs" data-ng-if="deal.categories">
+            <ul class="nav nav-tabs editor">
+              <li class="categories" data-ng-repeat="category in deal.categories | orderBy:'rank*1'">
+                <div class="category" data-ng-class="{'selected': categorySelected == category.id}" draggable="true" data-category-id="{{category.id}}" data-category-rank="{{category.rank}}" data-ng-click="selectCategory(category)">
+                  <div class="img">
+                    <img data-ng-src="{{optimizeImage(category.image, 'h_100,c_limit')}}" on-error-src>
+                    <div class="drag" data-category-id="{{category.id}}">
+                      <div class="edit">
+                        <i class="fa fa-picture-o"></i><br>
+                      </div>
+                      <input id="{{category.id}}_file" type="file" style="display: none;">
+                    </div>
+                  </div>
+                  <input type="text" data-ng-model="category.name" data-ng-change="changeCategoryName(category)" size="{{category.name.length}}">
+                  <label class="toggle toggle-balanced">
+                    <input type="checkbox" data-ng-model="category.enabled" data-ng-change="updateCategory(category)">
+                    <div class="track">
+                      <div class="handle"></div>
+                    </div>
+                  </label>
+                  <i class="fa fa-share" data-ng-click="showSharedCategories(category);$event.stopPropagation();" data-ng-if="NEW_FEATURES.SHARED_MENUS"></i>
+                  <i class="fa fa-times-circle remove" data-ng-click="removeCategory(category)"></i>
+                </div>
+              </li>
+              <li>
+                <div class="category">
+                  <form data-ng-submit="addCategory(curCategoryName)">
+                  <input type="text" id="curCategoryName" data-ng-model="curCategoryName" size="{{curCategoryName.length == 0?10:curCategoryName.length}}" placeholder="{{ translate('CATEGORY_NAME') }}">
+                  <i class="fa fa-plus-circle add" data-ng-click="addCategory(curCategoryName)"></i>
+                  </form>
+                </div>
+              </li>
+            </ul>
+            <div class="form-group product-search">
+              <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" data-ng-model="filterProduct" data-ng-change="changeFilterProduct(filterProduct)" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- VISUAL -->
+        <div class="dishes editor">
+          <div class="not-menu col-md-12" data-ng-if="deal.categories.length == 0">
+            <div class="dishe">
+              {{translate('CREATE_CATEGORY_BEFORE_PRODUCT')}}
+            </div>
+          </div>
+          <div class="disheMulti" style="height: auto;" ng-show="view == 'table'">
+            <div class="col-md-8 col-sm-12 col-xs-12">
+              <div class="img" style="width: 160px; height: 80px;margin-right: 15px;">
+                <div class="drag" data-product-id="-2" style="width: 160px; height: 80px;">
+                  <div class="edit">
+                    <i class="fa fa-picture-o" style="font-size: 24px;margin-top:10px;"></i><br>
+                    {{translate('DRAG_DROP')}}
+                  </div>
+                  <input id="-2_file" type="file" style="display: none;" multiple>
+                </div>
+              </div>
+              <div style="float:left;">
+                <span style="font-size: 85%;"><strong>{{translate('UPLOAD_IMAGES_BATCH')}}</strong></span> <span id="progress_images"></span> <br>
+                <p style="font-size: 85%;height: auto;" data-ng-bind-html="translate('UPLOAD_IMAGES_BATCH_DESCRIPTION')"></p>
+              </div>              
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12" style="float: right">
+              <!-- {{translate('SYSTEM_CANT_UPLOAD')}} -->
+              <textarea data-ng-bind-html="errorImages" tabindex="3" disabled style="height: 80px;border: 1px solid #c6c6c6 !important;"></textarea>
+            </div>
+          </div>
+          <div data-ng-repeat="category in deal.categories | orderBy:'rank*1'" data-ng-if="category.id == categorySelected">
+            <div class="title-category"><span>{{category.name}}</span>
+              <div class="btn-group btn-group-xs" data-ng-if="ADDONS.metafields_editor" style="float: inherit"><button  class="btn btn-gray" style="height: 30px" data-ng-click="openEditView(category, 'Category')">{{translate('EDIT')}}</button></div> 
+              <div class="btn-group btn-group-xs" style="float: right"><button  class="btn btn-gray" style="height: 30px" data-ng-click="changeView(category, 'table')" data-ng-if="view=='visual'">{{translate('SPREADSHEET_EDITOR_MODE')}}</button><button  class="btn btn-primary" style="height: 30px" data-ng-click="changeView(selectedCategory, 'visual')" data-ng-if="view=='table'">{{translate('SPREADSHEET_EDITOR_MODE')}}</button></div>     
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12" data-ng-if="view =='visual'">
+              <div class="dishe">
+                
+                <form data-ng-submit="addProduct(newProduct)">
+                <div class="more">
+                  <input class="price" type="text" data-ng-model="newProduct.price" format="number" tabindex="2" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                  <button type="submit">
+                    <i class="fa fa-plus-circle"></i><br>
+                    Add
+                  </button>
+                </div>
+                <div style="overflow: hidden;">
+                  <input type="text" data-ng-model="newProduct.name" placeholder="{{translate('NAME')}}" tabindex="1">
+                  <textarea placeholder="{{translate('DESCRIPTION')}}" data-ng-model="newProduct.description" tabindex="3"></textarea>
+                </div>
+                </form>
+              </div>
+            </div>
+            <div data-ng-if="view =='visual'">
+            <div class="col-md-6 col-sm-6 col-xs-12" data-ng-repeat="product in category.products | filter:filterProduct | orderBy:'name'" data-ng-if="product.name.toLowerCase().indexOf(filterProduct.toLowerCase()) != -1 || product.description.toLowerCase().indexOf(filterProduct.toLowerCase()) != -1">
+              <div class="dishe">
+                <div class="img">
+                  <img data-ng-if="product.images && product.images != ''" data-ng-src="{{optimizeImage(product.images, 'h_200,c_limit')}}" on-error-src>
+                  <div class="drag" data-product-id="{{product.id}}">
+                    <div class="edit">
+                      <i class="fa fa-picture-o"></i><br>
+                      800x800
+                    </div>
+                    <input id="{{product.id}}_file" type="file" style="display: none;">
+                  </div>
+                </div>
+                <div class="more">
+                  <input class="price" type="text" format="number" data-ng-model="product.price" data-ng-change="changeProductData(product)" tabindex="{{(($index+1)*3)+2}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                  <button data-ng-click="showMoreProductSettings(product)" style="height: 22px;">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button data-ng-click="removeProduct(product)" style="height: 22px;">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+                <div style="overflow: hidden;">
+                  <div class="product-name-toggle">
+                    <input class="product-name" type="text" data-ng-model="product.name" data-ng-change="changeProductData(product)" tabindex="{{(($index+1)*3)+1}}">
+                    <label class="toggle toggle-balanced">
+                      <input type="checkbox" data-ng-model="product.enabled" data-ng-change="enableProduct(product)">
+                      <div class="track">
+                        <div class="handle"></div>
+                      </div>
+                    </label>
+                  </div>
+                  <textarea placeholder="{{translate('DESCRIPTION')}}" data-ng-model="product.description" data-ng-change="changeProductData(product)" tabindex="{{(($index+1)*3)+3}}"></textarea>
+                </div>
+              </div>
+            </div>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+        </div>
+        <!-- TABLE -->
+        <div class="dishes">
+          <div style="background-color: lavender;border-radius: 10px;text-align: center;" ng-show="view == 'table'">
+            <p>{{translate('SPREADSHEET_ADVICE')}} <strong>Google Chrome +66</strong></p>
+          </div>
+          <hot-table hot-id="products" settings="configs" min-spare-rows="1" ng-show="view == 'table'" datarows="selectedCategory.products" row-headers="false" style="direction: initial">
+            <hot-column data="id" title="'id'" width="'10%'" read-only></hot-column>
+            <hot-column data="name" title="'Name'" width="'30%'" validator="'empty-name'"></hot-column>
+            <hot-column data="description" title="'Description'" width="'30%'"data-ng-if="ADDONS.inventory"></hot-column>
+            <hot-column data="description" title="'Description'" width="'40%'"data-ng-if="!ADDONS.inventory"></hot-column>
+            <hot-column data="price" title="'Price'" type="'numeric'" width="'10%'" format="$ 0.00" data-ng-if="ADDONS.inventory"></hot-column>
+            <hot-column data="price" title="'Price'" type="'numeric'" width="'20%'" format="$ 0.00" data-ng-if="!ADDONS.inventory"></hot-column>
+            <hot-column data="_inventory" title="'Quantity'" type="'numeric'" width="'15%'" data-ng-if="ADDONS.inventory"></hot-column>
+          </hot-table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 full cart col-md-4 col-sm-4 col-xs-12">
+      <div id="cart-stiky" class="sections buttons">
+        <div class="business-status">
+          {{ translate('STATE') }}
+          <label class="toggle toggle-balanced">
+            <input type="checkbox" data-ng-model="deal.enabled" data-ng-change="changeBusinessStatus(deal)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <ul>
+          <li data-ng-click="showBusinessInfo()"><i class="fa fa-info-circle"></i> {{ translate('BUSINESS_INFO') }}</li>
+          <li data-ng-click="showBusinessSchedule()"><i class="fa fa-calendar"></i> {{ translate('BUSINESS_SCHEDULE') }}</li>
+          <li data-ng-click="showBusinessMenu()"><i class="fa fa-bars"></i> {{ translate('BUSINESS_MENU') }}</li>
+          <li data-ng-click="showDeliveryZone()"><i class="fa fa-map"></i> {{ translate('DELIVERY_ZONE') }}</li>
+          <li data-ng-click="showNotifications()"><i class="fa fa-bell"></i> {{ translate('NOTIFICATIONS') }}</li>
+          <li data-ng-click="showPaymentsMethods()"><i class="fa fa-money"></i> {{ translate('PAYMENTS_METHODS') }}</li>
+          <li data-ng-click="showChannels()"><i class="fa fa-at"></i> {{ translate('ORDERING_CHANNELS') }}</li>
+          <li data-ng-click="showWebhooks()"><i class="fa fa-globe"></i> {{ translate('WEBHOOKS') }}</li>
+          <li data-ng-click="showExtensions()"><i class="fa fa-bullseye"></i> {{ translate('MORE') }}</li>
+          <p style="text-align: center;">&nbsp;</p><p style="text-align: center;"><button data-ng-if="ADDONS.create_order && !NEW_FEATURES.ONLY_EDITOR " class="btn btn-primary" data-ng-click="createOrder()">{{translate('CREATE_ORDER')}}</button></p>
+          <p><!--SuperAdmin--><div id="buttonFixed" style="z-index:0 !important" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  boxStiky1 "><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MYSTORE')}}' title=''><img  class='imgVideo' src='templates/web/img/help_play.png' /><div style='z-index:0 !important' class='postext'>{{ translate('TITLE_MYSTORE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></a></div></p>
+          <p><!---Business--><div  id="buttonFixed" style="z-index:0 !important" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad boxStiky1 "><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MYSTORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MYSTORE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></a></div></p>
+        </ul>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,50 @@
+<ion-modal-view class="popup" data-ng-class="{'big': zone.type == 1 || zone.type == 2}">
+  <i class="fa fa-times close" data-ng-click="hide()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('ZONE_DELIVERY_SETTINGS') }}</span>
+    </ion-item>
+    <ion-item>
+      <div>
+        <div class="form editable" select-content>
+          <div class="group">
+            <label>{{ translate('TYPE') }}</label><br>
+            <select class="editable" style="width: 100%;" data-ng-model="zone.type" data-ng-change="changeType()">
+              <option value="1" data-ng-selected="zone.type == 1" data-ng-if="SEARCH_BY_ADDRESS">{{ translate('CIRCLE') }}</option>
+              <option value="2" data-ng-selected="zone.type == 2" data-ng-if="SEARCH_BY_ADDRESS">{{ translate('POLYGON') }}</option>
+              <option value="3" data-ng-selected="zone.type == 3" data-ng-if="!SEARCH_BY_ADDRESS">{{ translate('DROPDOWN_OPTION') }}</option>
+              <option value="4" data-ng-selected="zone.type == 4" data-ng-if="SEARCH_BY_ADDRESS">{{ translate('EVERYWHERE') }}</option>
+            </select>
+          </div>
+          <div class="group">
+            <label>{{ translate('BUSINESS_ADDRESS') }}</label>
+            <input id="business-info-map-address" data-ng-model="deal.address" class="editable" type="text" placeholder="{{ translate('ADDRESS') }}" disabled="disabled">
+          </div>
+          <div class="group"  data-ng-if="zone.type == 3">
+            <label>{{ translate('CITY') }}</label><br>
+            <select class="editable" style="width: 100%;" data-ng-model="zone.dropdownCity" data-ng-change="changed()">
+              <option value="">{{ translate('SELECT_CITY') }}</option>
+              <option value="{{city.id}}" data-ng-repeat="city in dropdownCities" data-ng-selected="city.id == zone.dropdownCity">{{city.name}}</option>
+            </select>
+          </div>
+          <div class="group"  data-ng-if="zone.type == 3 && zone.dropdownCity!=''">
+            <label>{{ translate('DROPDOWN_OPTION') }}</label><br>
+            <select class="editable" style="width: 100%;" data-ng-model="zone.dropdown_option_id">
+              <option value="">{{ translate('SELECT_DROPDOWN_OPTION') }}</option>
+              <option value="{{dropdownoption.id}}" data-ng-repeat="dropdownoption in dropdownoptions" data-ng-selected="dropdownoption.id == zone.dropdown_option_id" data-ng-if="dropdownoption.city_id == zone.dropdownCity">{{dropdownoption.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="map-interactive" data-ng-if="zone.type == 1 || zone.type == 2">
+          <button class="clear" data-ng-click="clearMap()"><i class="fa fa-eraser"></i> {{ translate('CLEAR') }}</button>
+          <div id="map-delivery-zone"></div>
+        </div>
+      </div>
+    </ion-item>
+    <br>
+    <center>
+      <button class="btn btn-primary" data-ng-click="saveZone()" data-ng-if="zone.id != -1">{{ translate('SAVE').toUpperCase() }}</button>
+      <button class="btn btn-primary" data-ng-click="saveZone()" data-ng-if="zone.id == -1">{{ translate('ADD').toUpperCase() }}</button>
+    </center>
+  </ion-content>
+</ion-modal-view>

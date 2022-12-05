@@ -1,0 +1,347 @@
+  <div class="container-fluid full business-page"><!-- data-ng-controller="detailMenuCtrl">-->
+    <div class="business">
+      <div class="cover" style="background-image: url({{optimizeImage(business.header, 'h_800,c_limit')}}), url({{dummyHeader}});">
+        <img class="logo preload" data-ng-if="!dummyLogo">
+        <img class="logo" data-ng-cache data-ng-src="{{optimizeImage(business.logo, 'h_500,c_limit')}}" err-src="{{dummyLogo}}">
+        <!--<img class="logo" data-ng-src="{{dummyLogo}}">-->
+      </div>
+      <div class="container-fluid business-content">
+        <h3 class="title preload" data-ng-if="business == undefined">Title</h3>
+        <h3 class="title" data-ng-if="business.name != undefined">{{business.name}} <i class="fa fa-info-circle btn-more-info" aria-hidden="true" data-ng-click="moreInfo()"></i>
+          <div class="preorder" data-ng-if="ADDONS.preorder">
+            <button class="btn btn-primary btn-sm" data-ng-click="openPreorder(business)">{{ translate('PREORDER') }}</button>
+            <div class="current" data-ng-if="preorder.menu_id">{{ preorder.strtime }} <i class="fa fa-times-circle" data-ng-click="removePreorder()"></i></div>
+          </div>
+        </h3>
+        <!-- <p class="description preload" data-ng-if="item.restData == undefined">fff</p> -->
+        <p class="description preload" data-ng-if="business == undefined">fff</p>
+        <p class="description" data-ng-hide="business == undefined">
+          <!--{{ parseTime(business.today.open) }} - {{ parseTime(business.today.close) }}<br>-->
+          <div class="rating" data-ng-click="moreInfo(1)" data-ng-if="ADDONS.order_reviews && business.reviews != undefined">
+            <div class="base">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+            <div class="points" style="width: {{getWidthRating(business.reviews.total)}}px;">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+          </div> <span data-ng-click="moreInfo(1)" data-ng-if="ADDONS.order_reviews && business.reviews != undefined">({{business.reviews.total | number:DECIMAL.length | separator}} {{translate('MOBILE_MENU_LIST_RATINGS')}})</span>
+        </p>
+      </div>
+      <div>
+        <div class="offset-categories">
+          <div id="categories-tabss" data-ng-if="business.categories == undefined">
+            <ul class="nav nav-tabs preload">
+              <li>
+                <a class="active" href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Category</span></a>
+              </li>
+            </ul>
+          </div>
+          <div id="categories-tabs" data-ng-hide="business.categories == undefined">
+            <ul class="nav nav-tabs">
+              <li data-ng-if="WEB_ADDONS.all_categories && business.categories">
+                <a href="#" data-ng-class="{'active': filterCategory == '' && filterProduct == ''}" data-ng-click="selectCategory($event, '')">{{translate('MOBILE_MENU_LIST_ALL')}}</a>
+              </li>
+              <li data-ng-if="showFeaturedCategory && business.categories && ADDONS.featured_products">
+                <a href="#" data-ng-class="{'active': filterCategory == 'featured' && filterProduct == ''}" data-ng-click="selectCategory($event, 'featured')">{{ translate('BLIST_FEATURED') }}</a>
+              </li>
+              <li data-ng-repeat="category in business.categories | orderBy:'rank*1'" data-ng-if="$index+1 <= curNumTab">
+                <a href="#" data-ng-class="{'active': filterCategory == category.id && filterProduct == ''}" data-ng-click="selectCategory($event, category.id)">{{category.name}}</a>
+              </li>
+              <!-- data-ng-if="curNumTab < resMenulist.length"-->
+              <li class="dropdown" data-ng-if="showMore">
+                <a id="dropdownMenu1" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{translate('MENU_LIST_MORE')}}
+                  <span class="caret"></span>
+                </a>
+                <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li data-ng-repeat="category in business.categories | orderBy:'rank*1'" data-ng-if="$index+1 > curNumTab" data-ng-class="{'active': filterCategory != category.id}">
+                    <a href="#" data-ng-click="selectCategory($event, category.id, true)">{{category.name}}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <div class="form-group product-search">
+              <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" data-ng-model="filterProduct" data-ng-change="changeFilterProduct(filterProduct)" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dishes">
+          <!-- Begin Preload -->
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories == undefined || filterCategory == undefined" class="col-md-6 col-sm-6 col-xs-12">
+            <div class="dishe preload">
+              <strong>Name of product</strong>
+              <p>Description of product</p>
+              <span class="price"><span>$ 0.00</span></span>
+            </div>
+          </div>
+          <div data-ng-if="business.categories.length == 0" class="not-menu col-md-12">
+            <div class="dishe">
+              {{translate('SORRY_NOT_HAVE_MENU')}}
+            </div>
+          </div>
+          <!-- End Preload -->
+
+          <!-- Featured -->
+          <div data-ng-if="filterProduct == '' && filterCategory == '' && ADDONS.featured_products && showFeaturedCategory">
+            <div class="title-category">{{ translate('BLIST_FEATURED') }}</div>
+            <!-- <span data-ng-repeat="category in categories['category_featured'] | orderBy:'rank*1'"> -->
+            <div class="col-md-6 col-sm-6 col-xs-12" data-ng-repeat="product in categories['category_featured'] | orderBy:'name'" data-ng-click="onProductOption(product)">
+              <div class="dishe" data-ng-class="{'compressed': !product.images && !product.description, 'sold_out': product.inventoried && product.quantity == 0}">
+                <div class="sold_out" data-ng-if="product.inventoried && product.quantity == 0">{{translate('SOLD_OUT')}}</div>
+                <img data-ng-if="product.images!=null" data-ng-src="{{optimizeImage(product.images, 'w_250,c_limit')}}" on-error-src>
+                <strong><span class="price" data-ng-if="product.price > 0">  {{parsePrice(product.price)}}</span>{{product.name}}</strong>
+                <p data-ng-if="product.description!='' && product.description!=null">{{product.description}}</p>
+              </div>
+            </div>
+            <!-- </span> -->
+            <div style="clear: both;"></div>
+          </div>
+
+          <!-- All -->
+          <div data-ng-if="filterProduct == '' && filterCategory == '' && categories['category_all'].length > 0" data-ng-repeat="category in agrupateProductsByCategories(categories['category_all']) | orderBy:'rank*1'">
+            <div class="title-category"><img class="category-image" category.image!=null data-ng-src="{{optimizeImage(category.image, 'h_150,c_limit')}}" on-error-src data-ng-hide="!category.image">{{category.name}}</div>
+            <div class="col-md-6 col-sm-6 col-xs-12" data-ng-repeat="product in category.products | orderBy:'name'" data-ng-click="onProductOption(product)">
+              <div class="dishe" data-ng-class="{'compressed': !product.images && !product.description, 'sold_out': product.inventoried && product.quantity == 0}">
+                <div class="sold_out" data-ng-if="product.inventoried && product.quantity == 0">{{translate('SOLD_OUT')}}</div>
+                <img data-ng-if="product.images!=null" data-ng-src="{{optimizeImage(product.images, 'w_250,c_limit')}}" on-error-src>
+                <strong><span class="price" data-ng-if="product.price > 0">  {{ parsePrice(product.price) }}</span>{{product.name}}</strong>
+                <p data-ng-if="product.description!='' && product.description!=null">{{product.description}}</p>
+              </div>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+          
+          <!-- Category -->
+          <div data-ng-if="filterProduct == '' && filterCategory != '' && categories['category_'+filterCategory]" class="col-md-6 col-sm-6 col-xs-12" data-ng-repeat="product in categories['category_'+filterCategory] | orderBy:'name'" data-ng-click="onProductOption(product)">
+            <div class="dishe" data-ng-class="{'compressed': !product.images && !product.description, 'sold_out': product.inventoried && product.quantity == 0}">
+              <div class="sold_out" data-ng-if="product.inventoried && product.quantity == 0">{{translate('SOLD_OUT')}}</div>
+              <img data-ng-if="product.images!=null" data-ng-src="{{optimizeImage(product.images, 'w_250,c_limit')}}" on-error-src>
+              <strong><span class="price" data-ng-if="product.price > 0">  {{parsePrice(product.price)}}</span>{{product.name}}</strong>
+              <p data-ng-if="product.description!='' && product.description!=null">{{product.description}}</p>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+
+          <!-- Results -->
+          <div data-ng-if="filterProduct != '' && searchResults.length > 0" class="col-md-6 col-sm-6 col-xs-12" data-ng-repeat="product in searchResults | orderBy:'name'" data-ng-click="onProductOption(product)">
+            <div class="dishe" data-ng-class="{'compressed': !product.images && !product.description, 'sold_out': product.inventoried && product.quantity == 0}">
+              <div class="sold_out" data-ng-if="product.inventoried && product.quantity == 0">{{translate('SOLD_OUT')}}</div>
+              <img data-ng-if="product.images!=null" data-ng-src="{{optimizeImage(product.images, 'w_250,c_limit')}}" on-error-src>
+              <strong><span class="price" data-ng-if="product.price > 0">  {{parsePrice(product.price)}}</span>{{product.name}}</strong>
+              <p data-ng-if="product.description!='' && product.description!=null">{{product.description}}</p>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+          <div class="clearfix"></div>
+          <div data-ng-if="loadings.products" class="loading-products">{{ translate('LOADING_PRODUCTS') }}...</div>
+          <div data-ng-if="loadings.search" class="loading-products">{{ translate('SEARCHING_PRODUCTS') }}...</div>
+          <div data-ng-if="filterProduct != '' && !loadings.search && searchResults.length == 0" class="loading-products">
+            <span data-ng-if="filterProduct.length < 3">{{ translate('MIN_3_CARACTERES') }}</span>
+            <span data-ng-if="filterProduct.length >= 3">{{ translate('NOT_FOUND_PRODUCTS') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cart">
+      <div id="cart-stiky" class="order">
+        <div class="go-cart" ng-click="goToCart()" data-ng-if="cart.length > 0">{{translate('GO_TO_CART')}} <div class="value"> {{parsePrice(cart_data.total)}}</div></div>
+        <div data-ng-if="ADDONS.pickup && order.type">
+          <div class="switcher">
+            <input type="radio" name="order_type" value="1" id="delivery" class="switcher__input switcher__input--one" data-ng-model="order.type">
+            <label for="_delivery" class="switcher__label" data-ng-click="changeOrderType(1)">{{ translate('DELIVERY') }}</label>
+            <input type="radio" name="order_type" value="2" id="pickup" class="switcher__input switcher__input--two" data-ng-model="order.type">
+            <label for="_pickup" class="switcher__label"  data-ng-click="changeOrderType(2)">{{ translate('PICKUP') }}</label>
+            <span class="switcher__toggle"></span>
+          </div>
+        </div>
+        <h3>{{translate('Your_order_V2')}}</h3>
+        <div data-ng-if="cart.length == 0 && business">
+          <img data-ng-src="{{rootTheme}}/img/empty-cart.png">
+          <p>{{translate('YOUR_ORDER_IS_EMPTY')}}</p>
+        </div>
+        <div data-ng-if="cart.length > 0 && business">
+          <strong>{{business.name}}</strong><br>
+          {{ translate('MIN_SUBTOTAL') }}:  {{ parsePrice(business.minimum) }}<br>
+          <button class="btn btn-primary" data-ng-click="goCheckout()" data-ng-if="business.minimum <= cart_data.subtotal">
+              {{ translate('MOBILE_FRONT_CHECKOUT') }}
+          </button>
+          <table>
+            <tr data-ng-repeat="product in cart track by $index">
+              <td class="highlighted">{{product.quantity}}</td>
+              <td>
+                {{product.name}}<br>
+                <p class="options" data-ng-if="(product.ingredients | filter: { selected: false }).length > 0">
+                  <strong>{{ translate('Ingredients_V2') }}</strong>
+                  <span data-ng-repeat="ingredient in product.ingredients | filter: { selected: false }">
+                    <br>
+                    {{ translate('NO') }} {{ingredient.name}}
+                  </span>
+                </p>
+                <p class="options" data-ng-repeat="option in product.options">
+                  <strong>{{option.name}}</strong>
+                  <span data-ng-repeat="suboption in option.suboptions"">
+                    <br>
+                    {{suboption.name}}&nbsp;&nbsp;&nbsp;&nbsp;<span data-ng-if="suboption.price > 0">{{parsePrice(suboption.price)}}</span> 
+                  </span>
+                </p>
+                <p class="options" data-ng-if="product.comment">
+                  <strong>{{translate('COMMENTS')}}</strong><br>
+                  {{product.comment}}
+                </p>
+              </td>
+              <td>
+                <i class="fa fa-pencil edit" aria-hidden="true" data-ng-click="onProductOption(product, true)"></i>
+                <i class="fa fa-times remove" aria-hidden="true" data-ng-click="removeProduct(product)"></i>
+              </td>
+              <td>
+                {{parsePrice(product.total)}}
+              </td>
+            </tr>
+            <tr class="fees">
+              <td colspan="3">{{ translate('SUBTOTAL') }}</td>
+              <td>{{parsePrice(cart_data.subtotal)}}</td>
+            </tr>
+            <tr class="fees" data-ng-if="ADDONS.discount_offer && cart_data.discount > 0">
+              <td colspan="3">{{ translate('APP_DISCOUNT') }} <span data-ng-if="cart_data.offer.rate_type == 1">({{cart_data.offer.rate}}%)</span><!-- (<span data-ng-if="discounttype=='2'"> <span data-ng-if="CURRENCY_POSITION == 'left'">{{currency}}</span></span>{{discountprice}}<span data-ng-if="discounttype=='1'">%</span>)--></td>
+              <td>- {{parsePrice(cart_data.discount)}}</td>
+            </tr>
+            <tr class="fees" data-ng-if="business.tax_type == 2">
+              <td colspan="3">{{ translate('Tax_V2') }} ({{ business.tax }}%)</td>
+              <td>{{parsePrice(cart_data.tax)}}</td>
+            </tr>
+            <tr class="fees" data-ng-if="order.type == 1">
+              <td colspan="3">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+              <td>{{parsePrice(business.delivery_price)}}</td>
+            </tr>        
+            <tr class="fees" data-ng-if="business.service_fee != 0">
+              <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ business.service_fee }}%)</td>
+              <td>{{parsePrice(cart_data.service_fee)}}</td>
+            </tr>
+            
+            <tr>
+              <td>{{cart_data.quantity}}</td>
+              <td>
+                {{ translate('TRACKORDER_TOTAL_VALUE') }}
+              </td>
+              <td>
+              </td>
+              <td>{{parsePrice(cart_data.total)}}</td>
+            </tr>
+          </table>
+        </div>
+        <button class="btn btn-gray btn-sm" data-ng-if="create_order && !NEW_FEATURES.ONLY_EDITOR" class="btn btn-primary" data-ng-click="newCreateOrder()">{{translate('MOBILE_NEW_ORDER')}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="div-fake-hidden">
+    <style type="text/css">
+      .div-fake-hidden {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+    </style>
+    <span class="icon ion-minus icon-primary"></span>
+    <span class="icon ion-minus icon-primary"></span>
+    <span class="icon ion-plus icon-primary"></span>
+    <span class="icon ion-plus icon-primary"></span>
+    <span class="icon ion-android-radio-button-off"></span>
+    <span class="icon ion-android-radio-button-on"></span>
+  </div>

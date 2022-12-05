@@ -1,0 +1,21 @@
+<div class="container-fluid full">
+    <div class="col-sm-8 col-md-9" style="padding-top: 10px;" data-ng-include="curTemplate" data-ng-if="arabic_rtl"></div>
+    <div class="col-sm-4 col-md-3 full">
+        <div class="sections buttons">
+        <ul>
+            <li data-ng-click="changeTemplate('gethelp')" data-ng-class="{ 'active': curTemplateFile == 'gethelp.html' }"><i class="fa fa-info-circle"></i> {{ translate('GET_ORDERING_HELP') }}</li>
+            <!-- <li data-ng-click="changeTemplate('questions')" data-ng-class="{ 'active': curTemplateFile == 'questions.html' }"><i class="fa fa-map-marker"></i> {{ translate('SUPPORT_QUESTIONS') }}</li>
+            <li data-ng-click="changeTemplate('orderingapp')" data-ng-class="{ 'active': curTemplateFile == 'orderingapp.html' }"><i class="fa fa-language"></i> {{ translate('SUPPORT_ORDERING_APP') }}</li>
+            <li data-ng-click="changeTemplate('businessapp')" data-ng-class="{ 'active': curTemplateFile == 'businessapp.html' }"><i class="fa fa-users"></i> {{ translate('SUPPORT_BUSINESS_APP') }}</li>
+            <li data-ng-click="changeTemplate('deliveryapp')" data-ng-class="{ 'active': curTemplateFile == 'deliveryapp.html' }"><i class="fa fa-car"></i> {{ translate('SUPPORT_DELIVERY_APP') }}</li> -->
+            <li data-ng-click="changeTemplate('tutorials')" data-ng-class="{ 'active': curTemplateFile == 'tutorials.html' }"><i class="fa fa-video-camera"></i> {{ translate('SUPPORT_TUTORIALS') }}</li>
+            <li data-ng-click="changeTemplate('ticketrequest')" data-ng-class="{ 'active': curTemplateFile == 'ticketrequest.html' }"><i class="fa fa-question-circle"></i> {{ translate('CREATE_TICKET_REQUEST') }}</li>
+            <li data-ng-click="changeTemplate('improvementrequest')" data-ng-class="{ 'active': curTemplateFile == 'improvementrequest.html' }"><i class="fa fa-cogs"></i> {{ translate('IMPROVEMENT_REQUEST') }}</li>
+            <li data-ng-click="changeTemplate('quoterequest')" data-ng-class="{ 'active': curTemplateFile == 'quoterequest.html' }"><i class="fa fa-code"></i> {{ translate('QUOTE_REQUEST') }}</li>
+            <li data-ng-click="changeTemplate('billingrequest')" data-ng-class="{ 'active': curTemplateFile == 'billingrequest.html' }"><i class="fa fa-credit-card"></i> {{ translate('BILLING_REQUEST') }}</li>
+            <li data-ng-click="changeTemplate('cancelrequest')" data-ng-class="{ 'active': curTemplateFile == 'cancelrequest.html' }"><i class="fa fa-chain-broken"></i> {{ translate('CANCELLATION_REQUEST') }}</li>
+        </ul>
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-9" style="padding-top: 10px;" data-ng-include="curTemplate" data-ng-if="!arabic_rtl"></div>
+</div>

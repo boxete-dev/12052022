@@ -1,0 +1,54 @@
+<div data-ng-controller="reviewManagerCtrl">
+  <div class="form editable">
+    <div class="group">
+      <label>{{ translate('FILTER') }}</label>
+      <input data-ng-model="filter" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}" autocomplete="off" data-ng-change="filterReviews()">
+    </div>
+  </div>
+  <table class="table table-bordered table-orders table-clickable" data-ng-if="!delivery_mode">
+    <thead>
+      <tr>
+        <th>{{ translate('BUSINESS') }}</th>
+        <th>{{ translate('CUSTOMER_EMAIL') }}</th>
+        <th>{{ translate('REVIEWS_V21') }}</th>
+        <th>{{ translate('COMMENTS') }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="review in filteredReviews | orderBy:'-id*1' | startFrom:((pagination.current-1)*pagination.items) | limitTo:pagination.items | filter: filter">
+        <td ng-click="openModalReview(review)">{{ review.business_name }}</td>
+        <td ng-click="openModalReview(review)">{{ review.user.name }}({{review.user.email}})</td>
+        <td ng-click="openModalReview(review)">
+        	<p class="description" data-ng-hide="business == undefined">
+            <div >
+              <div class="points">
+                <span >{{review.total | number:DECIMAL.length | separator}}</span><i class="fa fa-star" aria-hidden="true"></i>
+              </div>
+            </div> 
+          </p>
+        </td>
+        <td ng-click="openModalReview(review)">{{ review.comment }}</td>
+        <td>
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="review.enabled" data-ng-change="enabledReview(review)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pages">
+    {{ translate('ITEMS_PER_PAGES') }}:
+    <select data-ng-model="pagination.items">
+      <option data-ng-repeat="items in pagination.itemsPerPage" value="{{items}}" data-ng-selected="pagination.items == items">{{items}}</option>
+    </select>
+    {{((pagination.current-1)*pagination.items)+1}}-<span data-ng-if="pagination.current*pagination.items <= reviews.length">{{pagination.current*pagination.items}}</span><span data-ng-if="pagination.current*pagination.items > reviews.length">{{reviews.length}}</span> {{ translate('OF') }} {{reviews.length}}
+    <i class="fa fa-chevron-left" data-ng-if="pagination.current > 1" data-ng-click="backPage(pagination)"></i>
+    <i class="fa fa-chevron-right" data-ng-if="pagination.current < pagination.pages" data-ng-click="nextPage(pagination)"></i>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_REVIEW_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_REVIEW_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_REVIEW_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_REVIEW_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

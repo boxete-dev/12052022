@@ -1,0 +1,140 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hideOfferSetting()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h" data-ng-if="curCoupon.type == 1" >{{ translate('OFFER_SETTINGS') }}</span>
+      <span class="divider-padding no-padding-h" data-ng-if="curCoupon.type == 2">{{ translate('COUPON_SETTINGS') }}</span>
+    </ion-item>
+    <br>
+    <div class="form editable" select-content>
+      <div class="group" data-ng-if="curCoupon.type == 2">
+        <label>{{ translate('COUPON_CODE') }}</label>
+        <input data-ng-model="curCoupon.coupon" class="editable" type="text" data-ng-change="updateOffer(curCoupon)">
+      </div>
+      <div class="group">
+        <div class="w50">
+          <label>{{ translate('DISCOUNT_TYPE') }}</label>
+          <select class="editable" data-ng-model="curCoupon.rate_type" style="width: 100%;" data-ng-change="updateOffer(curCoupon)">
+            <option value="" disabled="true">{{ translate('SELECT_DISCOUNT_TYPE') }}</option>
+            <option value="1" data-ng-selected="curCoupon.rate_type == 1">{{ translate('PERCENTAGE') }}</option>
+            <option value="2" data-ng-selected="curCoupon.rate_type == 2">{{ translate('PRICE') }}</option>
+          </select>
+        </div><!--
+        --><div class="w50">
+          <label>{{ translate('VALUE') }}</label>
+          <input data-ng-model="curCoupon.rate" class="editable" type="text" data-ng-change="updateOffer(curCoupon)" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+        </div>
+      </div>
+      <div class="group">
+        <div class="w50">
+          <label>{{ translate('MINIMUN_PURCHASED') }}</label>
+          <input data-ng-model="curCoupon.minimum" class="editable" type="text" data-ng-change="updateOffer(curCoupon)" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+        </div><!--
+        --><div class="w50">
+          <label>{{ translate('LIMIT') }}</label>
+          <input data-ng-model="curCoupon.limit" class="editable" type="text" data-ng-change="updateOffer(curCoupon)" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+        </div>
+      </div>
+      <div class="group">
+        <div class="w50" style="position: relative;">
+          <label>{{ translate('START') }} (YYYY-MM-DD)</label>
+          <input id="datefrom" data-ng-model="curCoupon.start" class="editable" type="text" data-ng-change="updateOffer(curCoupon)">
+        </div><!--
+        --><div class="w50" style="position: relative;">
+          <label>{{ translate('FINISH') }} (YYYY-MM-DD)</label>
+          <input id="dateto" data-ng-model="curCoupon.end" class="editable" type="text" data-ng-change="updateOffer(curCoupon)">
+        </div>
+      </div>
+      <ng-container data-ng-if="ADDONS.metafields_editor && curCoupon.id > 0">
+        <label>{{ translate('CUSTOM_FIELDS') }}</label>
+        <div class="custom_files" data-ng-repeat="item in curCoupon.metafields track by $index">
+            <div class="c_field">
+                <div class="col-xs-3">
+                        <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <form>
+                            <ng-container data-ng-if="isBoolVal(item.value_type)">
+                                <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                            </ng-container>
+                            <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                                <div class="txt_wrapper">{{ item.value }}</div>
+                            </ng-container>
+                            <button class="editable" data-ng-click="removeCouponCustom(item)"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="custom_files">
+            <div class="c_field">
+                <div class="col-xs-3">
+                    <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                    </select>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                            <select class="editable" data-ng-model="newField.value">
+                                <option value="1">True</option>
+                                <option value="0">False</option>
+                            </select>
+                        </ng-container>
+                        <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                            <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getKeyEvent($event)">
+                            <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                        </ng-container>
+                        <button class="editable" data-ng-click="addCouponCustom(curCoupon.type)"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </ng-container>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+            <!-- <div class="group">
+        <label>{{ translate('BUSINESS') }}</label>
+        <ul>
+          <li data-ng-repeat="cdeal in business" data-ng-if="cdeal.provider == curUser.id || curUser.level == 0">
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="selectedBusiness[cdeal.id]" data-ng-change="updateCoupon(curCoupon)">{{cdeal.name}}
+            </ion-checkbox>
+          </li>
+        </ul>
+      </div> -->
+      <!--<div>
+        <label>Tax percentage</label>
+        <input data-ng-model="deal.taxpercnt" class="editable" type="text" data-ng-change="changeTax()">
+      </div> -->
+      <div data-ng-if="curCoupon.id == -1">
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="addOffer(curCoupon)">{{ translate('ADD').toUpperCase() }}</button>
+        </center>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>

@@ -1,0 +1,139 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('EMAILS_SETTINGS') }}</span>
+        </ion-item>
+        <br>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(0)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('GENERAL') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 0">
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('EMAIL_FROM_NAME') }}</label>
+                    <input data-ng-model="general.main_name" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('REPLY_TO_NAME') }}</label>
+                    <input data-ng-model="general.reply_name" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('REPLY_TO_EMAIL') }}</label>
+                    <input data-ng-model="general.reply" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('EMAIL_MAIN') }}</label>
+                    <input data-ng-model="general.email_main" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none; font-style: bold;" data-ng-model="general.email_smtp_use_default" data-ng-change="">{{translate('SMTP_USE_DEFAULT')}}
+                </div>
+                </ion-checkbox>
+                <div class="group" data-ng-show="!general.email_smtp_use_default">
+                    <label>{{ translate('SMTP_HOST') }}</label>
+                    <input data-ng-model="general.email_smtp_host" class="editable" type="text">
+                </div>
+                <div class="group" data-ng-show="!general.email_smtp_use_default">
+                    <label>{{ translate('SMTP_PORT') }}</label>
+                    <input data-ng-model="general.email_smtp_port" class="editable" type="text">
+                </div>
+                <div class="group" data-ng-show="!general.email_smtp_use_default">
+                    <label>{{ translate('SMTP_USERNAME') }}</label>
+                    <input data-ng-model="general.email_smtp_username" class="editable" type="text">
+                </div>
+                <div class="group" data-ng-show="!general.email_smtp_use_default">
+                    <label>{{ translate('SMTP_PASSWORD') }}</label>
+                    <input data-ng-model="general.email_smtp_password" class="editable" type="text">
+                </div>
+                <div class="group" data-ng-show="!general.email_smtp_use_default">
+                    <label>{{ translate('SMTP_ENCRYPTION') }}</label>
+                    <input data-ng-model="general.email_smtp_encryption" class="editable" type="text">
+                </div>
+            </div>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(1)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('ADMINISTRATOR') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 1">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="superadmin_emails[i]" data-ng-change="toggleDriver()">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+                <li>
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="superadmin_emails[53]" data-ng-change="toggleDriver()">{{ translate('BUSINESS_SIGNUP') }}
+                        </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(2)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 2">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="business_emails[i]" data-ng-change="toggleDriver()">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(3)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('CUSTOMER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 3">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="customer_emails[i]" data-ng-change="toggleDriver()">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <!-- <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(4)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('DRIVER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 4">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="driver_emails[i]" data-ng-change="toggleDriver()">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div> -->
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(5)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('CITY_MANAGER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 5">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="city_manager_emails[i]" data-ng-change="toggleDriver()">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="save()">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div  ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_EMAIL_SETTINGS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_EMAIL_SETTINGS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div   ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_EMAIL_SETTINGS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_EMAIL_SETTINGS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

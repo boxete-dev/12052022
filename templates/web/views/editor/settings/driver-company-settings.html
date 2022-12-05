@@ -1,0 +1,100 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('DRIVER_COMPANY_SETTINGS') }}</span>
+        </ion-item>
+        <!-- <ion-item> -->
+            <!-- <div class="webtabs" data-ng-if="NEW_FEATURES.MULTI_ADDRESS && curDriverType.id > 0">
+                <div class="tab" data-ng-class="{ 'active': tab == 0 }" data-ng-click="changeTab(0)">
+                    {{ translate('PROFILE') }}
+                </div>
+                <div class="tab" data-ng-class="{ 'active': tab == 1 }" data-ng-click="changeTab(1)">
+                    {{ translate('ADDRESSES') }}
+                </div>
+                <div class="tab" data-ng-if="curDriverType.qualification && ADDONS.user_reviews" data-ng-class="{ 'active': tab == 2 }" data-ng-click="changeTab(2)">
+                    {{ translate('QUALIFICATION') }} {{curDriverType.qualification}} <i class="fa fa-star"></i>
+                </div>
+            </div> -->
+            <div class="form editable" select-content>
+                <!-- <div class="photo-profile">
+                    <div id="photo_user_type_settings" class="drag" style="background-image: url({{curDriverType.image}}),url({{curDriverType.photo}});">
+                        <div class="edit xs">
+                            <p>
+                                <i class="fa fa-user"></i>
+                            </p>
+                            <input id="photo_user_type_settings_file" type="file" style="display: none;" accept="image/png,image/jpeg,image/jpg">
+                        </div>
+                    </div>
+                </div> -->
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('NAME') }}</label>
+                        <input data-ng-model="driver_company.name" class="editable" type="text" data-ng-change="autosave(['name'])">
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('LIMIT') }}</label>
+                        <input data-ng-model="driver_company.limit" class="editable" type="text" data-ng-change="autosave(['limit'])">
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('PRIORITY') }}</label>
+                        <div>
+                            <select data-ng-model="driver_company.priority" class="editable" style="width: 100%;" data-ng-change="autosave(['priority'])">
+                                <option value="" disabled>{{ translate('SELECT_PRIORITY') }}</option>
+                                <option value="2">{{ translate('URGENT') }}</option>
+                                <option value="1">{{ translate('HIGH') }}</option>
+                                <option value="0">{{ translate('NORMAL') }}</option>
+                                <option value="-1">{{ translate('LOW') }}</option>
+                            </select>
+                        </div>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('TIMEZONE') }}</label>
+                        <div>
+                            <select data-ng-model="driver_company.timezone" class="editable" style="width: 100%;" data-ng-change="autosave(['timezone'])">
+                                <option value="" disabled>{{ translate('SELECT_A_TIMEZONE') }}</option>
+                                <option value="{{ timezone }}" data-ng-repeat="timezone in timezones" data-ng-selected="timezone === driver_company.timezone">{{ timezone }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="group">
+                    <label>{{ translate('SCHEDULE') }}</label>
+                    <div>
+                        <button class="btn btn-primary btn-sm" data-ng-click="openSchecule(driver_company.schedule)">{{ translate('EDIT') }}</button>
+                    </div>
+                </div>
+                <div class="group">
+                    <label>{{ translate('ADDRESS') }}</label>
+                    <input id="driver-type-address" data-ng-model="driver_company.address" class="editable" type="text" data-ng-change="autosave(['address'])">
+                </div>
+                <div class="group">
+                    <label>{{ translate('WEBHOOK_NEW_ORDER') }}</label>
+                    <input data-ng-model="driver_company.webhook_new_order" class="editable" type="text" data-ng-change="autosave(['webhook_new_order'])">
+                </div>
+                <div class="group">
+                    <label>{{ translate('WEBHOOK_CANCEL_REQUEST') }}</label>
+                    <input data-ng-model="driver_company.webhook_cancel_request" class="editable" type="text" data-ng-change="autosave(['webhook_cancel_request'])">
+                </div>
+                <div class="group">
+                    <label>{{ translate('WEBHOOK_ORDER_STATUS_CHANGED') }}</label>
+                    <input data-ng-model="driver_company.webhook_order_status_changed" class="editable" type="text" data-ng-change="autosave(['webhook_order_status_changed'])">
+                </div>
+                <div class="group" data-ng-if="driver_company.id != -1">
+                    <label>{{ translate('API_KEY') }}</label>
+                    <input data-ng-model="driver_company.api_key" class="editable" type="text" disabled>
+                    <small>Send this in <strong>X-BUSINESS-API-KEY-X</strong> header <a target="blank" href="https://get.ordering.help/reference#update-order">See documentation</a>.</small>
+                </div>
+                <br>
+                <div data-ng-if="driver_company.id == -1">
+                    <center>
+                        <button class="btn btn-primary" data-ng-click="save(driver_company)">{{ translate('ADD').toUpperCase() }}</button>
+                    </center> 
+                </div>
+            </div>
+        <!-- </ion-item> -->
+    </ion-content>
+</ion-modal-view>

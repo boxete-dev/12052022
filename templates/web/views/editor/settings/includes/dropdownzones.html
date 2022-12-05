@@ -1,0 +1,142 @@
+<div data-ng-controller="multiDeliveryZonesSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DROPDOWN_OPTIONS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <!-- <div class="w50"> -->
+          <label>{{ translate('FILTER') }}</label>
+          <input data-ng-model="filterNeig" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+        <!-- </div> -->
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="f50">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="dropdownoption in dropdownoptions | orderBy:'id*1' | filter:filterNeig | startFrom:((neigpagination.current-1)*neigpagination.items) | limitTo:neigpagination.items">
+        <button data-ng-click="removeNeighborhood(dropdownoption)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showNeighborhoodSettings(dropdownoption)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="dropdownoption.enabled" data-ng-change="updateNeighborhood(dropdownoption)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="dropdownoption.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="dropdownoption.name" value="{{ translate('NAME') }}" data-ng-change="updateNeighborhood(dropdownoption)" tabindex="{{($index*1)+1000}}">
+        </div>
+      </div>
+      <div class="eitem">
+        <form data-ng-submit="showNeighborhoodSettings(curNeighborhood)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curNeighborhood.name" placeholder="{{ translate('NAME') }}" tabindex="2000">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="neigpagination.items">
+          <option data-ng-repeat="items in neigpagination.itemsPerPage" value="{{items}}" data-ng-selected="neigpagination.items == items">{{items}}</option>
+        </select>
+        {{((neigpagination.current-1)*neigpagination.items)+1}}-<span data-ng-if="neigpagination.current*neigpagination.items <= neighborhoods.length">{{neigpagination.current*neigpagination.items}}</span><span data-ng-if="neigpagination.current*neigpagination.items > neighborhoods.length">{{neighborhoods.length}}</span> {{ translate('OF') }} {{neighborhoods.length}}
+        <i class="fa fa-chevron-left" data-ng-if="neigpagination.current > 1" data-ng-click="backPage(neigpagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="neigpagination.current < neigpagination.pages" data-ng-click="nextPage(neigpagination)"></i>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DROPDOWN_SUBOPTIONS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterMulti" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+        <button style="visibility: hidden;"><i class="fa fa-edit"></i></button>
+        <div class="f50">&nbsp;</div>
+        <div class="f50">
+          <input class="editable" type="text" value="{{ translate('PRICE') }}" disabled="disabled">
+        </div>
+        <div class="f50">
+          <input class="editable" type="text" value="{{ translate('MIN') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="multideliveryzone in multideliveryzones | orderBy:'id*1' | filter:filterMulti | startFrom:((multipagination.current-1)*multipagination.items) | limitTo:multipagination.items">
+        <button data-ng-click="removeMultideliveryzone(multideliveryzone)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showMultideliveryzoneSettings(multideliveryzone)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="multideliveryzone.enabled" data-ng-change="changeMultideliveryzone(multideliveryzone, true)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="f50">
+          <input class="editable" type="text" data-ng-model="multideliveryzone.delivery_price" format="number" value="{{ translate('PRICE') }}" data-ng-change="changeMultideliveryzone(multideliveryzone)" tabindex="{{($index*3)+3002}}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+        </div>
+        <div class="f50">
+          <input class="editable" type="text" data-ng-model="multideliveryzone.minimum_purchase" format="number" value="{{ translate('MIN') }}" data-ng-change="changeMultideliveryzone(multideliveryzone)" tabindex="{{($index*3)+3001}}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="multideliveryzone.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="multideliveryzone.zone_name" value="{{ translate('NAME') }}" data-ng-change="changeMultideliveryzone(multideliveryzone)" tabindex="{{($index*3)+3000}}">
+        </div>
+      </div>
+      <div class="eitem">
+        <form data-ng-submit="showMultideliveryzoneSettings(curMultideliveryzone)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="f50">
+          <input class="editable" type="text" data-ng-model="curMultideliveryzone.minimum_purchase" placeholder="{{ translate('MIN') }}" tabindex="4002" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13)">
+        </div>
+        <div class="f50">
+          <input class="editable" type="text" data-ng-model="curMultideliveryzone.delivery_price" placeholder="{{ translate('PRICE') }}" tabindex="4001" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13)">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curMultideliveryzone.zone_name" placeholder="{{ translate('NAME') }}" tabindex="4000">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="multipagination.items">
+          <option data-ng-repeat="items in multipagination.itemsPerPage" value="{{items}}" data-ng-selected="multipagination.items == items">{{items}}</option>
+        </select>
+        {{((multipagination.current-1)*multipagination.items)+1}}-<span data-ng-if="multipagination.current*multipagination.items <= multideliveryzones.length">{{multipagination.current*multipagination.items}}</span><span data-ng-if="multipagination.current*multipagination.items > multideliveryzones.length">{{multideliveryzones.length}}</span> {{ translate('OF') }} {{multideliveryzones.length}}
+        <i class="fa fa-chevron-left" data-ng-if="multipagination.current > 1" data-ng-click="backPage(multipagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="multipagination.current < multipagination.pages" data-ng-click="nextPage(multipagination)"></i>
+      </div>
+    </div>
+  </div> -->
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>

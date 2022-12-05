@@ -1,0 +1,45 @@
+  <div class="container-fluid bg-gray">
+    <div class="form-vertical col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
+      <h3>{{translate('LOGIN')}}</h3>
+      <div data-ng-hide="NEW_FEATURES.ONLY_EDITOR">
+        <p class="help">{{translate('NEW_ON')}} {{translate('MOBILE_APPNAME')}} ? <a data-ng-click="onGoMyProfile()">{{translate('FRONT_CREATE_AN_ACCOUNT')}}</a></p>
+        <button data-ng-if="ADDONS.facebook_login" class="btn btn-facebook btn-block" data-ng-click="features.facebook_login.ready && fbLogin()">
+          <span data-ng-if="!features.facebook_login.ready">
+            <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+          </span>
+          <span data-ng-if="features.facebook_login.ready">
+            <i class="fa fa-facebook-official" aria-hidden="true"></i> {{ translate('LOGIN_WITH_FACEBOOK') }}
+          </span>
+        </button>
+        <button data-ng-if="ADDONS.guest_login" class="btn btn-default btn-block btn-upper" data-ng-click="onClickGuest()">
+          <i class="fa fa-user-secret" aria-hidden="true"></i>
+          {{ translate('MOBILE_FRONT_VISUALS_COUNTINUE_AS_GUEST') }}
+        </button>
+        <div class="divider" data-ng-if="ADDONS.facebook_login || ADDONS.guest_login">
+          <hr>
+          <span>{{translate('MYACCOUNT_OR').toLowerCase()}}</span>
+        </div>
+      </div>
+      <form data-ng-submit="signIn()" form-autofill-fix>
+      <div class="form-group" data-ng-if="NEW_FEATURES.ENABLE_MULTIPROJECT && NEW_FEATURES.ONLY_EDITOR">
+        <label for="project">{{ translate('WEBAPP_NAME') }}</label>
+        <input type="text" class="form-control" id="project" placeholder="{{ translate('WEBAPP_NAME') }}" data-ng-model="signInUser.project" data-ng-change="signInUser.project=signInUser.project.toLowerCase()">
+      </div>  
+      <div class="form-group">
+        <label for="email">{{ translate('MOBILE_FRONT_EMAIL') }}</label>
+        <input type="text" class="form-control" id="email" placeholder="{{ translate('MOBILE_FRONT_EMAIL') }}" data-ng-model="signInUser.email" data-ng-change="signInUser.email=signInUser.email.toLowerCase()">
+      </div>
+      <div class="form-group">
+        <label for="password">{{ translate('MOBILE_FRONT_PASSWORD') }}</label>
+        <input type="password" class="form-control" id="password" placeholder="{{ translate('MOBILE_FRONT_PASSWORD') }}" data-ng-model="signInUser.password">
+      </div>
+      <div id="login-recaptcha" class="recaptcha-container"></div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">
+          {{ translate('LOGIN_BUTTON_LOGIN') }}
+        </button>
+      </div>
+      <p class="help">{{translate('LOGIN_LINK_FORGOT_PASSWORD')}} <a data-ng-click="onGoForgotPassword($event)">{{translate('FRONT_RECOVER_PASSWORD')}}</a></p>
+      </form>
+    </div>
+  </div>

@@ -1,0 +1,38 @@
+<ion-modal-view class="popup">
+  <ion-content class="order-cont popup-mode" overflow-scroll="true">
+    <i class="fa fa-times close" data-ng-click="hideCardStripe()"></i>
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" data-ng-if="!cardStripePayMode">
+      {{translate('MOBILE_ADD_CARD')}}
+    </ion-item>
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" data-ng-if="cardStripePayMode">
+      {{translate('PAY_WITH_CARD')}}
+    </ion-item>
+    <div id="card-element">
+      <!-- a Stripe Element will be inserted here. -->
+    </div>
+    <div class="form form-popup card_form">
+      <form class="form-horizontal">
+        <div class="col-sm-12">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>{{translate('PAYMENT_BRAINTREE_ON_ENTER_CREDIT_CARD')}}</label>
+            <div id="card-number" class="StripeElement"></div>
+            <p id="card-errors" class="form-error"></p>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-6 full">
+              <label>{{translate('EXPIRY_DATE')}}</label>
+              <div id="card-expiry" class="StripeElement"></div>
+              <p id="date-errors" class="form-error"></p>
+            </div>
+            <div class="col-xs-6 full">
+              <label>{{translate('MOBILE_CVC_CARD')}} </label>
+              <div id="card-cvc" class="StripeElement"></div>
+              <p id="cvc-errors" class="form-error"></p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="getTokenCard()">{{translate('OK')}}</button>
+    </ion-content>
+</ion-modal-view>

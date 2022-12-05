@@ -1,0 +1,34 @@
+<ion-modal-view class="popup">
+    <!--<i class="fa fa-times close" data-ng-click="offPaymentPopup()"></i>-->
+    <!--<ion-header-bar class="bar-stable bar-shadow fix-buttons">
+        <button class="button top-btn" data-ng-click="offPaymentPopup()"><img src="img/icon-close.png"></button>
+        <ion-title class="font-large-x">{{ translate('MOBILE_FRONT_PAYMENT_SELECT') }}</ion-title>
+        <button class="button top-btn mg-top-btn-right" data-ng-click=""></button>
+    </ion-header-bar>-->
+    <ion-content class="color-bg padding popup-mode" overflow-scroll="true">
+        <i class="fa fa-times close" data-ng-click="offPaymentPopup()"></i>
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('MOBILE_FRONT_PLEASE_CHOOSE_YOUR_PAYMENT_METHOD') }} ({{ translate('FRONT_FORM_REQUIRED') }})</span>
+        </ion-item>
+        <!--<ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <span class="divider-padding no-padding-h positive">{{ translate('MOBILE_FRONT_PLEASE_CHOOSE_YOUR_PAYMENT_METHOD') }} ({{ translate('FRONT_FORM_REQUIRED') }})</span>
+        </ion-item>-->
+        <ion-radio class="radio-item" data-ng-if="item.val != 'stripe' || ADDONS.stripe_payment" data-ng-repeat="item in payment"
+                   data-ng-value="item.name"
+                   name = "{{item.id}}"
+                   data-ng-model="paymentModel.model"
+                   data-ng-click="onClickMethod(item)">
+            <div class="row">
+                <span class="float-left dynamic-radio"></span>
+                <p class="float-left">{{ item.name }}</p>
+                <p class="float-right icon"><img data-ng-cache data-ng-src={{item.img}}></p>
+                <!--<div class="col col-15"> </div>
+                <div class="col col-60 font-large-x">{{ item.name }}</div>
+                <div class="col col-10 text-center"><img data-ng-cache data-ng-src={{item.img}} class="w-100"></div>-->
+            </div>
+        </ion-radio>
+        <ion-item class="no-border no-bg no-padding-h mg-top-nor">
+            <button class="btn btn-primary w-100" data-ng-click="offPaymentPopup()">{{ translate('CONTROL_PANEL_DISCOUNT_OFFER_COLUMN5') }}</button>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>

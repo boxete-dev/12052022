@@ -1,0 +1,33 @@
+<ion-modal-view class="popup">
+  <ion-content class="order-cont popup-mode" overflow-scroll="true">
+    <i class="fa fa-times close" data-ng-click="hideStripeRedirect()"></i>
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      {{translate('striperedirect')}}
+    </ion-item>
+    <div id="card-element">
+      <!-- a Stripe Element will be inserted here. -->
+    </div>
+    <div class="form form-popup">
+      <form class="form-horizontal">
+        <div class="col-sm-12">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>{{translate('SELECT_PAYMENT_METHOD')}}</label>
+            <select data-ng-model="paydata.method" class="form-control">
+              <option value="">{{translate('SELECT_PAYMENT_METHOD')}}</option>
+              <option data-ng-repeat="paymethod in paymethods" value="{{paymethod.value}}" data-ng-if="paymethod.enabled" data-ng-selected="paymethod.value == paydata.method">{{paymethod.name}}</option>
+            </select>
+          <!-- </div>
+          <div class="form-group" style="margin-bottom: 0;"> -->
+            <label>{{translate('ACCOUNT_HOLDER')}}</label>
+            <input type="text" data-ng-model="paydata.name" class="form-control">
+          <!-- </div>
+          <div class="form-group" style="margin-bottom: 0;"> -->
+            <label>{{translate('EMAIL')}}</label>
+            <input type="email" data-ng-model="paydata.email" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="getAuthorization()">{{translate('OK')}}</button>
+    </ion-content>
+</ion-modal-view>

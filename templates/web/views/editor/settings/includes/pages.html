@@ -1,0 +1,65 @@
+<div data-ng-controller="pagesSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('PAGES_MANAGER') }}</h3>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('PAGES') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterPage" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+        <button style="visibility: hidden;"><i class="fa fa-edit"></i></button>
+        <div class="f50">&nbsp;</div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="page in customPages | orderBy:'id*1' | filter:filterPage | startFrom:((pagepagination.current-1)*pagepagination.items) | limitTo:pagepagination.items">
+        <button data-ng-if="page.slug != 'content'" data-ng-click="removePage(page)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showPageEditor(page.id)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="page.enabled" data-ng-change="updatePage(page)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="page.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="page.name" value="{{ translate('NAME') }}" data-ng-change="updatePage(page)" tabindex="{{($index*2)+3000}}" ng-readonly="page.slug == 'content'">
+        </div>
+      </div>
+      <div class="eitem fixdir">
+        <button data-ng-click="showPageEditor(-1)"><strong>{{translate('ADD_PAGE')}}</strong><i class="fa fa-plus-circle" style="padding-left: 4px"></i></button>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="pagepagination.items">
+          <option data-ng-repeat="items in pagepagination.itemsPerPage" value="{{items}}" data-ng-selected="pagepagination.items == items">{{items}}</option>
+        </select>
+        {{((pagepagination.current-1)*pagepagination.items)+1}}-<span data-ng-if="pagepagination.current*pagepagination.items <= pages.length">{{pagepagination.current*pagepagination.items}}</span><span data-ng-if="pagepagination.current*pagepagination.items > pages.length">{{pages.length}}</span> {{ translate('OF') }} {{pages.length}}
+        <i class="fa fa-chevron-left" data-ng-if="pagepagination.current > 1" data-ng-click="backPage(pagepagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="pagepagination.current < pagepagination.pages" data-ng-click="nextPage(pagepagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_STATIC_PAGES_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_STATIC_PAGES_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_STATIC_PAGES_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_STATIC_PAGES_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

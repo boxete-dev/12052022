@@ -1,0 +1,129 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('PUSH_NOTIFICATIONS') }}</span>
+        </ion-item>
+        <br>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(0)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('GENERAL') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 0">
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('ONESIGNAL_USER_AUTH') }}</label>
+                    <input data-ng-model="general.onesignal_user_auth" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('ONESIGNAL_ORDERINGAPP_ID') }}</label>
+                    <input data-ng-model="general.onesignal_orderingapp_id" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('ONESIGNAL_BUSINESSAPP_ID') }}</label>
+                    <input data-ng-model="general.onesignal_businessapp_id" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <label>{{ translate('ONESIGNAL_DELIVERYAPP_ID') }}</label>
+                    <input data-ng-model="general.onesignal_deliveryapp_id" class="editable" type="text">
+                </div>
+            </div>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(1)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('ADMINISTRATOR') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 1">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12,13]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="superadmin_notifications[i]">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(2)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 2">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,18]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="business_notifications[i]">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(3)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('CUSTOMER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 3">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12,19]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="customer_notifications[i]">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+                <li>
+                    <div style="width: 50%;display: inline-block;vertical-align: bottom;margin-bottom: 7px;">
+                        <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="customer_notifications[51]">
+                            {{ translate('DRIVER_CLOSE') }}
+                        </ion-checkbox>
+                    </div><!--
+                --><div style="width: 50%;display: inline-block;">
+                        <div class="form editable">
+                            <div class="group">
+                                <label>{{ translate('DISTANCE') }} (km) ({{ general.driver_close_distance*0.621371 | number:DECIMAL.length | separator }}mi)</label>
+                                <input data-ng-model="general.driver_close_distance" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                </li>
+            </ul>
+        </div>
+        <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(4)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('DRIVER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 4">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="driver_notifications[i]">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+                <li>
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="driver_notifications[50]">{{ translate('DRIVER_ASSIGNED') }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <!-- <ion-item>
+            <button class="btn-accordion" data-ng-click="changeCollapse(5)">
+                <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('CITY_MANAGER') }}</span>
+                <div class="float-right icon-more-down"></div>
+            </button>
+        </ion-item>
+        <div class="sub-accordion" data-ng-if="curCollapse == 5">
+            <ul>
+                <li data-ng-repeat="i in [0,1,2,5,6,7,8,9,10,11,12]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="city_manager_notifications[i]">{{ getOrderState(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div> -->
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="save()">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>

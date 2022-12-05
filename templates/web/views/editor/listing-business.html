@@ -1,0 +1,94 @@
+
+  <div class="container-fluid">
+<!--     <div class="subtitle compress">
+      {{nearCount}} {{ translate('MOBILE_FRONT_VISUALS_RESTAURANTS') }} {{ translate('MOBILE_FRONT_NEAR') }} {{nearAddress}}
+    </div> -->
+    <div class="subtitle">
+      <!-- <span data-ng-if="!BUSINESS_TYPES">{{nearCount}} {{ translate('MOBILE_FRONT_VISUALS_RESTAURANTS') }} {{ translate('MOBILE_FRONT_NEAR') }} {{nearAddress}}</span> -->
+	  <div class="col-md-8" id="dynamic_editor_types">
+      <ul class="nav nav-tabs inline " style="overflow: inherit;">
+        <li>
+          <a class="active" href="#" data-ng-class="{'active': filterBusinessType == ''}" data-ng-click="selectBusinessType($event, '')">{{translate('MOBILE_MENU_LIST_ALL')}}</a>
+        </li>
+        <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'" data-ng-if="$index+1 <= curNumTablistBa">
+          <a href="#" data-ng-class="{'active': filterBusinessType == btypes.name}" data-ng-click="selectChangeBusinessType($event, btypes)">{{btypes.view_name}}</a>
+        </li>
+        <li class="dropdown" data-ng-if="showMore">
+                <a id="dropdownMenu1" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{translate('MENU_LIST_MORE')}}
+                  <span class="caret"></span>
+                </a>
+                <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'" data-ng-if="$index+1 > curNumTablistBa">
+                    <a href="#" data-ng-class="{'active': filterBusinessType == btypes.name}" data-ng-click="selectChangeBusinessType($event, btypes)">{{btypes.name}}</a>
+                  </li>
+                </ul>
+              </li>
+        <!--<li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'food'}" data-ng-click="selectBusinessType($event, 'food')">{{translate('BUSINESS_TYPE_FOOD')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'alcohol'}" data-ng-click="selectBusinessType($event, 'alcohol')">{{translate('BUSINESS_TYPE_ALCOHOL')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'groceries'}" data-ng-click="selectBusinessType($event, 'groceries')">{{translate('BUSINESS_TYPE_GROCERIES')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'laundry'}" data-ng-click="selectBusinessType($event, 'laundry')">{{translate('BUSINESS_TYPE_LAUNDRY')}}</a>
+        </li>-->
+      </ul>
+      </div>
+      <div class="form-group col-sm-4 col-xs-12">
+        <div class="input-group">
+          <div class="input-group-addon"><i class="fa fa-search"></i></div>
+          <input type="text" class="form-control" data-ng-model="filterBusiness" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
+        </div>
+      </div>
+      
+      <div style="clear: both;"></div>
+    </div>
+    <div class="businesses">
+      <div class="col-md-3 col-sm-4 col-xs-12" data-ng-repeat="item in filteredBusiness | filter:{name:filterBusiness} | orderBy:'id*-1':true track by $index">
+        <label class="toggle toggle-balanced">
+          <input type="checkbox" data-ng-model="item.enabled" data-ng-change="changeBusinessStatus(item)">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+        <div class="thumbnail" data-ng-click="edit(item.slug)">
+          <div class="header" style="background-image: url({{optimizeImage(item.header, 'h_300,c_limit')}}), url({{dummyHeader}});"></div>
+          <div class="logo">
+            <img data-ng-cache data-ng-src="{{optimizeImage(item.logo, 'h_300,c_limit')}}" err-src="{{rootTheme}}/img/dummy_logo.png" class="mg-bottom-none" data-ng-if="item.logo">
+            <img data-ng-src="{{dummyLogo}}" class="mg-bottom-none" data-ng-if="!item.logo">
+          </div>
+          <div class="caption">
+            <p>
+              <ul>
+                <li>{{item.id}}. {{item.name}}<span data-ng-if="item.city">({{ item.city.name }})</span></li>
+              </ul>
+            </p>
+            <div class="btn-group btn-group-xs" role="group" data-toggle="buttons">
+              <button type="button" class="btn btn-success" data-ng-click="edit(item.slug)">{{ translate('EDIT_BUTTON') }}</button>
+              <button type="button" class="btn btn-warning" data-ng-click="$event.stopPropagation();copy(item.id, $event)" data-ng-show="(ADDONS.add_business || superAdmin) && !ADDONS.limit_business">{{ translate('COPY_BUTTON') }}</button>
+              <button type="button" class="btn btn-danger" data-ng-click="delete(item.id, $event)" data-ng-show="(ADDONS.add_business || superAdmin) && !ADDONS.limit_business">{{ translate('DELETE_BUTTON') }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6" style="min-height: 150px;" data-ng-click="showCreateBusiness()" data-ng-show="(ADDONS.add_business || superAdmin) && !ADDONS.limit_business">
+        <div class="thumbnail editor">
+          <div class="edit">
+            <i class="fa fa-plus-circle"></i>
+            <br>
+            {{ translate('ADD_BUSINESS') }}
+          </div>
+        </div>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="help-message" data-ng-if="loading_more">
+        {{ translate('LOADING_MORE') }}
+      </div>
+    </div>
+  </div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_CREATESTORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_CREATESTORE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!-- -Business<div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="hidden-sm hidden-xs box moving-left"><a  class="helppBtn  btnHelp btn btn-white btn-animation-1" data-toggle="popover" data-placement="bottom"  data-content="<a target='_blank' href='{{ translate('LINK_HELP_CREATESTORE')}}' title=''><img class='imgVideo' src='templates/web/img/1.Logo.png' /><div class='postext'>Create Store</div><div><img class='imgTransp' src='templates/web/img/2.Transparencia.png' /></div></a>"><img class="foto" src="templates/web/img/BotonAbajo.png"></img></a></div> -->

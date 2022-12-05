@@ -1,0 +1,33 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('BUSINESSES') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable" style="margin-left:0px;">
+                <div class="group">
+                    <div class="check-box" data-ng-click="toggleAll()">
+                            <div class="icon" data-ng-class="{'uncheck': !all}">
+                                <i class="fa fa-square" data-ng-if="!all"></i>
+                                <i class="fa fa-check-square" data-ng-if="all"></i>
+                            </div>
+                            <div class="text">{{ translate('ALL') }}</div>
+                            <input type="checkbox" name="type" value="charge" data-ng-model="all">
+                        </div>
+                    <div class="check-box" data-ng-repeat="business in businesses" data-ng-click="toggleBusiness(business.slug)">
+                        <div class="icon" data-ng-class="{'uncheck': !selected[business.slug]}">
+                            <i class="fa fa-square" data-ng-if="!selected[business.slug]"></i>
+                            <i class="fa fa-check-square" data-ng-if="selected[business.slug]"></i>
+                        </div>
+                        <div class="text">{{ business.name }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="selected[business.slug]">
+                    </div>
+                </div>
+                <div class="center">
+                    <button class="btn btn-primary" data-ng-click="apply()">{{ translate('FILTER').toUpperCase() }}</button>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>

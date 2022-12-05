@@ -1,0 +1,38 @@
+{
+	"async_scripts": [
+		"https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58f7669ee41f8041"
+	],
+	"scripts": [
+		"js/chart.min.js",
+		"js/handsontable.full.min.js",
+		"js/ngHandsontable.min.js",
+		"js/router-ui.js",
+		"js/bootstrap.min.js",
+		"js/bootstrap.datepicker.min.js",
+		"js/angular-addthis.min.js",
+		"js/helpers.js",
+		"js/summernote-lite.min.js",
+		"js/jsoneditor.min.js",
+		"js/markerclusterer.js",
+		"js/jquery-ui.js"
+	],
+	"styles": [
+		"css/bootstrap.css",
+		"css/font-awesome.min.css",
+		"css/handsontable.full.min.css",
+		"css/bootstrap.datepicker.min.css",
+		"css/style.css",
+		"css/stripe.css",
+		"css/stripe.elements.css",
+		"css/custom-theme.css",
+		"css/summernote-lite.css",
+		"css/jsoneditor.min.css"
+	],
+	"angular": [
+        "js/ng-custom.js",
+		"js/ng-service.js"
+    ],
+	"angular_requires": [
+		"ngHandsontable"
+	]
+}

@@ -1,0 +1,81 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hide()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('ADD_BUSINESS') }}</span>
+    </ion-item>
+    <br>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('NAME') }}</label>
+        <input data-ng-model="curBusiness.name" class="editable" type="text">
+      </div>
+      <div class="group">
+        <label>{{ translate('SLUG') }} (https://yourpage.com/slug)</label>
+        <input data-ng-model="curBusiness.slug" class="editable" type="text" data-ng-change="updateCoupon(curBusiness)">
+      </div>
+      <div class="group">
+        <label>{{ translate('EMAIL') }}</label>
+        <input data-ng-model="curBusiness.email" class="editable" type="text">
+      </div>
+      <div >
+        <ion-item>
+            <div >
+                <div class="group">
+                    <label>{{ translate('CITY') }}</label><br>
+                    <select data-ng-model="curBusiness.city_id" class="editable" style="width: 100%;" data-ng-change="changeCity(curBusiness.city_id)">
+                        <option value="" disabled="true">{{ translate('SELECT_CITY') }}</option>
+                        <option data-ng-repeat="city in cities" value="{{city.id}}" data-ng-selected="curBusiness.city_id == city.id">{{city.name}}</option>
+                    </select>
+                </div>
+            </div>
+            
+            
+            
+            
+            <div >
+                <div class="group">
+                    <label>{{ translate('PARTNER_TYPE') }}</label><br>
+                    <select data-ng-model="curBusiness.partner_id" class="editable" style="width: 100%;" data-ng-change="changeBusinessPrtner(curBusiness.partner_id)">
+                        <option value="" disabled="true">{{ translate('SELECT_PARTNER_TYPE') }}</option>
+                        <option data-ng-repeat="user in allpartnertypes" value="{{user.id}}" data-ng-selected="curBusiness.partner_id == user.id">{{user.id}}. {{user.name}}</option>
+                    </select>
+                </div>
+            </div>
+            
+            
+             <!--<ion-item data-ng-if="superAdmin">
+                <button class="btn-accordion" data-ng-click="changeCollapse(8)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('PARTNER_TYPE') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item data-ng-if="superAdmin">
+            <div class="sub-accordion" data-ng-if="curCollapse == 8" data-ng-init="curProvider = deal.partner_id?deal.partner_id:''">
+                <select class="editable" style="width: 100%;" data-ng-model="curProvider" 
+                data-ng-change="changeBusinessPrtner(curProvider)" >
+                    <option value="''" disabled="disabled">{{ translate('SELECT_PARTNER_TYPE') }}</option>
+                    <option data-ng-repeat="user in deal.partners"  value="{{user.id}}" data-ng-selected="user.id == curProvider">{{user.id}}. {{user.name}} {{user.middle_name}} {{user.lastname}} {{user.second_lastname}}</option>
+                </select>
+            </div>-->
+            
+            
+            <div class="address">
+                <!-- <button data-ng-click="saveAddress()"><i class="fa fa-floppy-o"></i></button> -->
+                <label>{{ translate('ADDRESS') }}</label><br>
+                <div class="input">
+                    <input id="create-business-map-address" data-ng-model="curBusiness.address" class="editable" type="text" placeholder="{{ translate('TYPE_ADDRESS') }}" data-ng-change="saveAddress()">
+                </div>
+            </div>
+            <div id="create-business-map" data-tap-disabled="true" style="height: 18em"></div>
+        </ion-item>
+        
+        
+        
+      </div>
+    </div>
+    <br>
+    <center>
+        <button class="btn btn-primary" data-ng-click="add()">{{ translate('ADD').toUpperCase() }}</button>
+    </center>
+  </ion-content>
+</ion-modal-view>

@@ -1,0 +1,45 @@
+
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+.StripeElement {
+  background-color: white;
+  padding: 10px 12px;
+  border-radius: 4px;
+  height: 39px;
+  /*border: 1px solid transparent;*/
+  /*box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;*/
+  border: 1px solid #ddd;
+}
+
+.strip_list .StripeElement,
+.stripeul .StripeElement{
+  background-color: transparent;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid #999;
+}
+
+.form-group .col-xs-6:first-child .StripeElement {
+  border-radius: 4px 0 0 4px;
+}
+
+.form-group .col-xs-6:last-child .StripeElement {
+  border-radius: 0 4px 4px 0;
+}
+
+.StripeElement--focus {
+  /*box-shadow: 0 1px 3px 0 #cfd7df;*/
+  /*border: 1px solid #666;*/
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}

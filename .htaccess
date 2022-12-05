@@ -1,0 +1,61 @@
+# <IfModule mod_rewrite.so>
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Disable directory browsing 
+Options -indexes
+ErrorDocument 403 /index.html
+
+# If an existing asset or directory is requested go to it as it is
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f
+RewriteRule ^ - [NC,L]
+
+RewriteRule ^sitemap.xml php/seo/sitemap.php [NC,L]
+
+# If the requested pattern is file and file doesn't exist, send 404
+RewriteCond %{REQUEST_URI} ^(\/[a-z_\-\s0-9\.]+)+\.[a-zA-Z]{2,4}$
+RewriteRule ^ - [L,R=404]
+
+RewriteCond %{HTTP_USER_AGENT} !(Googlebot|APIs-Google|Google\s\(\+|Google-Structured-Data-Testing-Tool|bingbot|curl|LinkedInBot|msnbot|grub.org|msrbot|buzzbot|mlbot|YandexBot|page2rss|facebookexternalhit|Yeti|DuckDuckBot|Twitterbot|Applebot|AddThis|Embedly|Slackbot|redditbot|WhatsApp|pinterest|BingPreview\/|PhantomJS|Discordbot|TelegramBot|DuckDuckGo-Favicons-Bot|Disqus|FlipboardProxy|SkypeUriPreview) [NC]
+RewriteRule  .? - [S=2]
+RewriteRule ^([0-9a-zA-Z_-]+)$ index.php?business=$1&%{QUERY_STRING} [NC,L]
+RewriteRule ^ index.php [L]
+
+# otherwise use history router
+RewriteRule ^ /index.html [L]
+
+# </IfModule>
+
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set X-Xss-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+## EXPIRES CACHING ##
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType text/html "access plus 0 seconds"
+ExpiresByType image/jpg "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/pdf "access plus 1 month"
+ExpiresByType text/x-javascript "access plus 1 month"
+ExpiresByType application/x-shockwave-flash "access plus 1 month"
+ExpiresByType image/x-icon "access plus 1 year"
+ExpiresDefault "access plus 7 days"
+</IfModule>
+## EXPIRES CACHING ##
+
+<FilesMatch "\.(html|htm)$">
+    FileETag None
+    <IfModule mod_headers.c>
+        Header unset ETag
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "-1"
+    </IfModule>
+</FilesMatch>

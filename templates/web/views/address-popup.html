@@ -1,0 +1,53 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" ng-class="{'classIsiOSBrowser' : isIOS}" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" style="margin-bottom: 15px;">
+            <span class="divider-padding no-padding-h" data-ng-if="address.id">{{ translate('EDIT_ADDRESS') }}</span>
+            <span class="divider-padding no-padding-h" data-ng-if="!address.id">{{ translate('ADD_ADDRESS') }}</span>
+        </ion-item>
+        <div class="loading" data-ng-if="loading">
+            <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+        </div>
+        <form class="forms" data-ng-if="!loading">
+            <div class="form-group">
+                <!-- <label >Email address</label> -->
+                <input type="text" class="form-control" placeholder="{{ translate('NAME') }}" data-ng-model="address.name" data-ng-if="addressfields.name.enabled">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{ translate('LASTNAME') }}" data-ng-model="address.lastname" data-ng-if="addressfields.lastname.enabled">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{ translate('CELLPHONE') }}" data-ng-model="address.cellphone" data-ng-if="addressfields.mobile_phone.enabled">
+            </div>
+            <div class="form-group">
+                <div class="address-icons">
+                    <i class="fa fa-map-marker address" aria-hidden="true" data-ng-click="useLocatacion()"></i>
+                    <i class="icon ion-close-circled icon-clear btn_cancel"  data-ng-if="address.address && address.address != ''" data-ng-click="address.address=''"></i>
+                </div>
+                <input id="address-input" type="text" class="form-control" placeholder="{{ translate('ADDRESS') }}" data-ng-model="address.address" data-ng-if="addressfields.address.enabled" avoid-autofill>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{ translate('INTERNAL_NUMBER') }}" data-ng-model="address.internal_number" data-ng-if="addressfields.internal_number.enabled">
+            </div>
+            <!-- <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{ translate('ZIPCODE') }}" data-ng-model="address.zipcode" data-ng-if="addressfields.zipcode.enabled">
+            </div> -->
+            <!-- <div id="address-map" class="form-group" style="height: 150px;">
+
+            </div> -->
+            <!-- <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{ translate('ADDRESS_NOTES') }}" data-ng-model="address.address_notes"  data-ng-if="addressfields.address_notes.enabled">
+            </div> -->
+            
+            <!-- <div style="display: flex;" >
+                <a ng-repeat="item in address_tags" class="button addr_tag_item" data-ng-class="{active: address.tag == item.value}" data-ng-click="selectTag(item)">
+                    <i class="{{ item.icon }}"></i>
+                    <p>{{ item.name }}</p>
+                </a>
+            </div> -->
+        </form>
+        <div class="center">
+            <button class="btn btn-primary" data-ng-click="save()">{{ translate('SAVE') }}</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

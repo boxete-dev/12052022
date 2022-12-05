@@ -1,0 +1,58 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideMultideliveryzoneSettings()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('MULTI_DELIVERY_ZONE_SETTINGS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('NAME') }}*</label>
+                    <input data-ng-model="curMultideliveryzone.zone_name" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('DELIVERY_PRICE') }}*</label>
+                        <input data-ng-model="curMultideliveryzone.delivery_price" format="number" class="editable" type="text" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('MINIMUN_PURCHASED') }}*</label>
+                        <input data-ng-model="curMultideliveryzone.minimum_purchase" format="number" class="editable" type="text" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('AREA') }}*</label>
+                        <ul>
+                            <li data-ng-repeat="neighborhood in neighborhoods | orderBy:'id*1'">
+                                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="curMultideliveryzone.check_area[neighborhood.id]">{{neighborhood.id}}. {{neighborhood.name}}
+                                </ion-checkbox>
+                            </li>
+                        </ul>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('BUSINESS') }}*</label>
+                        <ul>
+                            <li>
+                                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="curMultideliveryzone.check_business[0]" data-ng-change="toggleAll(curMultideliveryzone)">{{ translate('ALL') }}
+                                </ion-checkbox>
+                            </li>
+                            <li data-ng-repeat="cdeal in business | orderBy:'id*1'" data-ng-if="cdeal.provider == curUser.id || curUser.level == 0">
+                                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="curMultideliveryzone.check_business[cdeal.id]" data-ng-change="toggleBusiness(curMultideliveryzone)">{{cdeal.id}}. {{cdeal.name}}
+                                </ion-checkbox>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+        <br>
+        <center data-ng-if="curMultideliveryzone.id != -1">
+            <button class="btn btn-primary" data-ng-click="updateMultideliveryzone(curMultideliveryzone)">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+        <center data-ng-if="curMultideliveryzone.id == -1">
+            <button class="btn btn-primary" data-ng-click="addMultideliveryzone(curMultideliveryzone)">{{ translate('ADD').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>

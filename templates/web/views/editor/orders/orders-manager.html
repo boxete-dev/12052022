@@ -1,0 +1,564 @@
+  <div class="container-fluid no-print" style="min-height: 300px;">
+    <div class="manager-order-groups col-lg-10 col-lg-offset-1 col-xs-12" data-ng-if="isEnterpriceAutoassign() && order_groups.length > 0 && !delivery_mode">
+      <div class="manager-order-group" data-ng-if="search.order_group_id" data-ng-click="onGroup()">
+        <strong>{{ translate('SHOW') }}</strong>
+        <div class="center">
+          {{ translate('ALL') }}
+        </div>
+      </div>
+      <div class="manager-order-group" data-ng-repeat="order_group in order_groups" data-ng-if="!order_group.debug" data-ng-click="onGroup(order_group.id)">
+        <span class="manager-order-group-color" data-ng-style="{ 'background-color': order_group.color }"></span> <strong>{{ translate('GROUP') }} #{{ order_group.id }}</strong>
+        <div class="center">
+          <strong>{{ order_group.orders_count }}</strong> {{ translate('ORDERS') }}
+        </div>
+      </div>
+    </div>
+    <div data-ng-class="{'col-lg-10 col-lg-offset-1 col-xs-12': !delivery_mode}">
+      <div id="navbar-example" class="orders-tabs">
+        <ul class="nav nav-tabs" style="height: auto; overflow: inherit;">
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 'pending'}" data-ng-click="filterByStatus('pending', $event)">{{ translate('PENDING') }} (<span data-ng-if="!loadings.dashboard">{{ counters.pending }}</span><i data-ng-hide="!loadings.dashboard" data-ng-class="{ 'fa-spin': loadings.dashboard }" class="fa fa-circle-o-notch middle"></i>)</a>
+          </li>
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 'in_progress'}" data-ng-click="filterByStatus('in_progress', $event)">{{ translate('IN_PROGRESS') }} (<span data-ng-if="!loadings.dashboard">{{ counters.in_progress }}</span><i data-ng-hide="!loadings.dashboard" data-ng-class="{ 'fa-spin': loadings.dashboard }" class="fa fa-circle-o-notch middle"></i>)</a>
+          </li>
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 'completed'}" data-ng-click="filterByStatus('completed', $event)">{{ translate('COMPLETED') }} (<span data-ng-if="!loadings.dashboard">{{ counters.completed }}</span><i data-ng-hide="!loadings.dashboard" data-ng-class="{ 'fa-spin': loadings.dashboard }" class="fa fa-circle-o-notch middle"></i>)</a>
+          </li>
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 'cancelled'}" data-ng-click="filterByStatus('cancelled', $event)">{{ translate('CANCELLED') }} (<span data-ng-if="!loadings.dashboard">{{ counters.cancelled }}</span><i data-ng-hide="!loadings.dashboard" data-ng-class="{ 'fa-spin': loadings.dashboard }" class="fa fa-circle-o-notch middle"></i>)</a>
+          </li>
+          <li class="dropdown" data-ng-if="!delivery_mode" style="float: right;">
+            <a id="dropdown-export" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <i class="fa fa-file-excel-o"></i> {{translate('EXPORT')}}
+              <span class="caret"></span>
+            </a>
+            <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-export">
+              <li>
+                <a href="#" data-ng-click="exportAll($event)">{{ translate('EXPORT_ALL') }}</a>
+              </li>
+              <li>
+                <a href="#" data-ng-click="exportFiltered($event)">{{ translate('EXPORT_FILTERED') }}</a>
+              </li>
+            </ul>
+          </li>
+          <li data-ng-if="!delivery_mode" style="float: right;">
+            <a href="#" data-ng-click="toggleFilters($event)"><i class="fa fa-filter"></i> {{ translate(!show_filters?'SHOW_FILTERS':'HIDE_FILTERS') }}</a>
+          </li>
+          <li data-ng-if="selectedOrders.length > 0 && superAdmin" style="float: right;">
+            <a href="#" data-ng-click="$event.preventDefault(); orderConfirmDelete()"><i class="fa fa-trash"></i> {{ translate('DELETE') }}</a>
+          </li>
+          <li class="dropdown" data-ng-if="selectedOrders.length > 0" style="float: right;">
+              <a id="dropdown-export" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {{translate('CHANGE_STATUS')}}
+                <span class="caret"></span>
+              </a>
+              <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-export">
+                <li data-ng-repeat="state in status">
+                  <a href="#" data-ng-click="$event.preventDefault(); changeOrdersStatus(state.id)">{{ state.value }}</a>
+                </li>
+              </ul>
+            </li>
+          <li class="dropdown" data-ng-if="delivery_mode">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-ng-class="{'active': curTab == 'active_drivers'}"><label class="round" style="margin-bottom: 0;"><span data-ng-if="curTab != 'active_drivers'">{{ translate('ACTIVE_DRIVERS') }} ({{ 0+(drivers | filter:{available:true}:true).length }})</span><span data-ng-if="curTab == 'active_drivers'">{{ curDriver.id }}. {{ curDriver.name }}</span> <span class="caret"></span></label></a>
+            <ul class="dropdown-menu" data-ng-if="(drivers | filter:{available:true}:true).length > 0">
+              <li data-ng-repeat="user in drivers | filter:{available:true}:true">
+                <a style="color: #666;" data-ng-click="ordersByDriver('active_drivers', user)">
+                  <!--<i class="fa fa-circle active"></i>-->
+                  {{ user.name }} {{ user.lastname }}
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="dropdown" data-ng-if="delivery_mode">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-ng-class="{'active': curTab == 'inactive_drivers'}"><label class="round" style="margin-bottom: 0;"><span data-ng-if="curTab != 'inactive_drivers'">{{ translate('INACTIVE_DRIVERS') }} ({{ 0+(drivers | filter:{available:false}:true).length }})</span><span data-ng-if="curTab == 'inactive_drivers'">{{ curDriver.id }}. {{ curDriver.name }}</span> <span class="caret"></span></label></a>
+            <ul class="dropdown-menu" data-ng-if="(drivers | filter:{available:false}:true).length > 0">
+              <li data-ng-repeat="user in drivers | filter:{available:false}:true">
+                <a style="color: #666;" data-ng-click="ordersByDriver('inactive_drivers', user)">
+                  <!--<i class="fa fa-circle" data-ng-class=""></i>-->
+                  {{ user.name }} {{ user.lastname }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!--<p class="help">&nbsp;</p>-->
+      <div>
+        <!-- <input type='text' class="form-control" id='datetimepicker1' /> -->
+        <div class="form editable" select-content>
+          <div class="group" data-ng-if="delivery_mode">
+            <div class="w20">
+              <!-- <label>Search by ID</label> -->
+              <select class="editable" data-ng-model="search.orderby" style="width: 100%;" data-ng-change="changeDeliveryFilter()">
+                <option value="" disabled>{{ translate('ORDER_BY') }}</option>
+                <option data-ng-repeat="order_type in order_types" value="{{order_type.value}}" data-ng-selected="search.orderby==order_type.value">{{order_type.name}}</option>
+              </select>
+            </div><!--
+            --><div class="w20">
+              <!-- <label>Value</label> -->
+              <input data-ng-model="search.any" class="editable" type="text" placeholder="{{ translate('TEXT_FILTER') }}">
+            </div><!--
+            --><div class="w20" data-ng-if="superAdmin">
+              <!-- <label>Value</label> -->
+              <select class="editable" data-ng-model="search.drivergroup" style="width: 100%;" data-ng-change="changeDeliveryFilter()">
+                <option value="">{{ translate('SELECT_DIRVERGROUP') }}</option>
+                <option data-ng-repeat="drivergroup in drivergroups_filter | orderBy:'id*1'" value="{{drivergroup}}">{{drivergroup.name}}</option>
+              </select>
+            </div><!--
+            --><div class="w20">
+              <!-- <label>Value</label> -->
+              <select class="editable" data-ng-model="search.state" style="width: 100%;" data-ng-change="changeDeliveryFilter()">
+                <option value="">{{ translate('SELECT_STATE') }}</option>
+                <option data-ng-repeat="state in status | orderBy:'id*1'" value="{{state.id}}">{{state.value}}</option>
+              </select>
+            </div><!--
+            --><div class="w20">
+              <!-- <label>Value</label> -->
+              <label data-ng-if="!delivery_mode">{{ translate('DATE') }}</label>
+              <div class="date">
+                <input id="dateday" data-ng-model="search.date.day" data-ng-change="changeDeliveryFilter()" class="editable" type="text" placeholder="{{ translate('DATE') }}">
+              </div>
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <!-- <label>Search by ID</label> -->
+              <input data-ng-model="search.id" class="editable" type="text" placeholder="{{ translate('ID') }}">
+            </div><!--
+            --><div class="w50">
+              <!-- <label>Value</label> -->
+              <select class="editable" data-ng-model="search.delivery_type" style="width: 100%;">
+                <option value="">{{ translate('SELECT_DELIVERY_TYPE') }}</option>
+                <option value="1">{{ translate('DELIVERY') }}</option>
+                <option value="2">{{ translate('PICKUP') }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <!-- <label>Search by ID</label> -->
+              <select class="editable" data-ng-model="search.driver" style="width: 100%;">
+                <option value="">{{ translate('SELECT_DRIVER') }}</option>
+                <option data-ng-repeat="driver in drivers_filter | orderBy:'name'" value="{{driver.id}}">{{driver.name}} {{driver.lastname}}</option>
+              </select>
+            </div><!--
+            --><div class="w50">
+              <!-- <label>Value</label> -->
+              <!-- <select id="business-select" class="editable" data-ng-model="search.business" style="width: 100%; cursor: default;">
+                <option value="" style="display: none;">{{ businesses_text }}</option>
+              </select> -->
+              <div id="business-select" class="editable custom-business-select">
+                {{businesses_text}}
+              </div>
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <!-- <label>Min purchased</label> -->
+              <input data-ng-model="search.cemail" class="editable" type="text" placeholder="{{ translate('CUSTOMER_EMAIL') }}">
+            </div><!--
+            --><div class="w50">
+              <!-- <label>Limit</label> -->
+              <input data-ng-model="search.cphone" class="editable" type="text" placeholder="{{ translate('CUSTOMER_PHONE') }}">
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <select class="editable" data-ng-model="search.city" style="width: 100%;">
+                <option value="">{{ translate('SELECT_CITY') }}</option>
+                <option data-ng-repeat="city in cities | orderBy:'name'" value="{{city.id}}">{{city.name}}</option>
+              </select>
+            </div><!--
+            --><div class="w50">
+              <select class="editable" data-ng-model="search.state" style="width: 100%;">
+                <option value="">{{ translate('SELECT_STATE') }}</option>
+                <option data-ng-repeat="state in status | orderBy:'value'" value="{{state.id}}" data-ng-if="curTab == state.tab">{{state.value}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <select class="editable" data-ng-model="search.paymethod" style="width: 100%;">
+                <option value="">{{ translate('SELECT_PAYMETHOD') }}</option>
+                <option data-ng-repeat="paymethod in paymethods | orderBy:'name'" value="{{paymethod.id}}">{{paymethod.name}}</option>
+              </select>
+            </div><!--
+            --><div class="w50" data-ng-if="superAdmin">
+              <!-- <label>Value</label> -->
+              <select class="editable" data-ng-model="search.drivergroup" style="width: 100%;">
+                <option value="">{{ translate('SELECT_DIRVERGROUP') }}</option>
+                <option data-ng-repeat="drivergroup in drivergroups_filter | orderBy:'id*1'" value="{{drivergroup}}">{{drivergroup.id}}. {{drivergroup.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="group" data-ng-if="!delivery_mode && show_filters">
+            <div class="w50">
+              <label data-ng-if="!delivery_mode">{{ translate('FROM') }}</label>
+              <div class="date">
+                <input id="datefrom" data-ng-model="search.date.from" class="editable" type="text" placeholder="{{ translate('FROM') }}">
+              </div>
+            </div><!--
+            --><div class="w50">
+              <label data-ng-if="!delivery_mode">{{ translate('TO') }}</label>
+              <input id="dateto" data-ng-model="search.date.to" class="editable" type="text" placeholder="{{ translate('TO') }}">
+            </div>
+            <div class="group" data-ng-if="!delivery_mode">
+              <center>
+                <button class="dashed" data-ng-click="applyFilter()"><i class="fa fa-filter"></i> {{ translate('FILTER') }}</button>
+                <button class="dashed" data-ng-click="clearFilter()"><i class="fa fa-eraser"></i> {{ translate('CLEAR') }}</button>
+              </center>
+            </div>
+          </div>
+          
+        </div>
+        <table class="table table-bordered table-orders table-clickable" data-ng-if="!delivery_mode">
+          <thead>
+            <tr>
+              <th><label class="custom-checkbox" style="font-size: 14px;"><input type = "checkbox" data-ng-model="allSelected[_pagination.current]" data-ng-click="selectAll(allSelected[_pagination.current])"><span class="checkmark"></span><span style="position: static; padding-left: 14px;">#</span></label></th>
+              <th>{{ translate('DATE') }}</th>
+              <th>{{ translate('BUSINESS') }}</th>
+              <th class="hidden-xs">{{ translate('CUSTOMER_EMAIL') }}</th>
+              <th class="hidden-xs" data-ng-if="ADDONS.user_reviews"><i class="fa fa-star"></i></th>
+              <th class="hidden-xs">{{ translate('CITY') }}</th>
+              <th>{{ translate('STATE') }}</th>
+              <th>{{ translate('TOTAL') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-if="loadings[curTab]">
+              <td class="hidden-xs" colspan="8" style="font-weight: bold;">
+                <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+              </td>
+              <td class="hidden-sm hidden-md hidden-lg" colspan="5" style="font-weight: bold;">
+                <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+              </td>
+            </tr>
+          </tbody>
+          <tbody class="order-row" data-ng-repeat="order in ($parent.ordersOnPage = (orders[curTab] | orderBy:'-id*1' | startFrom:((_pagination.current-1)*_pagination.items) | limitTo:_pagination.items)) track by $index">
+            <tr class="row-tags" data-ng-click="openOrder(order)">
+              <td class="hidden-xs" colspan="8" data-ng-if="settings.logistic_module.value">
+                <div class="tag" data-ng-if="[0, 3, 4, 7, 8, 9].indexOf(order.status*1) >= 0" data-ng-style="{'background-color': getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).colors.background, 'color': getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).colors.text }">
+                  {{getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).text}}
+                </div>
+                <div class="tag" data-ng-style="{'background-color': getTypeTag(order.delivery_type).colors.background, 'color': getTypeTag(order.delivery_type).colors.text }">
+                  {{getTypeTag(order.delivery_type).text}}
+                </div>
+                <div class="tag" data-ng-if="order.delivery_type == 1" data-ng-style="{'background-color': getLogisticTag(order.logistic_status).colors.background, 'color': getLogisticTag(order.logistic_status).colors.text }">
+                  {{ translate('LOGISTIC', 'Logistic') }}: {{getLogisticTag(order.logistic_status).text}}
+                </div>
+                <div class="tag" data-ng-if="order.delivery_type == 1">{{ translate('ATTEMPS', 'Attemps') }}: {{ order.logistic_attemps }}</div>
+                <div class="tag" data-ng-if="order.locked">{{ translate('LOCKED', 'Locked') }}</div>
+                <div class="tag" data-ng-if="order.expired_at">{{ translate('EXPIRED', 'Expired') }}</div>
+                <div class="tag" data-ng-if="order.resolved_at">{{ translate('RESOLVED', 'Resolved') }}</div>
+                <div class="tag" data-ng-style="{'background-color': getPriorityTag(order.priority).colors.background, 'color': getPriorityTag(order.priority).colors.text }">
+                  {{ translate('PRIORITY', 'Priority') }}: {{ getPriorityTag(order.priority).text }}
+                </div>
+              </td>
+              <td class="hidden-sm hidden-md hidden-lg" colspan="5" data-ng-click="openOrder(order)" data-ng-if="settings.logistic_module.value">
+                <div class="tag" data-ng-if="[0, 3, 4, 7, 8, 9].indexOf(order.status*1) >= 0" data-ng-style="{'background-color': getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).colors.background, 'color': getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).colors.text }">
+                  {{getTimeTag(order.delivery_datetime_utc || order.delivery_datetime).text}}
+                </div>
+                <div class="tag" data-ng-style="{'background-color': getTypeTag(order.delivery_type).colors.background, 'color': getTypeTag(order.delivery_type).colors.text }">
+                  {{getTypeTag(order.delivery_type).text}}
+                </div>
+                <div class="tag" data-ng-if="order.delivery_type == 1" data-ng-style="{'background-color': getLogisticTag(order.logistic_status).colors.background, 'color': getLogisticTag(order.logistic_status).colors.text }">
+                  {{ translate('LOGISTIC', 'Logistic') }}: {{getLogisticTag(order.logistic_status).text}}
+                </div>
+                <div class="tag" data-ng-if="order.delivery_type == 1">{{ translate('ATTEMPS', 'Attemps') }}: {{ order.logistic_attemps }}</div>
+                <div class="tag" data-ng-if="order.locked">{{ translate('LOCKED', 'Locked') }}</div>
+                <div class="tag" data-ng-if="order.expired_at">{{ translate('EXPIRED', 'Expired') }}</div>
+                <div class="tag" data-ng-if="order.resolved_at">{{ translate('RESOLVED', 'Resolved') }}</div>
+                <div class="tag" data-ng-style="{'background-color': getPriorityTag(order.priority).colors.background, 'color': getPriorityTag(order.priority).colors.text }">
+                  {{ translate('PRIORITY', 'Priority') }}: {{ getPriorityTag(order.priority).text }}
+                </div>
+                <!-- <div class="tag">Preorder</div> -->
+              </td>
+            </tr>
+            <tr class="row-data" data-ng-click="openOrder(order)">
+              <td>
+                <label class="custom-checkbox">
+                  <input type = "checkbox" data-ng-model="order.selected" data-ng-click="selectOrder(order, $event)">
+                  <span class="checkmark"></span>
+                  <span style="position: static; padding-left: 14px;">
+                    <span class="order-color" data-ng-if="isEnterpriceAutoassign()" data-ng-style="{ 'background-color': order_group_colors['ORDER_GROUP_'+order.order_group_id] }"></span> {{ order.id }}
+                  </span>
+                </label>
+                <div class="count" data-ng-if="order.unread_count > 0"></div>
+              </td>
+              <td>{{ parseDate(order.delivery_datetime) }}</td>
+              <td>{{ order.business.name }}</td>
+              <td class="hidden-xs">{{ order.customer.email }}</td>
+              <td class="hidden-xs center" data-ng-if="ADDONS.user_reviews"><i class="fa fa-star" data-ng-style="{'color': !order.user_review?'gray':'orange'}"></i></td>
+              <td>
+                {{ order.business.city.name }}
+              </td>
+              <td class="hidden-xs">
+                {{ getOrderState(order.status*1) }}
+              </td>
+              <td>{{ parsePrice(Order.getTotal(order)) }}</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td class="hidden-xs" colspan="{{ADDONS.user_reviews ? 7 : 6}}" style="text-align: right;font-weight: bold;">{{ translate('TOTAL') }} ({{ translate('PAGE') }})</td>
+              <td class="hidden-sm hidden-md hidden-lg" colspan="4" style="text-align: right;font-weight: bold;">{{ translate('TOTAL') }} ({{ translate('PAGE') }})</td>
+              <td>{{ parsePrice(totals.page) }}</td>
+            </tr>
+            <tr>
+              <td class="hidden-xs" colspan="{{ADDONS.user_reviews ? 7 : 6}}" style="text-align: right;font-weight: bold;">{{ translate('TOTAL') }} ({{ translate(curTab.toUpperCase()) }})</td>
+              <td class="hidden-sm hidden-md hidden-lg" colspan="4" style="text-align: right;font-weight: bold;">{{ translate('TOTAL') }} ({{ translate(curTab.toUpperCase()) }})</td>
+              <td>{{ parsePrice(totals[curTab]) }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pages" data-ng-if="!delivery_mode">
+          <!-- {{ translate('ITEMS_PER_PAGES') }}:
+          <select data-ng-model="pagination.items">
+            <option data-ng-repeat="items in _pagination.itemsPerPage" value="{{items}}" data-ng-selected="_pagination.items == items">{{items}}</option>
+          </select> -->
+          {{ translate('PAGES') }}:
+          {{((_pagination.current-1)*_pagination.items)+1}}-<span data-ng-if="_pagination.current*_pagination.items <= counters[curTab]">{{_pagination.current*_pagination.items}}</span><span data-ng-if="_pagination.current*_pagination.items > counters[curTab]">{{ counters[curTab] }}</span> of {{ counters[curTab] }}
+          <i class="fa fa-chevron-left" data-ng-if="_pagination.current > 1" data-ng-click="_pagination.backPage()"></i>
+          <i class="fa fa-chevron-right" data-ng-if="_pagination.current < _pagination.pages" data-ng-click="_pagination.nextPage()"></i>
+        </div>
+        <!-- <br><br> -->
+        <!-- <div class="clearfix"></div> -->
+      </div>
+      <div data-ng-if="delivery_mode" class="dashboard">
+        <div class="ditems">
+          <div class="ditem" data-ng-if="!loadings[curTab] && !orders[curTab].length">
+            <img class="img-responsive img-rounded center no-orders-img" src="templates/web/img/empty_orders.png">
+            <h2 class="text-center text-muted"><small>{{ translate('NO_CURRENT_ORDERS') }}</small></h2>
+          </div>
+          <div class="ditem" data-ng-if="orders[curTab].length" data-ng-class="{'active':curOrder.id == order.id}" data-ng-repeat="order in orders[curTab] | filter:search.any | orderBy:search.orderby track by $index" data-ng-click="openOrder(order)">
+            <p class="title">{{ order.id }}. {{ order.business.name }}</p>
+            <p class="description">
+              {{ order.customer.name }} {{ order.customer.lastname }}<br>
+              {{ getOrderState(order.status*1) }}<br>
+              {{ parseDate(order.delivery_datetime) }}
+            </p>
+            <div data-ng-class="{'delivery':order.delivery_type==1,'pickup':order.delivery_type==2}">
+              {{ getOrderTypeAllowed(order.delivery_type) }}
+            </div>
+          </div>
+          <div class="ditem" data-ng-if="loadings[curTab]">
+            <i data-ng-hide="!loadings[curTab]" data-ng-class="{ 'fa-spin': loadings[curTab] }" class="fa fa-circle-o-notch middle"></i> <strong>{{ translate('LOADING') }}...</strong>
+          </div>
+        </div><!--
+        --><div class="dcontent" select-content>
+          <div class="header" data-ng-if="curOrder">
+            <strong>{{translate('Order_V2')}}:</strong> {{ curOrder.id }}
+            <select class="editable" data-ng-model="curOrder.status" data-ng-change="changeStatus(curOrder, curOrder.status)">
+              <option value="" disabled="disabled">{{ translate('SELECT_STATE') }}</option>
+              <option data-ng-repeat="state in status" value="{{state.id}}" data-ng-selected="curOrder.status==state.id" data-ng-disabled="(['3', '6', '8', '9', '10', '11', '12', '14', '18', '19'].includes(state.id) && curOrder.delivery_type != 1) || (['15', '17', '20', '21'].includes(state.id) && curOrder.delivery_type == 1)">{{state.value}}</option>
+            </select>
+            <select class="editable" data-ng-model="curOrder.driver_id" data-ng-change="changeDriver(curOrder, curOrder.driver_id)" data-ng-if="curOrder.delivery_type == 1">
+              <option value="" disabled="disabled">{{ translate('SELECT_DRIVER') }}</option>
+              <option data-ng-if="curOrder.driver_id" value="-1">{{ translate('REMOVE_DRIVER') }}</option>
+              <option data-ng-repeat="driver in filteredDrivers | orderBy:'id*1'" data-ng-value="driver.id" value="{{driver.id}}" data-ng-selected="curOrder.driver_id==driver.id" data-ng-disabled="!driver.available || driver.busy">{{driver.id}}. {{driver.name}} {{driver.lastname}} {{ driver.busy?'('+translate('BUSY')+')':'' }} ({{ driver.assigned_orders_count }} {{ translate('ASSIGNED_ORDERS') }})</option>
+            </select>
+            <button class="btn btn-primary btn-sm" data-ng-click="traceRoute(curOrder)" data-ng-if="curOrder.driver_id && curOrder.driver && curOrder.driver.location" style="margin-left: 3px;">{{ translate('TRACE_ROUTE') }}</button>
+            <button class="btn btn-primary btn-sm" data-ng-click="openDetails(curOrder)">{{ translate('DETAILS') }}</button>
+          </div>
+          <div class="map" id="order-map"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid bg-gray order-print" data-ng-if="curOrder">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+        <span class="divider-padding no-padding-h">{{ translate('FRONT_MAIN_EMAIL_ORDER_NO') }}: {{ curOrder.id }}</span>
+    </ion-item>
+    <ion-item class="item-divider show-print" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <span class="divider-padding no-padding-h">{{ translate('ORDERS_BOX_STATUS_HEADER') }}: {{ getOrderState(curOrder.status*1) }}</span>
+    </ion-item>
+    <div class="table-item">
+    <ion-item>
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_NAME') }}</div>
+            <div class="col col-50">{{ curOrder.customer.name }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.middle_name">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MIDDLE_NAME') }}</div>
+            <div class="col col-50">{{ order.customer.middle_name }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.lastname">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('FRONT_VISUALS_LAST_NAME') }}</div>
+            <div class="col col-50">{{ curOrder.customer.lastname }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.second_lastname">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('SECOND_LASTNAME') }}</div>
+            <div class="col col-50">{{ order.customer.second_lastname }}</div>
+        </div>
+    </ion-item>
+    <ion-item>
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('FRONT_VISUALS_EMAIL') }}</div>
+            <div class="col col-50 print-text">{{ curOrder.customer.email }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.dropdown_option">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_CITY') }}</div>
+            <div class="col col-50">{{ curOrder.customer.dropdown_option.city.name }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.dropdown_option">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50 print-text">{{ translate('DROPDOWN_OPTION') }}</div>
+            <div class="col col-50 print-text">{{ curOrder.customer.dropdown_option.name }}</div>
+        </div>
+    </ion-item>
+    <ion-item>
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_ADDRESS') }}</div>
+            <div class="col col-50 print-text">{{ curOrder.customer.address }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.internal_number">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('INTERNAL_NUMBER') }}</div>
+            <div class="col col-50 multiline">{{ curOrder.customer.internal_number }}</div>
+        </div>
+    </ion-item>
+    <ion-item>
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_NOTES') }}</div>
+            <div class="col col-50 print-text">{{ curOrder.customer.address_notes }}</div>
+        </div>
+    </ion-item>
+    <ion-item data-ng-if="curOrder.customer.zipcode && curOrder.customer.zipcode != ''">
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_ZIP') }}</div>
+            <div class="col col-50">{{ curOrder.customer.zipcode }}</div>
+        </div>
+    </ion-item>
+    <ion-item>
+        <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <div class="col col-50">{{ translate('MOBILE_FRONT_PHONE_NUMBER') }}</div>
+            <div class="col col-50">{{ curOrder.customer.cellphone }}</div>
+        </div>
+    </ion-item>
+    </div>
+    <p class="ht-3"></p>
+    <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <p class="color-font-dark padding-top-5">{{ curOrder.business.name}}</p>
+        <p class="color-main"><strong>{{translate('MOBILE_CHECKOUT_PHONE')}}: </strong>{{ curOrder.business.phone}}</p>
+        <p class="color-font-gray multiline">
+            <strong>{{ translate('FRONT_MAIN_PAYMENT_METHOD') }}: </strong> <span>
+                {{ translate(curOrder.paymethod.gateway.toUpperCase()) }}
+                <span data-ng-if="curOrder.paymethod.gateway == 'stripe' || curOrder.paymethod.gateway == 'stripe_direct' || curOrder.paymethod.gateway == 'stripe_connect' || curOrder.paymethod.gateway == 'stripe_redirect'">
+                    (<a target="_blank" href="https://dashboard.stripe.com/payments/{{curOrder.pay_data}}">{{curOrder.pay_data}}</a>)
+                    <strong data-ng-if="curOrder.refund_data">(Refunded)</strong>
+                    <strong data-ng-if="!curOrder.refund_data">(Success)</strong>
+                </span>
+            </span>
+        </p>
+        <p class="color-font-gray"><strong>{{ translate('FRONT_MAIN_EMAIL_DELIVERY_TYPE') }}:</strong> 
+            <span>{{ getOrderTypeAllowed(curOrder.delivery_type)}}</span>
+        </p>
+        <p class="color-font-gray"><strong>{{ translate('V3_ORDER_DELIVERY_DATE') }}:</strong> <span class="print-text">{{ getDate(parseDate(curOrder.delivery_datetime), 0) }}</span></p>
+        <p class="color-font-gray"><strong>{{ translate('DELIVERY_TIME') }}:</strong> <span class="print-text">{{ getDate(parseDate(curOrder.delivery_datetime), 1) }}</span></p>
+        <p class="color-font-gray"><strong>{{ translate('ADDRESS') }}: </strong><span class="print-text">{{ curOrder.business.address }}</span></p>
+        <div class="h-line-grey"></div>
+    </ion-item>
+    <ion-item class="padding-5 no-border" data-ng-repeat="product in curOrder.products track by $index">
+        <div class="food-cont color-font-dark row">
+          <div class="col col-70">
+            <div class="print-text">{{product.quantity}}  {{product.name}}</div>
+          </div>
+          <div class="col col-30 print-rigth">
+            <p class="color-main font-small">{{ parsePrice(Order.getProductsTotal(product)) }}</p>
+          </div>
+        </div>
+        <p class="color-font-gray food-tail" style="white-space: normal; margin-top: 0px;">
+            <span data-ng-if="product.ingredients.length > 0">
+                <strong>{{translate('Ingredients_V2')}}</strong><br>
+                <span data-ng-repeat="ingredient in product.ingredients">
+                    {{ translate('NO') }} {{ingredient.name}}
+                    <br>
+                </span>
+            </span>
+            <span data-ng-repeat="option in product.options">
+                <strong>{{option.name}}</strong><br>
+                <span data-ng-repeat="suboption in option.suboptions">
+                  <span data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                    {{suboption.name}}<span data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{ translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span data-ng-if="Order.getSuboptionTotal(option, suboption) > 0">{{ parsePrice(Order.getSuboptionTotal(option, suboption)) }}</span> <br>
+                </span>
+            </span>
+            <span data-ng-if="product.comment">
+                <strong>{{translate('COMMENTS')}}</strong><br>
+                {{product.comment}}
+            </span>
+        </p>
+        <div class="h-line-grey"></div>
+    </ion-item>
+    <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <div class="calc-item" data-ng-if="!arabic_rtl">
+            <p class="color-font-gray float-left">{{ translate('SUBTOTAL') }}</p>
+            <p class="color-main font-small float-right">{{ parsePrice(Order.getSubtotal(curOrder) + (constants.fix_order_summary ? Order.getTax(curOrder) : 0)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="!arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(curOrder) > 0">
+            <p class="color-font-gray float-left">{{ translate('APP_DISCOUNT') }} <span data-ng-if="curOrder.offer_type == 1">({{curOrder.offer_rate}}%)</span></p>
+            <p class="color-main font-small float-right">-{{ parsePrice(Order.getDiscount(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(curOrder) > 0">
+            <p class="color-font-gray float-right">{{ translate('APP_DISCOUNT') }} <span data-ng-if="curOrder.offer_type == 1">({{curOrder.offer_rate}}%)</span></p>
+            <p class="color-main font-small float-left">-{{ parsePrice(Order.getDiscount(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="!arabic_rtl && curOrder.customer.taxtype != 2">
+            <p class="color-font-gray float-left">{{ translate('Tax_V2') }} ({{curOrder.tax}}%)</p>
+            <p class="color-main font-small float-right">{{ parsePrice(Order.getTax(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="arabic_rtl && curOrder.customer.taxtype != 2">
+            <p class="color-font-gray float-right">{{ translate('Tax_V2') }} ({{curOrder.tax}}%)</p>
+            <p class="color-main font-small float-left">{{ parsePrice(Order.getTax(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="!arabic_rtl && curOrder.delivery_type == 1">
+            <p class="color-font-gray float-left">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+            <p class="color-main font-small float-right">{{ parsePrice(curOrder.delivery_zone_price) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="arabic_rtl && curOrder.delivery_type == 1">
+            <p class="color-font-gray float-right">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+            <p class="color-main font-small float-left">{{ parsePrice(curOrder.delivery_zone_price) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="!arabic_rtl && curOrder.delivery_type == 1">
+            <p class="color-font-gray float-left">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }} ({{curOrder.driver_tip}}%)</p>
+            <p class="color-main font-small float-right">{{ parsePrice(Order.getDriverTip(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="arabic_rtl && curOrder.delivery_type == 1">
+            <p class="color-font-gray float-right">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }} ({{curOrder.driver_tip}}%)</p>
+            <p class="color-main font-small float-left">{{ parsePrice(Order.getDriverTip(curOrder)) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="!arabic_rtl && Order.getServiceFee(curOrder) != 0">
+            <p class="color-font-gray float-left">{{ translate('SERVICE_FEE_V2') }} ({{curOrder.service_fee}}%)</p>
+            <p class="color-main font-small float-right">{{ parsePrice(Order.getServiceFee(curOrder) ) }}</p>
+        </div>
+        <div class="calc-item" data-ng-if="arabic_rtl && Order.getServiceFee(curOrder) != 0">
+            <p class="color-font-gray float-right">{{ translate('SERVICE_FEE_V2') }} ({{curOrder.service_fee}}%)</p>
+            <p class="color-main font-small float-left">{{ parsePrice(Order.getServiceFee(curOrder) ) }}</p>
+        </div>
+        <div class="h-line-grey"></div>
+    </ion-item>
+    <ion-item class="padding-5 no-border total-item" data-ng-if="!arabic_rtl">
+        <p class="font-large color-font-dark float-left">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+        <p class="font-small color-main float-right">{{ parsePrice(Order.getTotal(curOrder)) }}</p>
+    </ion-item>
+    <ion-item class="padding-5 no-border total-item" data-ng-if="arabic_rtl" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <p class="font-large color-font-dark float-right">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+        <p class="font-small color-main float-left">{{ parsePrice(Order.getTotal(curOrder)) }}</p>
+    </ion-item>
+  </div>
+  <audio id="notification-sound">
+    <source data-ng-src="{{rootTheme+'/sounds/notification.ogg'}}" type="audio/ogg">
+    <source data-ng-src="{{rootTheme+'/sounds/notification.mp3'}}" type="audio/mpeg">
+  </audio>
+  <!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_ORDERS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_ORDERS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+  <!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_ORDERS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_ORDERS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

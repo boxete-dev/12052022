@@ -1,0 +1,32 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{curForm.title}}</span>
+        </ion-item>
+					<span class="format-subtitle" data-ng-if="curForm.react">{{translate('ONLY_AVAILABLE_ON_REACT')}} <a href="https://www.ordering.co/react-ordering-website/" target="_blank">• {{translate('LEARN_MORE')}}</a></span>
+        <ion-item>
+            <div class="form editable" select-content>
+                <div class="group" data-ng-repeat="field in curForm.fields" data-ng-if="curForm.key != 'autoassign' || (curForm.key == 'autoassign' && showAutoassignField(curForm, field))" data-ng-init="field.changed = false">
+                    <label>{{field.label}}</label>
+                    <input data-ng-if="field.type == 'text'" data-ng-model="field.value" data-ng-change="field.changed = true" class="editable" type="text" id="{{field.id}}">
+                    <input data-ng-if="field.type == 'number'" data-ng-model="field.value" data-ng-change="field.changed = true" class="editable" type="number" id="{{field.id}}" min="{{field.min}}" max="{{field.max}}">
+                    <div data-ng-if="field.type == 'select'">
+                        <select data-ng-model="field.value" class="editable" style="width: 100%;" id="{{field.id}}" ng-change="field.changed = true;changeSelect('{{field.id}}')">
+                            <option data-ng-repeat="option in field.options" value="{{option.value}}" data-ng-selected="option.value == field.value">{{option.text}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="saveIntegration(curForm)">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>
+<div ng-show="curForm.title == translate('DRIVER_ASSIGMENT_SETTINGS')">
+    <!--SuperAdmin--> <div  ng-show="(TUTORIAL_SUPER && superAdmin )" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btn btnHelpGuides btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_DRIVER_ASSIGNMENT_SETTINGS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_DRIVER_ASSIGNMENT_SETTINGS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+    <!---Business-->  <div  ng-show="(TUTORIAL_BUSINESS && !superAdmin )" class="bordRad box boxM"><a  class="helppBtn  btnHelp btn btnHelpGuides btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_DRIVER_ASSIGNMENT_SETTINGS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_DRIVER_ASSIGNMENT_SETTINGS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+</div>

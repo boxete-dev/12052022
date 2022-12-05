@@ -1,0 +1,44 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideNeighborhoodSettings()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('NEIGHBORHOOD_SETTINGS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable" select-content>
+                <div class="group">
+                    <label>{{ translate('NAME') }}*</label>
+                    <input data-ng-model="curDropdownoptions.name" class="editable" type="text">
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('COUNTRY') }}*</label>
+                        <div>
+                            <select data-ng-model="curDropdownoptions.country" class="editable" style="width: 100%;" ng-disabled="curDropdownoptions.id != -1">
+                                <option value="-1">{{ translate('SELECT_COUNTRY') }}</option>
+                                <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="curDropdownoptions.country == country.id">{{country.name}}</option>
+                            </select>
+                        </div>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('CITY') }}*</label>
+                        <div>
+                            <select data-ng-model="curDropdownoptions.city_id" class="editable" style="width: 100%;" ng-disabled="curDropdownoptions.id != -1">
+                                <option value="-1">{{ translate('SELECT_CITY') }}</option>
+                                <option data-ng-repeat="city in cities | filter:{country_id:curDropdownoptions.country}" value="{{city.id}}" data-ng-selected="curDropdownoptions.city_id == city.id">{{city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+        <br>
+        <center data-ng-if="curDropdownoptions.id != -1">
+            <button class="btn btn-primary" data-ng-click="updateNeighborhood(curDropdownoptions)">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+        <center data-ng-if="curDropdownoptions.id == -1">
+            <button class="btn btn-primary" data-ng-click="addNeighborhood(curDropdownoptions)">{{ translate('ADD').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>

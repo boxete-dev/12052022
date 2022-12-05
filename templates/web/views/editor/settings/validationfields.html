@@ -1,0 +1,46 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h" data-ng-if="type == 'address'">{{ translate('ADDRESS_FIELDS') }}</span>
+            <span class="divider-padding no-padding-h" data-ng-if="type == 'checkout'">{{ translate('CHECKOUT_FIELDS') }}</span>
+            <span class="divider-padding no-padding-h" data-ng-if="!type">{{ translate('VALIDATION_FIELDS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="eitems">
+                <div class="eitem title">
+                    <div class="f70">
+                        <input class="editable" type="text" value="{{ translate('STATE') }}" disabled="disabled">
+                    </div>
+                    <div class="f70">
+                        <input class="editable" type="text" value="{{ translate('REQUIRED') }}" disabled="disabled">
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate('FIELD') }}" disabled="disabled">
+                    </div>
+                </div>
+                <div class="eitem" data-ng-repeat="field in validationfields">
+                    <div class="f70" style="padding: 0 17px;">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="field.enabled" ng-disabled="field.code == 'email'" data-ng-change="update(field, true)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="f70" style="padding: 0 17px;">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="field.required" ng-disabled="field.code == 'email'" data-ng-change="update(field, true)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate(field.code.toUpperCase()) }}" disabled="true">
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>

@@ -1,0 +1,64 @@
+
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('DRIVERS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable" style="margin-left:0px;">
+                <!-- <div class="group">
+                    <div class="check-box" data-ng-click="toggleAll()">
+                        <div class="icon" data-ng-class="{'uncheck': !all}">
+                            <i class="fa fa-square" data-ng-if="!all"></i>
+                            <i class="fa fa-check-square" data-ng-if="all"></i>
+                        </div>
+                        <div class="text">{{ translate('ALL') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="all">
+                    </div>
+                    <div class="check-box" data-ng-repeat="driver in drivers" data-ng-click="toggleBusiness(business.slug)">
+                        <div class="icon" data-ng-class="{'uncheck': !selected[business.slug]}">
+                            <i class="fa fa-square" data-ng-if="!selected[business.slug]"></i>
+                            <i class="fa fa-check-square" data-ng-if="selected[business.slug]"></i>
+                        </div>
+                        <div class="text">{{ driver.name }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="selected[business.slug]">
+                    </div>
+                </div> -->
+                <div class="group">
+                    <ul class="tree">
+                        <div class="treecheckbox" data-ng-class="{ 'check': allDriverGroup, 'indeterminate': !allDriverGroup && !noneDriverGroup }" data-ng-click="toggleAllGroups()">
+                            <div class="icheckbox">
+                                <i class="fa fa-check" data-ng-if="allDriverGroup"></i>
+                                <i class="fa fa-minus" data-ng-if="!allDriverGroup && !noneDriverGroup"></i>
+                            </div>
+                            <span>{{translate('ALL')}}</span>
+                        </div>
+                        <li data-ng-repeat="drivergroup in drivergroups">
+                            <button data-ng-click="toggleDrivergroup(drivergroup.id)"><i class="fa fa-chevron-down" data-ng-if="curDrivergroup == drivergroup.id"></i><i class="fa fa-chevron-right" data-ng-if="curDrivergroup != drivergroup.id"></i></button>
+                            <!-- <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="selectedBusiness[cdeal.id]" data-ng-change="">{{drivergroup.name}}
+                            </ion-checkbox> -->
+                            <div class="treecheckbox" data-ng-class="{ 'check': drivergroup.all, 'indeterminate': !drivergroup.all && !drivergroup.none }" data-ng-click="toggleAll(drivergroup)">
+                            <div class="icheckbox">
+                                <i class="fa fa-check" data-ng-if="drivergroup.all"></i>
+                                <i class="fa fa-minus" data-ng-if="!drivergroup.all && !drivergroup.none"></i>
+                            </div>
+                            <span>{{drivergroup.name}}</span>
+                            </div>
+                            <ul data-ng-if="curDrivergroup == drivergroup.id">
+                            <li data-ng-repeat="driver in drivergroup.drivers" data-ng-if="driver.id">
+                                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="driver.selected" data-ng-change="toggleDriver(drivergroup)">{{driver.id}}. {{driver.name}}
+                                </ion-checkbox> 
+                            </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="center">
+                    <button class="btn btn-primary" data-ng-click="apply()">{{ translate('FILTER').toUpperCase() }}</button>
+                </div>
+            </div>
+            <br>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>

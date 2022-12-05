@@ -1,0 +1,101 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hide()"></i>
+  <ion-content class="color-bg popup-mode" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('PAYMENTS_SETTINGS') }} ({{paymethod.name}})</span>
+    </ion-item>
+    <ion-item style="text-align: center;margin-top: 15px;" data-ng-if="paymethod.gateway == 'stripe_connect'">
+      <a href="#" class="stripe-connect" data-ng-click="stripeConnect($event)"><span>Connect with Stripe</span></a>
+    </ion-item>
+    <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}" data-ng-if="curPaymethod.data.appid != '' || curPaymethod.key != 'acceptstripeconnect'">
+      <div>
+        <div class="form editable">
+          <div class="group" data-ng-if="paymethod.gateway != 'stripe_connect' && paymethod.more">
+            <label>{{ translate('SANDBOX') }}</label>
+            <ion-checkbox class="checkbox-item checkbox-sm" style="border-left: none; border-right: none" data-ng-model="paymethod.credentials.sandbox" data-ng-change="updatePaymethod(paymethod)">
+              {{ translate('SANDBOX') }}
+            </ion-checkbox>
+          </div>
+          <div class="group" data-ng-repeat="field in fields">
+            <label>{{ field.name }}</label>
+            <input data-ng-model="paymethod.credentials[field.data][field.model]" class="editable" type="text" data-ng-change="updatePaymethod(paymethod)" data-ng-disabled="paymethod.gateway == 'stripe_connect'">
+          </div>
+          <div data-ng-if="paymethod.gateway == 'stripe_connect' && superAdmin">
+            <label>{{ translate('FIXED_FEE') }}</label>
+            <input data-ng-model="deal.fixed_usage_fee" class="editable" type="text" data-ng-change="updateAppFee()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div data-ng-if="paymethod.gateway == 'stripe_connect' && superAdmin">
+            <label>{{ translate('PERCENTAGE_FEE') }}</label>
+            <input data-ng-model="deal.percentage_usage_fee" class="editable" type="text" data-ng-change="updateAppFee()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+        </div>
+      </div>
+    </ion-item>
+    <ion-item class="item-divider title" data-ng-if="ADDONS.metafields_editor" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('CUSTOM_FIELDS') }}</span>
+    </ion-item>
+    <div class="form editable" data-ng-if="ADDONS.metafields_editor">
+      <div class="custom_files" data-ng-repeat="item in paymethod.metafields track by $index">
+          <div class="c_field">
+              <div class="col-xs-3">
+                      <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+              </div>
+              <div class="col-xs-3">
+                  <div class="input">
+                      <form>
+                          <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                      </form>
+                  </div>
+              </div>
+              <div class="col-xs-6">
+                  <div class="input has_action">
+                      <form>
+                          <ng-container data-ng-if="isBoolVal(item.value_type)">
+                              <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                          </ng-container>
+                          <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                              <div class="txt_wrapper">{{ item.value }}</div>
+                          </ng-container>
+                          <button data-ng-if="model == 'ProductExtraSubOption'" class="editable" data-ng-click="removeCustomField(item, 'ProductExtraSubOption', curdata)"><i class="fa fa-trash"></i></button>
+                          <button data-ng-if="model == 'ProductExtraOption'" class="editable" data-ng-click="removeCustomField(item, 'ProductExtraOption', data)"><i class="fa fa-trash"></i></button>
+                          <button data-ng-if="model == 'Category'" class="editable" data-ng-click="removeCustomField(item, 'Category', data)"><i class="fa fa-trash"></i></button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+          <hr>
+      </div>
+      <div class="custom_files">
+          <div class="c_field">
+              <div class="col-xs-3">
+                  <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                  </select>
+              </div>
+              <div class="col-xs-3">
+                  <div class="input">
+                      <form>
+                          <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                      </form>
+                  </div>
+              </div>
+              <div class="col-xs-6">
+                  <div class="input has_action">
+                      <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                          <select class="editable" data-ng-model="newField.value">
+                              <option value="1">True</option>
+                              <option value="0">False</option>
+                          </select>
+                      </ng-container>
+                      <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                          <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event, 'Payment')">
+                          <textarea data-ng-model="newField.value" rows="5" data-ng-if="isJsonVal(newField.value_type)" ng-keypress="getEnterEvent($event, 'Payment')"></textarea>
+                          <!-- <div contenteditable="true" data-ng-if="isJsonVal(newField.value_type)">{{newField.value  | json : spacing}}</div> -->
+                      </ng-container>
+                      <button class="editable" data-ng-click="addCustomField('Payment', paymethod)"><i class="fa fa-plus-circle"></i></button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>

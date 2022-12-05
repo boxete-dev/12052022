@@ -1,0 +1,236 @@
+<ion-modal-view class="popup product-options">
+    <i class="fa fa-times close" data-ng-click="close()"></i>
+    <i class="fa fa-share-alt close share" data-ng-click="popover.show($event)"></i>
+    <ion-content class="color-bg popup-mode" ng-class="{'classIsiOSBrowser' : isIOS}" overflow-scroll="true">
+        <!--<i class="fa fa-times close" data-ng-click="hideProductOption()"></i>-->
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{product.name}}</span>
+        </ion-item>
+        <div data-ng-if="product.gallery.length > 0 || product.images != null" id="img_content" style="margin-bottom: 10px;">
+            <ion-item class="item-divider" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+                <span class="divider-padding no-padding-h">{{ translate('MOBILE_MENU_LIST_PHOTO_GALLERY') }}</span>
+            </ion-item>
+            <ion-item>
+                <img class="popup-gallery" data-ng-if="product.images != null" data-ng-click="showModalImage(product.images, product.name)" data-ng-cache on-error-src="img_content" data-ng-src="{{ optimizeImage(product.images, 'w_250,c_limit') }}" err-src="{{rootTheme}}/img/dummy_food.png" />
+                <img class="popup-gallery" data-ng-repeat="image in product.gallery track by $index" data-ng-click="showModalImage(image.file, product.name)" data-ng-cache on-error-src="img_content" data-ng-src="{{ optimizeImage(image.file, 'w_250,c_limit') }}" err-src="{{rootTheme}}/img/dummy_food.png" />
+            </ion-item>
+        </div>
+        <!-- Product Descriptions -->
+        <div data-ng-if="product.description != '' && product.description != null">
+            <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <span class="divider-padding no-padding-h" data-ng-class="{cssArabic: $root.arabic_rtl}">{{ translate('Description_V2') }}</span>
+            </ion-item>
+            <ion-item data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <p style="white-space: pre-wrap">{{ product.description }}</p>
+            </ion-item>
+        </div>
+        <!-- New design -->
+        <!-- Product ingredients -->
+        <div data-ng-if="ADDONS.quantity_options && product.ingredients.length > 0">
+            <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <span class="divider-padding no-padding-h">{{ translate('Ingredients_V2') }}</span>
+            </ion-item>
+            <div class="checkboxes">
+                <div class="checkbox" data-ng-repeat="ingredient in orderProduct.ingredients | orderBy: 'id'" data-ng-click="ingredient.selected=!ingredient.selected">
+                    <i class="fa fa-square-o check" data-ng-if="!ingredient.selected"></i>
+                    <i class="fa fa-check-square check color-primary" data-ng-if="ingredient.selected"></i>
+                    <div class="text">{{ ingredient.name }}</div>
+                    <input type="checkbox">
+                </div>
+            </div>
+        </div>
+        <!-- End product ingredients -->
+        <!-- Product options -->
+        <div data-ng-if="ADDONS.quantity_options" data-ng-repeat="extra in product.extras | orderBy:'id'">
+            <div data-ng-attr-id="{{ 'option_' + option.id}}" class="option" data-ng-repeat="option in extra.options | orderBy:'id'" data-ng-if="!option.conditioned || (option.conditioned && orderProduct.extended_data_options[option.respect_to] && orderProduct.extended_data_options[option.respect_to].selected)">
+                <ion-item class="item-divider" ng-class="{'arabic_rtl': arabic_rtl}">
+                    <img data-ng-if="option.image" class="image advance-product-image" data-ng-src="{{ option.image }}" alt="Option image">
+                    
+                    <span class="divider-padding no-padding-h">
+                        {{ option.name }}
+                        <span data-ng-if="option.max == 1 && option.min == 1">({{ translate('CHOOSE_ONE') }})</span>
+                        <span data-ng-if="option.max > 1 && option.min >= 1">({{ translate('MOBILE_CHECKOUT_MIN') }} {{option.min}}/{{ translate('MOBILE_CHECKOUT_MAX') }} {{option.max}})</span>
+                        <span data-ng-if="option.min >= 1 && option.max <= 0">({{ translate('MOBILE_CHECKOUT_MIN') }} {{option.min}})</span>
+                        <span data-ng-if="option.max >= 1 && option.min <= 0">({{ translate('MOBILE_CHECKOUT_MAX') }} {{option.max}})</span>
+                    </span>
+                </ion-item>
+                <div class="checkboxes" data-ng-if="option.min == 0 || option.max == 0 || option.max > 1 || option.suboptions.length == 1">
+                    <div class="checkbox" data-ng-repeat="suboption in option.suboptions | orderBy:'id'" data-ng-class="{ 'disabled': !suboption.max || suboption.max <= 0 }" data-ng-click="suboption.max > 0 && onCheckbox(option, suboption)" data-ng-show="suboption.enabled == true">
+                      <img data-ng-if="suboption.image" class="image advance-product-image-suboption" data-ng-src="{{ suboption.image }}">
+                        <div class="flag" data-ng-if="!suboption.max || suboption.max <= 0">{{ translate('SOLD_OUT') }}</div>
+                        <i class="fa fa-square-o check" data-ng-if="!orderProduct.extended_data_options[suboption.id] || !orderProduct.extended_data_options[suboption.id].selected"></i>
+                        <i class="fa fa-check-square check color-primary" data-ng-if="orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].selected"></i>
+                        <div class="text">
+                            {{ suboption.name }}
+                            <div data-ng-if="getSuboptionPrice(option, suboption) > 0" class="color-primary">+ {{ parsePrice(getSuboptionPrice(option, suboption)) }}</div>
+                        </div>
+                        <div data-ng-if="option.with_half_option && orderProduct.extended_data_options[suboption.id].selected" class="half-control" data-ng-click="$event.stopPropagation();">
+                            <i class="fa fa-adjust fa-flip-horizontal color-primary" data-ng-class="{ 'selected': orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].position == 'left' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'left');"></i>
+                            <i class="fa fa-circle color-primary" data-ng-class="{ 'selected': !orderProduct.extended_data_options[suboption.id] || orderProduct.extended_data_options[suboption.id].position == 'whole' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'whole');"></i>
+                            <i class="fa fa-adjust color-primary" data-ng-class="{ 'selected': orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].position == 'right' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'right');"></i>
+                        </div>
+                        <div data-ng-if="option.allow_suboption_quantity && orderProduct.extended_data_options[suboption.id].selected && suboption.max > 1" class="quantity-control" data-ng-click="$event.stopPropagation();">
+                            <i class="icon ion-minus icon-primary" data-ng-class="{ 'disabled': !orderProduct.extended_data_options[suboption.id] || orderProduct.extended_data_options[suboption.id].quantity == 1 }" data-ng-click="subtractSuboption(option, suboption)"></i>
+                            <span data-ng-if="!orderProduct.extended_data_options[suboption.id]">1</span>
+                            <span data-ng-if="orderProduct.extended_data_options[suboption.id]">{{ orderProduct.extended_data_options[suboption.id].quantity }}</span>
+                            <i class="icon ion-plus icon-primary" data-ng-class="{ 'disabled': (!orderProduct.extended_data_options[suboption.id] && suboption.max == 1) || (orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].quantity == suboption.max) }" data-ng-click="addSuboption(option, suboption)"></i>
+                        </div>
+                        <input type="checkbox">
+                    </div>
+                </div>
+
+                <div class="checkboxes" data-ng-if="option.min == 1 && option.max == 1 && option.suboptions.length > 1">
+                    <div class="checkbox" data-ng-repeat="suboption in option.suboptions | orderBy:'id'" data-ng-class="{ 'disabled': !suboption.max || suboption.max <= 0 }" data-ng-click="suboption.max > 0 && onRadio(option, suboption)" data-ng-show="suboption.enabled == true">
+                      <img data-ng-if="suboption.image" class="image advance-product-image-suboption" data-ng-src="{{ suboption.image }}">
+                        <div class="flag" data-ng-if="!suboption.max || suboption.max <= 0">{{ translate('SOLD_OUT') }}</div>
+                        <i class="fa fa-circle-thin check" data-ng-if="!orderProduct.extended_data_options[suboption.id].selected"></i>
+                        <i class="fa fa-check-circle check color-primary" data-ng-if="orderProduct.extended_data_options[suboption.id].selected"></i>
+                        <div class="text">
+                            {{ suboption.name }}
+                            <div data-ng-if="getSuboptionPrice(option, suboption) > 0" class="color-primary">+ {{ parsePrice(getSuboptionPrice(option, suboption)) }}</div>
+                        </div>
+                        <div data-ng-if="option.with_half_option && orderProduct.extended_data_options[suboption.id].selected" class="half-control" data-ng-click="$event.stopPropagation();">
+                            <i class="fa fa-adjust fa-flip-horizontal color-primary" data-ng-class="{ 'selected': orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].position == 'left' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'left');"></i>
+                            <i class="fa fa-circle color-primary" data-ng-class="{ 'selected': !orderProduct.extended_data_options[suboption.id] || orderProduct.extended_data_options[suboption.id].position == 'whole' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'whole');"></i>
+                            <i class="fa fa-adjust color-primary" data-ng-class="{ 'selected': orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].position == 'right' }" data-ng-click="$event.stopPropagation();selectPosition(option, suboption, 'right');"></i>
+                        </div>
+                        <div data-ng-if="option.allow_suboption_quantity && !option.limit_suboptions_by_max && orderProduct.extended_data_options[suboption.id].selected && suboption.max > 1" class="quantity-control" data-ng-click="$event.stopPropagation();">
+                            <i class="icon ion-minus icon-primary" data-ng-class="{ 'disabled': !orderProduct.extended_data_options[suboption.id] || orderProduct.extended_data_options[suboption.id].quantity == 1 }" data-ng-click="subtractSuboption(option, suboption)"></i>
+                            <span data-ng-if="!orderProduct.extended_data_options[suboption.id]">1</span>
+                            <span data-ng-if="orderProduct.extended_data_options[suboption.id]">{{ orderProduct.extended_data_options[suboption.id].quantity }}</span>
+                            <i class="icon ion-plus icon-primary" data-ng-class="{ 'disabled': (!orderProduct.extended_data_options[suboption.id] && suboption.max == 1) || orderProduct.extended_data_options[suboption.id] && orderProduct.extended_data_options[suboption.id].quantity == suboption.max }" data-ng-click="addSuboption(option, suboption)"></i>
+                        </div>
+                        <input type="checkbox">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End product options -->
+        <!-- End new design -->
+
+
+        <!-- Product Ingredient OLD -->
+        <div data-ng-if="!ADDONS.quantity_options && product.ingredients.length > 0">
+            <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <span class="divider-padding no-padding-h">{{ translate('Ingredients_V2') }}</span>
+            </ion-item>
+            <ion-item>
+                <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-repeat="item in orderProduct.ingredients | orderBy: 'id'" data-ng-model="item.selected" data-ng-click="refreshTotalDish()">
+                    {{ item.name }}
+                </ion-checkbox>
+            </ion-item>
+        </div>
+        <!-- Product options OLD -->
+        <div data-ng-if="!ADDONS.quantity_options" data-ng-repeat="extra in product.extras | orderBy:'id'">
+            <div id="option_{{option.id}}" class="option" data-ng-repeat="option in extra.options | orderBy:'id'" ng-if="!option.conditioned || (option.conditioned && orderProduct.data_options[option.respect_to])">
+                <!--<div data-ng-show="C_OState.optional != option.max && option.conditional == 'no'">-->
+                <ion-item class="item-divider" ng-class="{'arabic_rtl': arabic_rtl}">
+                    <img data-ng-if="option.image" class="image" data-ng-src="{{ option.image }}" alt="Option image">
+                    <span class="divider-padding no-padding-h" ng-if="option.max == 1 && option.min == 1">{{option.name}} <span ng-if="option.suboptions.length > 1">({{ translate('CHOOSE_ONE') }})</span></span>
+                    <span class="divider-padding no-padding-h" ng-if="option.max > 1 && option.min >= 1">{{option.name}} ({{ translate('MOBILE_CHECKOUT_MIN') }} {{option.min}}/ {{ translate('MOBILE_CHECKOUT_MAX') }} {{option.max}})</span>
+                    <span class="divider-padding no-padding-h" ng-if="option.min >= 1 && option.max <= 0">{{option.name}} ({{ translate('MOBILE_CHECKOUT_MIN') }} {{option.min}})</span>
+                    <span class="divider-padding no-padding-h" ng-if="option.max >= 1 && option.min <= 0">{{option.name}} ({{ translate('MOBILE_CHECKOUT_MAX') }} {{option.max}})</span>
+                    <span class="divider-padding no-padding-h" ng-if="option.min <= 0 && option.max <= 0">{{option.name}}</span>
+                </ion-item>
+                <p class="error">{{ translate('MOBILE_SELECT_REQUIRED_OPTIONS') }}</p>
+                <div class="suboptions" data-ng-class="{ 'images': hasImages(option) }">
+                    <div class="suboption" data-ng-repeat="suboption in option.suboptions | orderBy:'id'">
+                        <!-- {{suboption.name}} -->
+                        <div data-ng-if="hasImages(option)">
+                            <div data-ng-if="option.min == 0 || option.max == 0 || option.max > 1 || option.suboptions.length == 1" class="suboption-content" data-ng-click="orderProduct.data_options[suboption.id] = !orderProduct.data_options[suboption.id];onCheckbox(option, suboption)">
+                                <div class="suboption-image" style="background-image: url({{optimizeImage(suboption.image,'w_500,c_limit')}});"></div>
+                                <div class="information">
+                                    <div class="icon">
+                                        <i data-ng-if="!orderProduct.data_options[suboption.id]" class="fa fa-square-o color-primary"></i>
+                                        <i data-ng-if="orderProduct.data_options[suboption.id]" class="fa fa-check-square-o color-primary"></i>
+                                    </div>
+                                    <div class="price color-primary">+{{ parsePrice(suboption.price) }}</div>
+                                    <div class="text">{{ suboption.name }}</div>
+                                </div>
+                            </div>
+                            <div data-ng-if="option.min == 1 && option.max == 1 && option.suboptions.length > 1" class="suboption-content" data-ng-click="orderProduct.data_options[suboption.id] = true;onRadio(option, suboption)">
+                                <div class="suboption-image" style="background-image: url({{optimizeImage(suboption.image,'w_500,c_limit')}});"></div>
+                                <div class="information">
+                                    <div style="margin: auto;">
+                                        <div class="icon">
+                                            <i data-ng-if="!orderProduct.data_options[suboption.id]" class="fa fa-circle-thin color-primary"></i>
+                                            <i data-ng-if="orderProduct.data_options[suboption.id]" class="fa fa-check-circle color-primary"></i>
+                                        </div>
+                                        <div class="text">{{ suboption.name }}</div>
+                                    </div>
+                                    <div class="price color-primary" style="margin: auto;">+{{ parsePrice(suboption.price) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-if="!hasImages(option)">
+                            <ion-checkbox class="checkbox-item"
+                                        ng-if="option.min == 0 || option.max == 0 || option.max > 1 || option.suboptions.length == 1"
+                                        ng-model="orderProduct.data_options[suboption.id]"
+                                        ng-class="{'arabic_rtl': arabic_rtl}"
+                                        ng-click="onCheckbox(option, suboption)">
+                                <p class="float-left" style="width: 65%; margin-left: 35px" ng-if="!arabic_rtl">{{ suboption.name }}</p>
+                                <p class="float-right" style="width: 65%; margin-right: 35px" ng-if="arabic_rtl">{{ suboption.name }}</p>
+                                <p class="float-right color-main" data-ng-if="!arabic_rtl && suboption.price > 0">+{{parsePrice(suboption.price)}}</p>
+                                <p class="float-left color-main" data-ng-if="arabic_rtl && suboption.price > 0">+{{parsePrice(suboption.price)}}</p>
+                            </ion-checkbox>
+                            <ion-radio class="radio-item"
+                                    name="sub_{{option.id}}"
+                                    ng-if="option.min == 1 && option.max == 1 && option.suboptions.length > 1"
+                                    ng-model="orderProduct.data_options[suboption.id]"
+                                    ng-value="true"
+                                    ng-click="onRadio(option, suboption)"
+                                    ng-class="{'radio_arabic_rtl': arabic_rtl}"
+                                    style="vertical-align: center">
+                                <span class="float-left dynamic-radio" ng-if="!arabic_rtl"></span>
+                                <span class="float-right dynamic-radio" ng-if="arabic_rtl"></span>
+                                <p class="float-left" style="width: 65%" ng-if="!arabic_rtl">{{ suboption.name }}</p>
+                                <p class="float-right" style="width: 65%" ng-if="arabic_rtl">{{ suboption.name }}</p>
+                                <p class="float-right color-main" data-ng-if="!arabic_rtl && suboption.price > 0">+{{parsePrice(suboption.price)}}</p>
+                                <p class="float-left color-main" data-ng-if="arabic_rtl && suboption.price > 0">+{{parsePrice(suboption.price)}}</p>
+                            </ion-radio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('MOBILE_FRONT_SPECIAL_INSTRUCTIONS') }}</span>
+        </ion-item>
+        <ion-item>
+            <textarea class="special-inbox" placeholder="{{ translate('MOBILE_FRONT_SPECIAL_INSTRUCTIONS_ADD') }}" data-ng-model="orderProduct.comment" data-ng-class="{cssArabic: $root.arabic_rtl}"></textarea>
+        </ion-item>
+        <ion-item class="bottom-cont" data-ng-if="!product.inventoried || (product.inventoried && (orderProduct.balance - getCartCountByProduct(product).quantity) > 0) || (edit && (product.quantity > 0 && product.quantity > getCartCountByProduct(product).quantity))">
+            <div class="row">
+                <div class="col-60 color-bg-white pd-btn" style="padding-left:5px">
+                    <button type="button" class="button-icon icon-btn-minus float-left" data-ng-click="subtract()">
+                        <span class="icon ion-minus icon-primary" data-ng-class="{'hide-minus': (orderProduct.quantity == 1)}"></span>
+                    </button>
+                    <button type="button" class="button-icon icon-btn-plus float-left" data-ng-click="add()">
+                        <span class="icon ion-plus icon-primary" data-ng-class="{'hide-add': (edit && product.inventoried && orderProduct.quantity >= orderProduct.balance) || (!edit && product.inventoried && orderProduct.quantity >= orderProduct.balance - getCartCountByProduct(product).quantity) || (!product.inventoried && (orderProduct.quantity >= MAX_PRODUCT_AMOUNT))}"></span>
+                    </button>
+                    <p class="price float-right">{{parsePrice(orderProduct.total)}}</p>
+                </div>
+                <div class="col-40 item-btn" data-ng-click="">
+                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="!edit"><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FRONT_BUTTON_ADD') }}</a>
+                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="edit"><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FOURTH_PAGE_OK') }}</a>
+                </div>
+            </div>
+        </ion-item>
+        <div class="item-sold-out" data-ng-if="product.inventoried && !edit && ((orderProduct.balance - getCartCountByProduct(product).quantity) == 0)">
+            {{translate('SOLD_OUT')}}
+        </div>
+        
+    </ion-content>
+</ion-modal-view>
+
+<!-- <script id="templates/share-popover.html" type="text/ng-template">
+    <ion-popover-view>
+        <ion-content>
+            <div id="addthis_icons">
+                <sn-addthis-toolbox class="addthis_inline_share_toolbox">
+                </sn-addthis-toolbox>
+            </div>
+        </ion-content>
+    </ion-popover-view>
+</script> -->

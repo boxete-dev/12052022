@@ -1,0 +1,170 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hideMoreProductSettings()"></i>
+  <ion-content class="color-bg popup-mode" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('PRODUCT_SETTINGS') }} ({{curProduct.name}})</span>
+    </ion-item>
+    <div class="form editable" data-ng-if="ADDONS.featured_products">
+      <div class="group">
+        <!--<label>{{ translate('FEATURE') }}</label>-->
+        <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curProduct.featured" data-ng-change="updateProduct(curProduct)">
+          {{ translate('FEATURE') }}
+        </ion-checkbox>
+      </div>
+    </div>
+    <div class="form editable" data-ng-if="NEW_ADDONS.UPSELLING">
+      <div class="group">
+        <!--<label>{{ translate('FEATURE') }}</label>-->
+        <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curProduct.upselling" data-ng-change="updateProduct(curProduct)">
+          {{ translate('UPSELLING') }}
+        </ion-checkbox>
+      </div>
+    </div>
+    <div class="form editable" data-ng-if="ADDONS.inventory">
+      <div class="group">
+        <!--<label>{{ translate('INVENTORIED') }}</label>-->
+        <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curProduct.inventoried" data-ng-change="updateProduct(curProduct)">
+          {{ translate('INVENTORIED') }}
+        </ion-checkbox>
+      </div>
+    </div>
+    <div class="form editable">
+      <div class="group">
+        <!--<label>{{ translate('INVENTORIED') }}</label>-->
+        <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curProduct.issku" data-ng-change="updateProduct(curProduct)">
+          {{ translate('SKU') }}
+        </ion-checkbox>
+      </div>
+    </div>
+    <div class="form editable" data-ng-if="ADDONS.inventory && curProduct.inventoried">
+      <div class="group">
+        <label>{{ translate('STOCK') }}</label>
+        <input class="editable" type="text" data-ng-model="curProduct.quantity" data-ng-change="updateProduct(curProduct)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+      </div>
+    </div>
+    <div class="form editable" data-ng-if="curProduct.issku">
+      <div class="group">
+        <label>SKU</label>
+        <input class="editable" type="text" data-ng-model="curProduct.sku" data-ng-change="updateProduct(curProduct)">
+      </div>
+    </div>
+    <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('INGREDIENTS') }}</span>
+    </ion-item>
+    <div class="ingredients editor">
+      <ul>
+        <li data-ng-repeat="ingredient in curProduct.ingredients track by $index">
+          <input type="text" data-ng-model="ingredient.name" placeholder="{{ translate('TYPE_INGREDIENT') }}" size="{{ingredient.length > 0?ingredient.length:20}}" data-ng-change="updateIngredient(ingredient, curProduct)" class="editable">
+          <i class="fa fa-minus-circle remove" data-ng-click="removeIngredient(ingredient, curProduct)"></i>
+        </li>
+        <li>
+          <form data-ng-submit="addIngredient(curNewIngredient, curProduct)">
+          <input type="text" ng-model="curNewIngredient.name" placeholder="{{ translate('TYPE_INGREDIENT') }}" size="{{curNewIngredient.length > 0?curNewIngredient.length:20}}">
+          <i class="fa fa-plus-circle add" data-ng-click="addIngredient(curNewIngredient, curProduct)"></i>
+          </form>
+        </li>
+      </ul>
+    </div>
+    <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ EXTRA_OPTIONS }}</span>
+    </ion-item>
+    <ion-item>
+      <div class="extras editor">
+        <div class="extra" data-ng-repeat="extra in deal.extras">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curProduct.extras_a[extra.id]" data-ng-change="updateProduct(curProduct)">
+          </ion-checkbox>
+          <div class="buttons">
+            <button data-ng-click="showMoreProductOptionsSettings(curProduct, extra)"><i class="fa fa-edit"></i> {{ translate('MORE') }}</button>
+            <button data-ng-click="removeExtra(extra)"><i class="fa fa-trash"></i></button>
+          </div>
+          <div class="input">
+            <input class="editable" type="text" data-ng-model="extra.name" placeholder="{{ translate('EXTRA_NAME') }}" data-ng-change="updateExtra(extra)"  tabindex="{{($index*1)+1000}}">
+          </div>
+        </div>
+        <div class="extra">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none;visibility: hidden;" data-ng-disabled="true">
+          </ion-checkbox>
+          <form data-ng-submit="addExtra(curNewExtra)">
+          <div class="buttons">
+            <button type="button" data-ng-click="addExtra(curNewExtra)"><i class="fa fa-plus-circle"></i> {{ translate('ADD') }}</button>
+            <!-- <button><i class="fa fa-trash"></i></button> -->
+          </div>
+          <div class="input">
+            <input class="editable" type="text" data-ng-model="curNewExtra.name" placeholder="{{ translate('EXTRA_NAME') }}" tabindex="2000">
+          </div>
+          </form>
+        </div>
+      </div>
+    </ion-item>
+    <ng-container data-ng-if="ADDONS.metafields_editor && model == 'Product'">
+      <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <span class="divider-padding no-padding-h">{{ translate('CUSTOM_FIELDS') }}</span>
+      </ion-item>
+      <ion-item>
+        <div class="form editable">
+          <div class="custom_files" data-ng-repeat="item in curProduct.metafields track by $index">
+              <div class="c_field">
+                <div class="col-xs-3">
+                  <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                </div>
+                <div class="col-xs-3">
+                  <div class="input">
+                    <form>
+                      <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                    </form>
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <div class="input has_action">
+                    <form>
+                      <ng-container data-ng-if="isBoolVal(item.value_type)">
+                        <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                      </ng-container>
+                      <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                        <div class="txt_wrapper">{{ item.value }}</div>
+                      </ng-container>
+                      <button class="editable" data-ng-click="removeCustomField(item, 'Product')"><i class="fa fa-trash"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <hr>
+          </div>
+          <div class="custom_files">
+            <div class="c_field">
+              <div class="col-xs-3">
+                <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                </select>
+              </div>
+              <div class="col-xs-3">
+                <div class="input">
+                  <form>
+                    <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                  </form>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="input has_action">
+                  <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                    <select class="editable" data-ng-model="newField.value">
+                      <option value="1">True</option>
+                      <option value="0">False</option>
+                    </select>
+                  </ng-container>
+                  <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                    <input type="text" data-ng-change="isValid(newField.value, event.charCode)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event, 'Product')">
+                    <!-- <textarea data-ng-model="newField.value" rows="5" data-ng-if="isJsonVal(newField.value_type)" ng-keypress="getEnterEvent($event, model)"></textarea> -->
+                    <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                  </ng-container>
+                  <button class="editable" data-ng-click="addCustomField(model)"><i class="fa fa-plus-circle"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-item>
+    </ng-container>
+    <!-- <br> -->
+    <!-- <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="updateProduct(curProduct, true)">{{ translate('SAVE') }}</button> -->
+  </ion-content>
+</ion-modal-view>

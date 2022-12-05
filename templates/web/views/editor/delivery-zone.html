@@ -1,0 +1,67 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideDeliveryZone()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('DELIVERY_ZONE') }}</span>
+        </ion-item>
+        <ion-item class="fixdir">
+            <div class="eitems">
+                <div class="eitem title">
+                    <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+                    <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">&nbsp;</div>
+                    <div class="f50">
+                        <input class="editable" type="text" value="{{ translate('PRICE') }}" disabled="disabled">
+                    </div>
+                    <div class="f50">
+                        <input class="editable" type="text" value="{{ translate('MIN') }}" disabled="disabled">
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate('ZONE_NAME') }}" disabled="disabled">
+                    </div>
+                </div>
+                <div class="eitem" data-ng-repeat="zone in deal.zones" data-ng-if="(SEARCH_BY_ADDRESS && zone.type != 3) || (!SEARCH_BY_ADDRESS && zone.type == 3)">
+                    <button data-ng-click="removeDeliveryZone(zone)"><i class="fa fa-trash"></i></button>
+                    <button data-ng-click="showDeliveryZoneSettings(zone)"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="zone.enabled" data-ng-change="updateDeliveryZone(zone)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="f50">
+                        <input class="editable" type="text" data-ng-model="zone.price" placeholder="{{ translate('PRICE') }}" format="number" data-ng-change="updateDeliveryZone(zone)" tabindex="{{($index*3)+1002}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div>
+                    <div class="f50">
+                        <input class="editable" type="text" data-ng-model="zone.minimum" placeholder="{{ translate('MIN') }}" format="number" data-ng-change="updateDeliveryZone(zone)" tabindex="{{($index*3)+1001}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" data-ng-model="zone.name" placeholder="{{ translate('ZONE_NAME') }}" data-ng-change="updateDeliveryZone(zone)" tabindex="{{($index*3)+1000}}">
+                    </div>
+                </div>
+                <div class="eitem">
+                    <form data-ng-submit="showDeliveryZoneSettings(curNewZone)">
+                    <button data-ng-click="null" style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+                    <button type="button" data-ng-click="showDeliveryZoneSettings(curNewZone)"><i class="fa fa-plus-circle"></i> {{ translate('ADD') }}</button>
+                    <div class="f50">&nbsp;</div>
+                    <div class="f50">
+                        <input class="editable" type="text" data-ng-model="curNewZone.price" placeholder="{{ translate('PRICE') }}" tabindex="2003" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div>
+                    <div class="f50">
+                        <input class="editable" type="text" data-ng-model="curNewZone.minimum" placeholder="{{ translate('MIN') }}" tabindex="2002" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" data-ng-model="curNewZone.name" placeholder="{{ translate('ZONE_NAME') }}" tabindex="2001">
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_DELIVERYZONE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_DELIVERYZONE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_DELIVERYZONE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_DELIVERYZONE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+ 

@@ -1,0 +1,42 @@
+<ion-modal-view class="popup">
+	<i class="fa fa-times close" data-ng-click="hideBusinessTypeSettings()"></i>
+	<ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+			<ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+					<span class="divider-padding no-padding-h">{{ translate('BUSINESS_TYPE') }}</span>
+			</ion-item>
+			<ion-item>
+					<div class="form editable" select-content>
+							<div class="group">
+									<label>{{ translate('NAME') }}*</label>
+									<input data-ng-model="businessType.name" class="editable" type="text">
+							</div>
+							<div class="group">
+									<label>{{ translate('DESCRIPTION') }}</label>
+									<input data-ng-model="businessType.description" class="editable" type="text">
+							</div>
+							<div class="group">
+								<label>{{ translate('IMAGE') }}</label>
+								<div class="logo" style="width: 110px; height: 110px; position: relative;">
+									<img data-ng-if="businessType.image" data-ng-src="{{businessType.image}}" alt="type image" style="width: 110px; height: 110px; position: absolute; z-index: -1;">
+									<div id="type_image" class="drag">
+										<div class="edit xs">
+											<!-- <p> -->
+												<i class="fa fa-picture-o"></i><br>
+												150x150px
+											<!-- </p> -->
+											<input id="type_image_file" type="file" style="display: none;">
+										</div>
+									</div>
+								</div>
+							</div>
+					</div>
+			</ion-item>
+			<br>
+			<center data-ng-if="businessType.id != -1">
+				<button class="btn btn-primary" data-ng-click="updateBusinessType(businessType)">{{ translate('SAVE').toUpperCase() }}</button>
+			</center>
+			<center data-ng-if="businessType.id == -1">
+				<button class="btn btn-primary" data-ng-click="addBusinessType(businessType)">{{ translate('ADD').toUpperCase() }}</button>
+			</center>
+	</ion-content>
+</ion-modal-view>

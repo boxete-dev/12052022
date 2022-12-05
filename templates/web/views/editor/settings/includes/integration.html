@@ -1,0 +1,92 @@
+<div data-ng-controller="integrationSettingsEditorCtrl">
+  <!--<div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="siteSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('SITE_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('SITE_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>-->
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="notificationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('PUSH_NOTIFICATIONS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('PUSH_NOTIFICATIONS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="facebookSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('FACEBOOK_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('FACEBOOK_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <!--<div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="tookanSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('TOOKAN_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('TOOKAN_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>-->
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="comunicationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('COMUNICATION_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('COMUNICATION_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="configs.cloudinary_enabled.value == 1">
+    <div class="panel panel-default" data-ng-click="cloudinarySettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('CLOUDINARY_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('CLOUDINARY_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.stripe_payment || ADDONS.stripeconnect_payment">
+    <div class="panel panel-default" data-ng-click="stripeSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('STRIPE_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('STRIPE_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.stripeconnect_payment">
+    <div class="panel panel-default" data-ng-click="stripeConnectSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('STRIPE_CONNECT_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('STRIPE_CONNECT_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.autoassign">
+    <div class="panel panel-default" data-ng-click="autoAssignSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('AUTOASSIGN_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('AUTOASSIGN_SETTINGS_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+</div>

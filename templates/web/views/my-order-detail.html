@@ -1,0 +1,270 @@
+<ion-modal-view class="popup full-height">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="order-detail-cont color-bg popup-mode" ng-class="{'classIsiOSBrowser' : isIOS}" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('FRONT_MAIN_EMAIL_ORDER_NO') }}: {{ order.id }}</span>
+        </ion-item>
+        <div class="webtabs">
+            <div class="tab" data-ng-class="{ 'active': tab == 0 }" data-ng-click="changeTab(0)">
+                {{ translate('DETAILS') }}
+            </div>
+            <div class="tab" data-ng-class="{ 'active': tab == 1 }" data-ng-click="changeTab(1)">
+                {{ translate('MESSAGES') }}<span data-ng-if="order.unread_count"> ({{ order.unread_count }})</span>
+            </div>
+        </div>
+        <div data-ng-if="tab == 0">
+            <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <span class="divider-padding no-padding-h"><strong>{{ translate('ORDERS_BOX_STATUS_HEADER') }}:</strong> {{ getOrderState(order.status) }}</span>
+                <span data-ng-if="order.driver_id" class="divider-padding no-padding-h"><br><strong>{{ translate('DRIVER') }}:</strong> {{ order.driver.name }} {{ order.driver.lastname }}</span>
+            </ion-item>
+            <div class="table-item">
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_NAME') }}</div>
+                    <div class="col col-50">{{ order.customer.name }} {{ order.customer.middle_name }} {{ order.customer.lastname }} {{ order.customer.second_lastname }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_PHONE_NUMBER') }}</div>
+                    <div class="col col-50">{{ order.customer.cellphone }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('FRONT_VISUALS_EMAIL') }}</div>
+                    <div class="col col-50">{{ order.customer.email }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_ADDRESS') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.address }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.internal_number">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('INTERNAL_NUMBER') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.internal_number }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_NOTES') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.address_notes }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.dropdown_option">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_CITY') }}</div>
+                    <div class="col col-50">{{ order.customer.dropdown_option.city.name }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.dropdown_option">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('DROPDOWN_OPTION') }}</div>
+                    <div class="col col-50">{{ order.customer.dropdown_option.name }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.zipcode && order.customer.zipcode != ''">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_ZIP') }}</div>
+                    <div class="col col-50">{{ order.customer.zipcode }}</div>
+                </div>
+            </ion-item>
+            </div>
+            <p class="ht-3"></p>
+            <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <p class="color-font-dark padding-top-5">{{ order.business.name}} <span class="color-main" data-ng-if="order.business.phone">({{ translate('PHONE') }} {{order.business.phone}}<span data-ng-if="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}) </span></p>
+                <p class="color-font-gray">{{ translate('ADDRESS') }}: {{ order.business.address }} <a data-ng-if="order.delivery_type!=1" type="button" data-ng-click="goBusinessMap(order.business)">{{ translate('VIEW_ON_MAP') }}</a></p>
+                <p class="color-font-gray">{{ translate('FRONT_MAIN_PAYMENT_METHOD') }} {{ translate(order.paymethod.gateway.toUpperCase()) }} <span data-ng-if="order.paymethod.gateway == 'cash' && order.cash">({{translate('PAY_WITH')}}:{{parsePrice(order.cash)}})</span></p>
+                <p class="color-font-gray">{{ translate('FRONT_MAIN_EMAIL_DELIVERY_TYPE') }}: {{ getOrderTypeAllowed(order.delivery_type) }}</p>
+                <p class="color-font-gray">{{ translate('V3_ORDER_DELIVERY_DATE') }}: {{ parseDate(order.delivery_datetime) }}</p>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border" data-ng-repeat="product in order.products track by $index" data-ng-if="!arabic_rtl">
+                <div class="food-cont color-font-dark">
+                    <div class="float-left badge-cont">{{product.quantity}}</div>
+                    <span class="float-left">{{product.name}}</span>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getProductsTotal(product))}}</p>
+                </div>
+                <p class="color-font-gray food-tail" style="white-space: normal; margin-top: 0px;">
+                    <span data-ng-if="product.ingredients.length > 0">
+                        <strong>{{ translate('Ingredients_V2') }}</strong><br>
+                        <span data-ng-repeat="ingredient in product.ingredients">
+                            {{ translate('NO') }} {{ingredient.name}}<br>
+                        </span>
+                    </span>
+                    <span data-ng-repeat="option in product.options">
+                        <strong>{{option.name}}</strong><br>
+                        <span data-ng-repeat="suboption in option.suboptions">
+                            <span data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                            {{suboption.name}}<span data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{ translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span data-ng-if="Order.getSuboptionTotal(option, suboption) > 0">{{ parsePrice(Order.getSuboptionTotal(option, suboption))}}</span> <br>
+                        </span>
+                    </span>
+                    <span data-ng-if="product.comment">
+                        <strong>{{translate('COMMENTS')}}</strong><br>
+                        {{product.comment}}
+                    </span>
+                </p>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border" data-ng-repeat="product in order.products track by $index" data-ng-if="arabic_rtl" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <div class="food-cont color-font-dark">
+                    <div class="float-right badge-cont">{{product.quantity}}</div>
+                    <span class="float-right span-detail-order">{{product.name}}</span>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getProductsTotal(product)) }}</span></p>
+                </div>
+                <p class="color-font-gray food-tail" style="white-space: normal; margin-top: 0px;">
+                    <span data-ng-if="product.ingredients.length > 0">
+                        <strong>{{ translate('Ingredients_V2') }}</strong><br>
+                        <span data-ng-repeat="ingredient in product.ingredients">
+                            {{ingredient.name}}<br>
+                        </span>
+                    </span>
+                    <span data-ng-repeat="option in product.options">
+                        <strong>{{option.name}}</strong><br>
+                        <span data-ng-repeat="suboption in option.suboptions">
+                            <span data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                            {{suboption.name}}<span data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{ translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span data-ng-if="Order.getSuboptionTotal(option, suboption) > 0">{{ parsePrice(Order.getSuboptionTotal(option, suboption))}}</span> <br>
+                        </span>
+                    </span>
+                    <span data-ng-if="product.comment">
+                        <strong>{{translate('COMMENTS')}}</strong><br>
+                        {{product.comment}}
+                    </span>
+                </p>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <div class="calc-item" data-ng-if="!arabic_rtl">
+                    <p class="color-font-gray float-left">{{ translate('SUBTOTAL') }}</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getSubtotal(order) + ((constants.fix_order_summary && order.tax_type == 1) ? Order.getTax(order) : 0))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl">
+                    <p class="color-font-gray float-right">{{ translate('SUBTOTAL') }}</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(Order.getSubtotal(order) + ((constants.fix_order_summary && order.tax_type == 1) ? Order.getTax(order) : 0))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(order) > 0">
+                    <p class="color-font-gray float-left">{{ translate('APP_DISCOUNT') }} <span class="omit" data-ng-if="order.offer_type == 1">({{order.offer_rate}}%)</span>
+                    <p class="color-main font-small float-right">-{{ parsePrice(Order.getDiscount(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && Order.getDiscount(order) > 0">
+                    <p class="color-font-gray float-right">{{ translate('APP_DISCOUNT') }}
+                    <p class="color-main font-small float-left">-{{ parsePrice(Order.getDiscount(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && (order.tax_type != 1)">
+                    <p class="color-font-gray float-left">{{ translate('Tax_V2') }} ({{order.tax}}%)</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getTax(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && (order.tax_type != 1)">
+                    <p class="color-font-gray float-right">{{ translate('Tax_V2') }} ({{order.tax}}%)</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(Order.getTax(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-left">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(order.delivery_zone_price)}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && order.delivery_type == 1">
+                    <p class="color-font-gray float-right">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(order.delivery_zone_price)}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-left">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }} ({{order.driver_tip}}%)</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getDriverTip(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-right">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }}</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(Order.getDriverTip(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && Order.getServiceFee(order) != 0">
+                    <p class="color-font-gray float-left">{{ translate('SERVICE_FEE_V2') }} ({{order.service_fee}}%)</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getServiceFee(order)) }}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && Order.getServiceFee(order) != 0">
+                    <p class="color-font-gray float-right">{{ translate('SERVICE_FEE_V2') }} ({{order.service_fee}}%)</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(Order.getServiceFee(order)) }}</p>
+                </div>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="!arabic_rtl">
+                <p class="font-large color-font-dark float-left">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+                <p class="font-small color-main float-right">{{ parsePrice(Order.getTotal(order))}}</p>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="arabic_rtl" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <p class="font-large color-font-dark float-right">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+                <p class="font-small color-main float-left">{{ parsePrice(Order.getTotal(order))}}</p>
+            </ion-item>
+            <ion-footer-bar class="color-main-bg footer-style order-detail-footer">
+                <button 
+                    data-ng-if="(order.status == 1 || order.status == 11) && tab == 0 && NEW_FEATURES.REORDER"
+                    class="btn btn-primary" 
+                    data-ng-click="reOrder(order)">{{ translate('REORDER') }}</button>
+                <button 
+                    data-ng-if="tab == 0 && (order.status == 8 || order.status == 9) && ADDONS.drivers_tracking && order.customer.location && order.business.location"
+                    class="btn btn-primary" 
+                    data-ng-click="track()">{{ translate('TRACK_REAL_TIME_POSITION') }}</button>
+            </ion-footer-bar>
+        </div>
+        <div data-ng-if="tab == 1" class="chat">
+            <div class="messages">
+                <div data-ng-repeat="message in messages" class="message {{ message.direction }}">
+                    <div class="content">
+                        <div data-ng-if="message.author && message.type > 1" class="author">{{ message.author.name }}<span data-ng-if="message.direction != 'to'"> ({{ getUserRol(message.author.level) }})</span></div>
+                        <img data-ng-if="message.type==3 || message.type==4 || message.type==5" data-ng-src="{{ message.source }}" class="image">
+                        <div class="image-foot" data-ng-if="message.type==4">{{ translate('DRIVER_SIGNATURE') }}</div>
+                        <div class="image-foot" data-ng-if="message.type==5">{{ translate('CUSTOMER_SIGNATURE') }}</div>
+                        <span data-compile="message.comment"></span>
+                        <div class="date">
+                            {{ getTimeAgo(message.created_at) }}
+                            <div class="tooltip_datetime">{{ getDateAgo(message.created_at) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="send-to">
+                    <div class="check-box" data-ng-click="message.canSee.business=!message.canSee.business">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.business}">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.business"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.business"></i>
+                        </div>
+                        <div class="text">{{ translate('BUSINESS_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.business">
+                    </div>
+                    <div class="check-box" data-ng-click="message.canSee.administrator=!message.canSee.administrator">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.administrator }">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.administrator"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.administrator"></i>
+                        </div>
+                        <div class="text">{{ translate('ADMINISTRATOR_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.administrator">
+                    </div>
+                    <div class="check-box" data-ng-if="order.driver_id" data-ng-click="message.canSee.driver=!message.canSee.driver">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.driver}">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.driver"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.driver"></i>
+                        </div>
+                        <div class="text">{{ translate('DRIVER_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.driver">
+                    </div>
+                </div>
+                <div class="input">
+                    <form data-ng-submit="sendMessage()">
+                        <button type="submit"><i class="fa fa-send"></i></button>
+                        <button data-ng-if="!message.file" type="button" data-ng-click="openChooseFile()">
+                            <i class="fa fa-image"></i>
+                        </button>
+                        <button data-ng-if="message.file" type="button" data-ng-click="clearFile()" class="active">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div class="input">
+                            <input type="text" data-ng-model="message.comment">
+                        </div>
+                        <input style="display: none;" type="file" name="image" id="chat_image" accept="image/png,image/jpg,image/jpeg">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

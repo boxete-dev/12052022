@@ -1,0 +1,466 @@
+<ion-modal-view class="popup no-print full-height">
+    <i class="fa fa-times close no-print" data-ng-click="hide()"></i>
+    <ion-content class="order-detail-cont color-bg popup-mode" ng-class="{'classIsiOSBrowser' : isIOS}" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('FRONT_MAIN_EMAIL_ORDER_NO') }}: {{ order.id }}<span data-ng-if="isEnterpriceAutoassign() && order.logistic_status == 1"> ({{ translate('LOGISTIC_RUNNING') }})</span></span>
+        </ion-item>
+        <ion-item class="item-divider show-print" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('ORDERS_BOX_STATUS_HEADER') }}: {{ getOrderState(order.status*1) }}</span>
+        </ion-item>
+        <button class="btn btn-sm btn-primary" data-ng-click="getLogisticInformation(order.id)">{{ translate('GET_LOGISTIC_INFORMATION') }}</button>
+        <div class="webtabs">
+            <div class="tab" data-ng-class="{ 'active': tab == 0 }" data-ng-click="changeTab(0)">
+                {{ translate('DETAILS') }}
+            </div>
+            <div class="tab" data-ng-class="{ 'active': tab == 1 }" data-ng-click="changeTab(1)">
+                {{ translate('MESSAGES') }}<span data-ng-if="order.unread_count > 0"> ({{ order.unread_count }})</span>
+            </div>
+            <div class="tab" data-ng-if="isEnterpriceAutoassign()" data-ng-class="{ 'active': tab == 2 }" data-ng-click="changeTab(2)">
+                {{ translate('LOGS') }}
+            </div>
+        </div>
+        <div data-ng-if="tab == 0">
+            <ion-item class="item-divider no-print" data-ng-class="{'arabic_rtl': arabic_rtl}" style="padding-bottom: .2rem;">
+                <div class="form editable">
+                    <div class="group">
+                        <div class="w50" select-content>
+                            <label>{{ translate('STATUS') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.status" data-ng-change="changeStatus(order, order.status)">
+                                <!-- <option value="">{{ translate('SELECT_STATE') }}</option> -->
+                                <option data-ng-repeat="state in status | orderBy:sortByStatus" value="{{state.id}}" data-ng-selected="state.id == order.status" data-ng-disabled="(['3', '6', '8', '9', '10', '11', '12', '14', '18', '19', '22', '23'].includes(state.id) && order.delivery_type != 1) || (['15', '17', '20', '21'].includes(state.id) && order.delivery_type == 1)">{{state.value}}</option>
+                            </select>
+                        </div><!--
+                        --><div class="w50" data-ng-if="order.delivery_type == 1 && !order.driver_company_id && !order.external_driver_id" select-content>
+                            <label>{{ translate('DRIVER') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.driver_id" data-ng-change="changeDriver(order, order.driver_id)">
+                                <option value="" data-ng-selected="!order.driver_id" disabled>{{ translate('SELECT_DRIVER') }}</option>
+                                <option data-ng-if="order.driver_id" value="-1">{{ translate('REMOVE_DRIVER') }}</option>
+                                <option data-ng-repeat="user in filteredDrivers" value="{{user.id}}" data-ng-selected="user.id == order.driver_id" data-ng-disabled="!user.available || user.busy">{{user.id}}. {{user.name}} {{user.lastname}} {{ user.busy?'('+translate('BUSY')+')':'' }} ({{ user.assigned_orders_count }} {{ translate('ASSIGNED_ORDERS') }})</option>
+                            </select>
+                        </div><!--
+                        --><div class="w50" data-ng-if="order.delivery_type == 2 && isEnterpriceAutoassign()">
+                            <label>{{ translate('PRIORITY') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.priority" data-ng-change="changePriority(order, order.priority)">
+                                <option value="" disabled>{{ translate('SELECT_PRIORITY') }}</option>
+                                <option value="2">{{ translate('URGENT') }}</option>
+                                <option value="1">{{ translate('HIGH') }}</option>
+                                <option value="0">{{ translate('NORMAL') }}</option>
+                                <option value="-1">{{ translate('LOW') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form editable" data-ng-if="isEnterpriceAutoassign() && order.delivery_type == 1">
+                    <div class="group" select-content>
+                        <div class="w50" data-ng-if="!order.driver_company_id && !order.external_driver_id">
+                            <label>{{ translate('ORDER_GROUP') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.order_group_id" data-ng-change="changeOrderGroup(order, order.order_group_id)">
+                                <option value="" disabled>{{ translate('SELECT_ORDER_GROUP') }}</option>
+                                <option data-ng-if="order.order_group_id" value="-1">{{ translate('REMOVE_ORDER_GROUP') }}</option>
+                                <option data-ng-repeat="order_group in order_groups | ogfilter:order.order_group_id" value="{{order_group.id+''}}" data-ng-selected="order_group.id == order.order_group_id" data-ng-disabled="order_group.id == order.order_group_id">{{ translate('GROUP') }} #{{order_group.id}} ({{ order_group.id != order.order_group_id?order_group.orders_count+' '+translate('ORDERS'):translate('CURRENT') }})</option>
+                                <!-- <option data-ng-repeat="order_group in getOrderGroupByBusiness(order.business_id, order.order_group_id)" value="{{order_group.id+''}}" data-ng-selected="order_group.id == order.order_group_id" data-ng-disabled="order_group.id == order.order_group_id">{{ translate('GROUP') }} #{{order_group.id}} ({{ order_group.id != order.order_group_id?order_group.orders_count+' '+translate('ORDERS'):translate('CURRENT') }})</option> -->
+                            </select>
+                        </div><!--
+                        --><div class="w50">
+                            <label>{{ translate('PRIORITY') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.priority" data-ng-change="changePriority(order, order.priority)">
+                                <option value="" disabled>{{ translate('SELECT_PRIORITY') }}</option>
+                                <option value="2">{{ translate('URGENT') }}</option>
+                                <option value="1">{{ translate('HIGH') }}</option>
+                                <option value="0">{{ translate('NORMAL') }}</option>
+                                <option value="-1">{{ translate('LOW') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form editable" data-ng-if="isEnterpriceAutoassign() && order.delivery_type == 1 && !driver.driver_id && !order.order_group_id">
+                    <div class="group" select-content>
+                        <div class="w50">
+                            <label>{{ translate('DRIVER_COMPANY') }}</label>
+                            <select class="editable" style="width: 100%;" data-ng-model="order.driver_company_id" data-ng-change="changeDriverCompany(order, order.driver_company_id)" data-ng-disabled="order.external_driver_id">
+                                <option value="" disabled>{{ translate('SELECT_DRIVER_COMPANY') }}</option>
+                                <option data-ng-if="order.driver_company_id" value="-1">{{ translate('REMOVE_DRIVER_COMPANY') }}</option>
+                                <option data-ng-repeat="driver_company in driver_companies" value="{{ driver_company.id+'' }}" data-ng-selected="driver_company.id == order.driver_company_id" data-ng-disabled="driver_company.id == order.driver_company_id">{{ driver_company.id }}. {{ driver_company.name }} {{ driver_company.busy?'('+translate('BUSY')+')':'' }}</option>
+                            </select>
+                        </div><!--
+                        --><div class="w50" data-ng-if="order.external_driver_id">
+                            <label>{{ translate('EXTERNAL_DRIVER') }}</label>
+                            <div style="font-size: 15px; line-height: 24px;">
+                                {{ order.external_driver.id }}. {{ order.external_driver.name }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            <div style="padding: 0 .5rem 2rem .5rem;" data-ng-if="ADDONS.metafields_editor">
+                <div class="group">
+                    <label>{{ translate('CUSTOM_FIELDS') }}</label>
+                    <div class="custom_files" data-ng-repeat="item in order.metafields track by $index">
+                        <div class="c_field">
+                            <div class="col-xs-3">
+                                    <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="input">
+                                    <form>
+                                        <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="input has_action">
+                                    <form>
+                                        <ng-container data-ng-if="isBoolVal(item.value_type)">
+                                            <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                                        </ng-container>
+                                        <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                                            <div class="txt_wrapper">{{ item.value }}</div>
+                                        </ng-container>
+                                        <button class="editable" data-ng-click="removeOrderCustom(item)"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="custom_files">
+                        <div class="c_field">
+                            <div class="col-xs-3">
+                                <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                                </select>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="input">
+                                    <form>
+                                        <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="input has_action">
+                                    <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                                        <select class="editable" data-ng-model="newField.value">
+                                            <option value="1">True</option>
+                                            <option value="0">False</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                                        <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event)">
+                                        <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                                    </ng-container>
+                                    <button class="editable" data-ng-click="addOrderCustom(menu)"><i class="fa fa-plus-circle"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-item">
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_NAME') }}</div>
+                    <div class="col col-50">{{ order.customer.name }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.middle_name">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MIDDLE_NAME') }}</div>
+                    <div class="col col-50">{{ order.customer.middle_name }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.lastname">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('FRONT_VISUALS_LAST_NAME') }}</div>
+                    <div class="col col-50">{{ order.customer.lastname }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.second_lastname">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('SECOND_LASTNAME') }}</div>
+                    <div class="col col-50">{{ order.customer.second_lastname }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('FRONT_VISUALS_EMAIL') }}</div>
+                    <div class="col col-50">{{ order.customer.email }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.dropdown_option">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_CITY') }}</div>
+                    <div class="col col-50">{{ order.customer.dropdown_option.city.name }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.dropdown_option">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('DROPDOWN_OPTION') }}</div>
+                    <div class="col col-50">{{ order.customer.dropdown_option.name }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_FULL_ADDRESS') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.address }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.internal_number">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('INTERNAL_NUMBER') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.internal_number }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_NOTES') }}</div>
+                    <div class="col col-50 multiline">{{ order.customer.address_notes }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="order.customer.zipcode && order.customer.zipcode != ''">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_VISUALS_ZIP') }}</div>
+                    <div class="col col-50">{{ order.customer.zipcode }}</div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">{{ translate('MOBILE_FRONT_PHONE_NUMBER') }}</div>
+                    <div class="col col-50">{{ !order.customer.country_phone_code ? "" : "+" }}{{ order.customer.country_phone_code }} {{ order.customer.cellphone }}</div>
+                </div>
+            </ion-item>
+            <ion-item data-ng-if="ADDONS.user_reviews">
+                <div class="row font-small" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                    <div class="col col-50">
+                        <div class="review" data-ng-style="{'padding-top': (order.user_review)?'5px':'15px'}">
+                                {{toReview.title}}
+                            <i data-ng-if="order.user_review" class="fa fa-star" aria-hidden="true" data-ng-repeat="index in rangeReview()" data-ng-class="{ 'selected': (toReview.selected > index || toReview.review >= index) }"></i>
+                            <i data-ng-if="!order.user_review" class="fa fa-star" aria-hidden="true" data-ng-repeat="index in rangeReview()" data-ng-mouseover="paintStars(toReview, index)" data-ng-mouseleave="paintStars(toReview, 0)" data-ng-class="{ 'selected': (toReview.selected > index || toReview.review >= index) }" data-ng-click="chooseReview(toReview, index-1)"></i>
+
+                        </div>
+                    </div>
+                    <div class="col col-50">
+                        <div class="col col-xs-8">
+                            <textarea data-ng-if="!order.user_review" data-ng-model="toReview.comment" cols="30" rows="2" placeholder="{{translate('COMMENT')}}"></textarea>
+                            <div data-ng-if="order.user_review">{{ order.user_review.comment }}</div>
+                        </div>
+                        <div class="col col-xs-4" data-ng-if="!order.user_review">
+                            <button class="btn btn-primary" style="padding: 2px 10px; height: auto; margin-top: 12px;" data-ng-click="sendReview(order, toReview)">{{ translate('SAVE') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            </div>
+            <p class="ht-3"></p>
+            <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <p class="color-font-dark padding-top-5">{{ order.business.name}} <span class="color-main" data-ng-if="order.business.phone">({{ translate('PHONE') }} {{order.business.phone}}<span data-ng-if="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}) </span></p>
+                <p class="color-font-gray multiline">
+                    <strong>{{ translate('FRONT_MAIN_PAYMENT_METHOD') }}</strong> <span>
+                        {{ translate(order.paymethod.gateway.toUpperCase()) }}
+                        <span data-ng-if="order.paymethod.gateway == 'stripe' || order.paymethod.gateway == 'stripe_direct' || order.paymethod.gateway == 'stripe_connect' || order.paymethod.gateway == 'stripe_redirect'">
+                            (<a target="_blank" href="https://dashboard.stripe.com/payments/{{order.pay_data}}">{{order.pay_data}}</a>)
+                            <strong data-ng-if="order.refund_data">(Refunded)</strong>
+                            <strong data-ng-if="!order.refund_data">(Success)</strong>
+                        </span>
+                        <span data-ng-if="order.paymethod.gateway == 'cash' && order.cash">
+                            ({{ translate('PAY_WITH')}}:{{parsePrice(order.cash)}})
+                        </span>
+                    </span>
+                </p>
+                <p class="color-font-gray"><strong>{{ translate('FRONT_MAIN_EMAIL_DELIVERY_TYPE') }}:</strong> 
+                    <span data-ng-if="order.delivery_type==1">{{ translate('DELIVERY')}}</span>
+                    <span data-ng-if="order.delivery_type==2">{{ translate('PICKUP')}}</span>
+                    <span data-ng-if="order.delivery_type==3">{{ translate('EATIN')}}</span>
+                    <span data-ng-if="order.delivery_type==4">{{ translate('CURBSIDE')}}</span>
+                    <span data-ng-if="order.delivery_type==5">{{ translate('DRIVER_THRU')}}</span>
+                </p>
+                <p class="color-font-gray"><strong>{{ translate('V3_ORDER_DELIVERY_DATE') }}:</strong> {{ parseDate(order.delivery_datetime) }}</p>
+                <p class="color-font-gray"><strong>{{ translate('ADDRESS') }}:</strong> {{ order.business.address }}</p>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border" data-ng-repeat="product in order.products track by $index">
+                <div class="food-cont color-font-dark">
+                    <div class="float-left badge-cont">{{product.quantity}}</div>
+                    <span class="float-left">{{product.name}}</span>
+                    <p class="color-main font-small float-right">{{parsePrice(Order.getProductsTotal(product))}}</p>
+                </div>
+                <p class="color-font-gray food-tail" style="white-space: normal; margin-top: 0px;">
+                    <span data-ng-if="product.ingredients.length > 0">
+                        <strong>{{translate('Ingredients_V2')}}</strong><br>
+                        <span data-ng-repeat="ingredient in product.ingredients">
+                            {{ translate('NO') }} {{ingredient.name}}
+                            <br>
+                        </span>
+                    </span>
+                    <span data-ng-repeat="option in product.options">
+                        <strong>{{option.name}}</strong><br>
+                        <span data-ng-repeat="suboption in option.suboptions">
+                            <span data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                            {{suboption.name}}<span data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{ translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span data-ng-if="Order.getSuboptionTotal(option, suboption) > 0">{{parsePrice(Order.getSuboptionTotal(option, suboption))}}</span> 
+                            <br>
+                        </span>
+                    </span>
+                    <span class="omit" data-ng-if="product.comment">
+                        <strong>{{translate('COMMENTS')}}</strong><br>
+                        {{product.comment}}
+                    </span>
+                </p>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <div class="calc-item" data-ng-if="!arabic_rtl">
+                    <p class="color-font-gray float-left">{{ translate('SUBTOTAL') }}</p>
+                    <p class="color-main font-small float-right">{{parsePrice(Order.getSubtotal(order) + ((constants.fix_order_summary && order.tax_type == 1) ? Order.getTax(order) : 0))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl">
+                    <p class="color-font-gray float-right">{{ translate('SUBTOTAL') }}</p>
+                    <p class="color-main font-small float-left">{{parsePrice(Order.getSubtotal(order) + ((constants.fix_order_summary && order.tax_type == 1) ? Order.getTax(order) : 0))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(order) > 0">
+                    <p class="color-font-gray float-left">{{ translate('APP_DISCOUNT') }} <span data-ng-if="order.offer_type == 1">({{order.offer_rate}}%)</span><!-- (<span data-ng-if="order.data.discounttype == 2">{{currency}}</span>{{order.data.discountrate}} <span data-ng-if="order.data.discounttype == 1">%</span>)--></p>
+                    <p class="color-main font-small float-right">-{{parsePrice(Order.getDiscount(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && (ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(order) > 0">
+                    <p class="color-font-gray float-right">{{ translate('APP_DISCOUNT') }} <span data-ng-if="order.offer_type == 1">({{order.offer_rate}}%)</span><!-- (<span data-ng-if="order.data.discounttype == 2">-{{currency}}</span>{{order.data.discountrate}} <span data-ng-if="order.data.discounttype == 1">%</span>)--></p>
+                    <p class="color-main font-small float-left">-{{parsePrice(Order.getDiscount(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && (order.tax_type != 1)">
+                    <p class="color-font-gray float-left">{{ translate('Tax_V2') }} ({{order.tax}}%)</p>
+                    <p class="color-main font-small float-right">{{parsePrice(Order.getTax(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && (order.tax_type != 1)">
+                    <p class="color-font-gray float-right">{{ translate('Tax_V2') }} ({{order.tax}}%)</p>
+                    <p class="color-main font-small float-left">{{parsePrice(Order.getTax(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-left">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+                    <p class="color-main font-small float-right">{{parsePrice(order.delivery_zone_price)}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-right">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</p>
+                    <p class="color-main font-small float-left">{{parsePrice(order.delivery_zone_price)}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-left">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }} ({{order.driver_tip}}%)</p>
+                    <p class="color-main font-small float-right">{{parsePrice(Order.getDriverTip(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && order.delivery_type == 1">
+                    <p class="color-font-gray float-right">{{ translate('CONTROL_PANEL_USER_DRIVER') }} {{ translate('TRACKORDER_TIPS') }} ({{order.driver_tip}}%)</p>
+                    <p class="color-main font-small float-left">{{parsePrice(Order.getDriverTip(order))}}</p>
+                </div>
+                <div class="calc-item" data-ng-if="!arabic_rtl && Order.getServiceFee(order) != 0">
+                    <p class="color-font-gray float-left">{{ translate('SERVICE_FEE_V2') }} ({{order.service_fee}}%)</p>
+                    <p class="color-main font-small float-right">{{ parsePrice(Order.getServiceFee(order)) }}</p>
+                </div>
+                <div class="calc-item" data-ng-if="arabic_rtl && Order.getServiceFee(order) != 0">
+                    <p class="color-font-gray float-right">{{ translate('SERVICE_FEE_V2') }} ({{order.service_fee}}%)</p>
+                    <p class="color-main font-small float-left">{{ parsePrice(Order.getServiceFee(order)) }}</p>
+                </div>
+                <div class="h-line-grey"></div>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="!arabic_rtl" style="padding-bottom: 0em!important;">
+                <p class="font-large color-font-dark float-left">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+                <p class="font-small color-main float-right">{{parsePrice(Order.getTotal(order))}}</p>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="arabic_rtl" data-ng-class="{'arabic_rtl': arabic_rtl}" style="padding-bottom: 0em!important;">
+                <p class="font-large color-font-dark float-right">{{ translate('TRACKORDER_TOTAL_VALUE') }}</p>
+                <p class="font-small color-main float-left">{{parsePrice(Order.getTotal(order))}}</p>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="!arabic_rtl && order.comment">
+                <p class="color-font-gray">
+                    <strong>{{translate('COMMENTS')}}:</strong>
+                    <span>{{order.comment}}</span>
+                </p>
+            </ion-item>
+            <ion-item class="padding-5 no-border total-item" data-ng-if="arabic_rtl && order.comment" data-ng-class="{'arabic_rtl': arabic_rtl}">
+                <p class="color-font-gray">
+                    <strong>{{translate('COMMENTS')}}:</strong>
+                    <span>{{order.comment}}</span>
+                </p>
+            </ion-item>
+            <div class="no-print text-center">
+                <button data-ng-if="ADDONS.stripe_refund && !order.refund_data && (order.paymethod.gateway == 'stripe' || order.paymethod.gateway == 'stripe_direct' || order.paymethod.gateway == 'stripe_connect' || order.paymethod.gateway == 'stripe_redirect')" class="btn btn-primary" data-ng-click="refund(order)">{{ translate('REFUND') }}</button>
+                <button data-ng-if="ADDONS.stripe_refund && order.refund_data" class="btn btn-primary" style="background: #999;border-color: #999" disabled="disabled">{{ translate('REFUNDED') }} Refunded</button>
+                <button class="btn btn-primary" onclick="window.print()">{{ translate('PRINT') }}</button>
+            </div>
+        </div>
+        <div data-ng-if="tab == 1" class="chat">
+            <div class="messages">
+                <div data-ng-repeat="message in messages" class="message {{ message.direction }}">
+                    <div class="content">
+                        <div data-ng-if="message.author && message.type > 1" class="author">{{ message.author.name }} ({{ getUserRol(message.author.level) }})</div>
+                        <img data-ng-if="message.type==3 || message.type==4 || message.type==5" data-ng-src="{{ message.source }}" class="image">
+                        <div class="image-foot" data-ng-if="message.type==4">{{ translate('DRIVER_SIGNATURE') }}</div>
+                        <div class="image-foot" data-ng-if="message.type==5">{{ translate('CUSTOMER_SIGNATURE') }}</div>
+                        <span data-ng-bind-html="message.comment"></span>
+                        <div class="date">
+                            {{ getTimeAgo(message.created_at) }}
+                            <div class="tooltip_datetime">{{ getDateAgo(message.created_at) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="send-to">
+                    <div class="check-box" data-ng-if="user.level != 2" data-ng-click="message.canSee.business=!message.canSee.business">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.business}">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.business"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.business"></i>
+                        </div>
+                        <div class="text">{{ translate('BUSINESS_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.business">
+                    </div>
+                    <div class="check-box" data-ng-if="user.level != 0" data-ng-click="message.canSee.administrator=!message.canSee.administrator">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.administrator }">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.administrator"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.administrator"></i>
+                        </div>
+                        <div class="text">{{ translate('ADMINISTRATOR_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.administrator">
+                    </div>
+                    <div class="check-box" data-ng-if="user.level != 4 && order.driver_id" data-ng-click="message.canSee.driver=!message.canSee.driver">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.driver}">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.driver"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.driver"></i>
+                        </div>
+                        <div class="text">{{ translate('DRIVER_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.driver">
+                    </div>
+                    <div class="check-box" data-ng-if="user.level != 3" data-ng-click="message.canSee.customer=!message.canSee.customer">
+                        <div class="icon" data-ng-class="{'uncheck': !message.canSee.customer}">
+                            <i class="fa fa-square" data-ng-if="!message.canSee.customer"></i>
+                            <i class="fa fa-check-square" data-ng-if="message.canSee.customer"></i>
+                        </div>
+                        <div class="text">{{ translate('CUSTOMER_ID') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="message.canSee.customer">
+                    </div>
+                </div>
+                <div class="input">
+                    <form data-ng-submit="sendMessage()">
+                        <button type="submit"><i class="fa fa-send"></i></button>
+                        <button data-ng-if="!message.file" type="button" data-ng-click="openChooseFile()">
+                            <i class="fa fa-image"></i>
+                        </button>
+                        <button data-ng-if="message.file" type="button" data-ng-click="clearFile()" class="active">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div class="input">
+                            <input type="text" data-ng-model="message.comment">
+                        </div>
+                        <input style="display: none;" type="file" name="image" id="chat_image" accept="image/png,image/jpg,image/jpeg">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="timeline" data-ng-if="tab == 2 && curOrder.logs">
+            <div class="event" data-ng-repeat="log in curOrder.logs">
+                <div class="content">
+                    <div data-ng-bind-html="parseLog(log)" class="message"></div>
+                    <div class="date">
+                        {{ getTimeAgo(log.created_at) }}
+                        <div class="tooltip_datetime">{{ getDateAgo(log.created_at) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

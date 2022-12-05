@@ -1,0 +1,28 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            {{translate(titleOption)}}
+        </ion-item>
+        <ion-item>
+            <div data-ng-if="videoID == 0" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_CREATE_STORE')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 1" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_ADD_PRODUCT')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 2" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_PRODUCT_OPTION')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 3" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_BUSINESS_SCHEDULE')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 4" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_BUSINESS_MENU')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 5" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_DELIVERY_ZONE')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 6" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_PAYMENT_METHOD')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 7" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_MY_ORDERS')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 8" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_DELIVERY_DASHBOARD')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 9" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_CHECKOUT_FIELDS')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 10" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_LANGUAGE_SETTINGS')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 11" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_EMAILS_SETTINGS')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 12" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_DRIVER_ASSIGMENT_SETTINGS')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 13" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_LANGUAGE_MANAGER')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 14" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_REVIEWS_MANAGER')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 15" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_BUSINESS_INVOICE')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 16" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_DRIVER_INVOICE')) | safeHtml" class="tutorial-video"></div>
+            <div data-ng-if="videoID == 17" data-ng-bind-html="getVideoTutorial(translate('VIDEO_TUTORIAL_STATIC_PAGES_MANAGER')) | safeHtml" class="tutorial-video"></div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>

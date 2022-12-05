@@ -1,0 +1,104 @@
+<div class="container-fluid downloadable-reports-container" style="padding-top: 15px;">
+	<div>
+		<label class="color-primary">{{translate('GENERAL')}} {{translate('FILTERS')}}</label>
+	</div>
+	<div class="flex-space-between">
+		<div class="group_cont group_cont_reports">
+			<p ng-if="isBusinessOwner">{{translate('BUSINESSES_FILTERS')}}</p>
+			<p ng-if="isSuperAdmin">{{translate('BUSINESS_DRIVERS_FILTER')}}</p>
+			<div class="btn-group btn-group-xs" data-toggle="buttons">
+				<label class="btn btn-default" data-ng-click="openBusinessFilter()">
+						{{ translate('BUSINESSES') }} ({{ filters.businesses.length==0?translate('ALL'):filters.businesses.length }})
+				</label>
+				<label class="btn btn-default" data-ng-click="clearBusinessFilter()">
+						<i class="fa fa-times"></i>
+				</label>
+			</div>
+			<div ng-if="isSuperAdmin" class="btn-group btn-group-xs" data-toggle="buttons">
+				<label class="btn btn-default" data-ng-click="openDriverFilter()">
+						{{ translate('DRIVERS') }} ({{ filters.drivers.length==0?translate('ALL'):filters.drivers.length }})
+				</label>
+				<label class="btn btn-default" data-ng-click="clearDriversFilter()">
+						<i class="fa fa-times"></i>
+				</label>
+			</div>
+		</div>
+		<div>
+			<div class="group_cont group_cont_reports">
+				<p for="status">{{translate('ORDER_STATUS_TEXT')}}</p>
+				<select id="status" class="editable" data-ng-model="filters.states">
+					<option value="">{{ translate('ANY_STATUS') }}</option>
+					<option data-ng-repeat="state in status | orderBy: sortByStatus" value="{{state.id}}">{{state.value}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="group_cont group_cont_reports">
+			<p>{{translate('DATES_RANGE')}}</p>
+			<div>
+				<input id="filter-from" class="editable" data-ng-model="filters.from" placeholder="{{ translate('FROM') }}" type="text">
+				<input id="filter-to" class="editable" data-ng-model="filters.to" placeholder="{{ translate('TO') }}" type="text">
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 4rem;"></div>
+	
+	<div>
+		<label class="color-primary">{{translate('HOURS_REPORTS')}}</label>
+	</div>
+	<div class="group_cont group_cont_reports">
+			<p>{{ translate('OPERATOR')}}</p>
+			<select class="editable" data-ng-model="filters.hours.operator" >
+				<option value="">{{ translate('SELECT_OPERATOR') }}</option>
+				<option value="count|orders">{{translate('ORDERS_COUNT')}}</option>
+				<option value="sum|order_total">{{translate('MOBILE_TOTAL_AMOUNT')}}</option>
+			</select>
+			<div class="group_cont_sub">
+				<button class="btn btn-primary toggle download-report-btn" data-ng-click="downloadReport('hours_report')">{{translate('GET_REPORT')}}</button>
+			</div>
+	</div>
+
+	<div style="height: 2rem;"></div>
+
+	<div>
+		<label class="color-primary">{{translate('GROUPING_REPORT')}}</label>
+	</div>
+	<div style="display: flex;">
+		<div class="group_cont group_cont_reports">
+			<p>{{ translate('OPERATOR')}} </p>
+			<select class="editable" data-ng-model="filters.grouping.operator" >
+				<option value="" disabled="true">{{ translate('SELECT_OPERATOR') }}</option>
+				<option value="count|orders">{{translate('ORDERS_COUNT')}}</option>
+				<option value="sum|order_total">{{translate('MOBILE_TOTAL_AMOUNT')}}</option>
+			</select>
+		</div>
+		<div class="group_cont group_cont_reports">
+			<p>{{translate('GROUP_BY')}}</p>
+			<select class="editable" data-ng-model="filters.grouping.group_by" >
+				<option value="">{{ translate('SELECT_GROUP') }}</option>
+				<option value="driver">{{translate('DRIVER')}}</option>
+				<option value="driver_company">{{translate('DRIVER_COMPANY')}}</option>
+				<option value="customer">{{translate('CUSTOMER')}}</option>
+				<option value="driver_group">{{translate('DRIVER_GROUP')}}</option>
+				<option value="app">{{translate('APP')}}</option>
+				<option value="created">{{translate('CREATED')}}</option>
+				<option value="business">{{translate('BUSINESS')}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="group_cont_sub">
+		<button class="btn btn-primary toggle download-report-btn" data-ng-click="downloadReport('grouping_report')">{{translate('GET_REPORT')}}</button>
+	</div>
+
+	<div style="height: 2rem;"></div>
+
+	<div>
+		<label class="color-primary">{{translate('PRODUCTS_REPORT')}}</label>
+	</div>
+	<div>
+	<div class="group_cont_sub">
+		<button class="btn btn-primary toggle download-report-btn" data-ng-click="downloadReport('products_report')">{{translate('GET_REPORT')}}</button>
+	</div>
+
+	<div style="height: 4rem;"></div>
+</div>

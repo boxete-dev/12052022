@@ -1,0 +1,119 @@
+<div data-ng-controller="webhooksSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('WEBHOOKS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterUrl" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems" select-content>
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <!--<div class="p40">
+          <input class="editable" type="text" value="{{ translate('URL') }}" disabled="disabled">
+        </div>-->
+        <!--<div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>-->
+        <div class="dynamic">
+          <input style="width: 40%;" class="editable" type="text" value="{{ translate('URL') }}" disabled="disabled"><!--
+          --><input style="width: 40%;" class="editable" type="text" value="{{ translate('HOOK') }}" disabled="disabled"><!--
+          --><input style="width: 20%;" class="editable" type="text" value="{{ translate('DELAY') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="webhook in webhooks | orderBy:'id*1' | filter:filterUrl | startFrom:((pagination.current-1)*pagination.items) | limitTo:pagination.items">
+        <button data-ng-click="deleteWebhook(webhook)"><i class="fa fa-trash"></i></button>
+        <!--<div class="p40">
+          <input class="editable" type="text" data-ng-model="webhook.url" value="{{ translate('URL') }}" data-ng-change="updateWebhook(webhook)" tabindex="{{($index*2)+3000}}">
+        </div>-->
+        <!--<div class="f50 left">
+          <input class="editable" type="text" data-ng-model="webhook.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>-->
+        <div class="dynamic">
+          <select data-ng-model="webhook.hook" class="editable" style="width: 40%;" data-ng-change="updateWebhook(webhook)" tabindex="{{($index*2)+3000}}" disabled="disabled">
+            <option value="">{{ translate('SELECT_HOOK') }}</option>
+            <option value="users_register">{{ translate('USERS_REGISTER')}}</option>
+            <option value="orders_register">{{ translate('ORDERS_REGISTER') }}</option>
+            <option value="orders_status_updated">{{ translate('ORDERS_STATUS_UPDATED') }}</option>
+            <option value="orders_update_driver">{{ translate('ORDERS_UPDATE_DRIVER') }}</option>
+            <option value="orders_pending">{{ translate('ORDERS_PENDING') }}</option>
+            <option value="orders_completed">{{ translate('ORDERS_COMPLETED') }}</option>
+            <option value="orders_rejected">{{ translate('ORDERS_REJECTED') }}</option>
+            <option value="orders_rejected_business">{{ translate('ORDERS_REJECTED_BUSINESS') }}</option>
+            <option value="orders_rejected_driver">{{ translate('ORDERS_REJECTED_DRIVER') }}</option>
+            <option value="orders_accepted_business">{{ translate('ORDERS_ACCEPTED_BUSINESS') }}</option>
+            <option value="orders_driver_in_business">{{ translate('ORDERS_DRIVER_IN_BUSINESS') }}</option>
+            <option value="orders_ready">{{ translate('ORDERS_READY') }}</option>
+            <option value="orders_accepted_driver">{{ translate('ORDERS_ACCEPTED_DRIVER') }}</option>
+            <option value="orders_pickup_completed_driver">{{ translate('ORDERS_PICKUP_COMPLETED_DRIVER')}}</option>
+            <option value="orders_pickup_failed_driver">{{ translate('ORDERS_PICKUP_FAILED_DRIVER')}}</option>
+            <option value="orders_delivery_completed_driver">{{ translate('ORDERS_DELIVERY_COMPLETED_DRIVER')}}</option>
+            <option value="orders_delivery_failed_driver">{{ translate('ORDERS_DELIVERY_FAILED_DRIVER')}}</option>
+          </select><!--
+          --><input style="width: 40%;" class="editable" type="text" data-ng-model="webhook.url" value="{{ translate('URL') }}" data-ng-change="updateWebhook(webhook)" tabindex="{{($index*2)+3000}}" readonly><!--
+          --><select data-ng-model="webhook.delay" class="editable" style="width: 20%;" data-ng-change="updateWebhook(webhook)" tabindex="{{($index*3)+3000}}">
+            <option value="" disabled>{{ translate('SELECT_DELAY') }}</option>
+            <option value="0">{{ translate('IMMEDIATELY') }}</option>
+            <option value="delivery_time">{{ translate('DELIVERY_TIME') }}</option>
+            <option value="pickup_time">{{ translate('PICKUP_TIME') }}</option>
+            <option value="300">5 {{ translate('MINUTES') }}</option>
+            <option value="600">10 {{ translate('MINUTES') }}</option>
+            <option value="900">15 {{ translate('MINUTES') }}</option>
+          </select>
+        </div>
+      </div>
+      <form class="eitem" data-ng-submit="addWebhook(curWebhook)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <!--<div class="p50">
+          <input class="editable" type="text" data-ng-model="curWebhook.url" placeholder="{{ translate('URL') }}" tabindex="4000">
+        </div>-->
+        <div class="dynamic">
+          <select data-ng-model="curWebhook.hook" class="editable" style="width: 40%;" tabindex="4001">
+            <option value="">{{ translate('SELECT_HOOK') }}</option>
+            <option value="users_register">{{ translate('USERS_REGISTER')}}</option>
+            <option value="orders_register">{{ translate('ORDERS_REGISTER') }}</option>
+            <option value="orders_status_updated">{{ translate('ORDERS_STATUS_UPDATED') }}</option>
+            <option value="orders_update_driver">{{ translate('ORDERS_UPDATE_DRIVER') }}</option>
+            <option value="orders_pending">{{ translate('ORDERS_PENDING') }}</option>
+            <option value="orders_completed">{{ translate('ORDERS_COMPLETED') }}</option>
+            <option value="orders_rejected">{{ translate('ORDERS_REJECTED') }}</option>
+            <option value="orders_rejected_business">{{ translate('ORDERS_REJECTED_BUSINESS') }}</option>
+            <option value="orders_rejected_driver">{{ translate('ORDERS_REJECTED_DRIVER') }}</option>
+            <option value="orders_accepted_business">{{ translate('ORDERS_ACCEPTED_BUSINESS') }}</option>
+            <option value="orders_driver_in_business">{{ translate('ORDERS_DRIVER_IN_BUSINESS') }}</option>
+            <option value="orders_ready">{{ translate('ORDERS_READY') }}</option>
+            <option value="orders_accepted_driver">{{ translate('ORDERS_ACCEPTED_DRIVER') }}</option>
+            <option value="orders_pickup_completed_driver">{{ translate('ORDERS_PICKUP_COMPLETED_DRIVER')}}</option>
+            <option value="orders_pickup_failed_driver">{{ translate('ORDERS_PICKUP_FAILED_DRIVER')}}</option>
+            <option value="orders_delivery_completed_driver">{{ translate('ORDERS_DELIVERY_COMPLETED_DRIVER')}}</option>
+            <option value="orders_delivery_failed_driver">{{ translate('ORDERS_DELIVERY_FAILED_DRIVER')}}</option>
+          </select><!--
+          --><input style="width: 40%;" class="editable" type="text" data-ng-model="curWebhook.url" placeholder="{{ translate('URL') }}" tabindex="4000"><!--
+          --><select data-ng-model="curWebhook.delay" class="editable" style="width: 20%;" tabindex="{{($index*3)+3000}}">
+            <option value="" disabled>{{ translate('SELECT_DELAY') }}</option>
+            <option value="0">{{ translate('IMMEDIATELY') }}</option>
+            <option value="delivery_time">{{ translate('DELIVERY_TIME') }}</option>
+            <option value="pickup_time">{{ translate('PICKUP_TIME') }}</option>
+            <option value="300">5 {{ translate('MINUTES') }}</option>
+            <option value="600">10 {{ translate('MINUTES') }}</option>
+            <option value="900">15 {{ translate('MINUTES') }}</option>
+          </select>
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="pagination.items" data-ng-change="printpages()">
+          <option data-ng-repeat="items in pagination.itemsPerPage" value="{{items}}" data-ng-selected="pagination.items == items">{{items}}</option>
+        </select>
+        {{((pagination.current-1)*pagination.items)+1}}-<span data-ng-if="pagination.current*pagination.items <= webhooks.length">{{pagination.current*pagination.items}}</span><span data-ng-if="pagination.current*pagination.items > webhooks.length">{{webhooks.length}}</span> {{ translate('OF') }} {{webhooks.length}}
+        <i class="fa fa-chevron-left" data-ng-if="pagination.current > 1" data-ng-click="backPage(pagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="pagination.current < pagination.pages" data-ng-click="nextPage(pagination)"></i>
+      </div>
+    </div>
+    <br><br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_WEBHOOKS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_WEBHOOKS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+ <!---Business--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_WEBHOOKS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_WEBHOOKS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

@@ -1,0 +1,10 @@
+<ion-modal-view class="popup gallery">
+	<i class="fa fa-times close" data-ng-click="hideModalImage()"></i>
+	<ion-content class="color-bg popup-mode" overflow-scroll="true">
+		<ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+			<span class="divider-padding no-padding-h">{{curImageTitle}}</span>
+		</ion-item>
+		<br>
+		<img class="image" data-ng-src="{{optimizeImage(curImageZoom)}}">
+	</ion-content>
+</ion-modal-view>

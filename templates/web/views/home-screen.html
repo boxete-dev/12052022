@@ -1,0 +1,96 @@
+  <div class="welcome container-fluid" style="max-width: 100% !important;">
+    <div class="content">
+      <h1 class="title" data-ng-if="MLanguages.HOME_WELCOME_TITLE" style="font-weight:800;">{{ translate('HOME_WELCOME_TITLE') }}</h1>
+      <h1 class="title-preload text-transparent-load" data-ng-if="!MLanguages.HOME_WELCOME_TITLE">Title</h1>
+      <!--<h3 data-ng-if="MLanguages.HOME_WELCOME_SUBTITLE">{{ translate('HOME_WELCOME_SUBTITLE') }}</h3>-->
+      <h3 class="text-transparent-load" data-ng-if="!MLanguages.HOME_WELCOME_SUBTITLE">Subtitle</h3>
+      <div>
+        <!--<div class="form-group col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1" data-ng-show=ADDONS.multilanguage>
+          <select class="form-control" data-ng-model="myOrder.lang.id" data-ng-options="lang.id as lang.langText for lang in LangList | filter:lang.enabled = true" default-option="{{ MLanguages.MOBILE_FRONT_SELECT_YOUR_LANGUAGE }}" data-ng-change="selectLanguage(myOrder.lang.id)"></select>
+        </div>-->
+        <form>
+        
+        <div class="form-group col-md-9 col-md-offset-1 col-sm-10" style="padding: 0;" data-ng-show="SEARCH_BY_ADDRESS">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <i class="fa fa-map-marker"></i>
+            </div>
+            <!--<input type="text" class="form-control" placeholder="{{ MLanguages.MOBILE_FRONT_VISUALS_ADDRESS_OR_ZIPCODE }}" data-ng-class="{cssArabic: $root.arabic_rtl, noncssArabic: !$root.arabic_rtl}" data-ng-model="myOrder.curAddress" class="font-mid input-home" data-ng-change="googleplace_changed()" id="rest-full-address" googleplace="googleplaceCallback()" data-ng-click="onAutoCompleteAddress()" data-ng-focus="openMap()">-->
+            <input type="text" class="form-control home-address" placeholder="{{ translate('MOBILE_FRONT_VISUALS_ADDRESS_OR_ZIPCODE') }}" data-ng-class="{cssArabic: $root.arabic_rtl, noncssArabic: !$root.arabic_rtl}" data-ng-model="myOrder.curAddress" class="font-mid input-home" id="home-address" data-ng-click="openMap()" data-ng-readonly="NEW_FEATURES.MULTI_ADDRESS">
+          </div>
+        </div>
+        <div class="form-group col-md-3 col-md-offset-1 col-sm-10" style="padding: 0;" data-ng-show="ADDONS.pickup" select-content>
+          <select class="form-control" data-ng-model="search.type">
+            <option data-ng-repeat="type in order_types" value="{{type.value}}" data-ng-selected="type.value == search.type"
+							data-ng-if="(type.value == '1') || (type.value == '2' && ADDONS.pickup) || (type.value == '3' && ADDONS.eatin) || (type.value == '4' && ADDONS.curbside) || (type.value == '5' && ADDONS.driver_thru)"
+						>
+              {{type.name}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-md-10 col-md-offset-1 col-sm-10" style="padding: 0;" data-ng-show="!SEARCH_BY_ADDRESS" select-content>
+          <select class="form-control" data-ng-model="myOrder.city" data-ng-change="resetDropdownoption()">
+            <option value="">{{ translate('FRONT_SELECT_CITY') }}</option>
+            <option data-ng-repeat="city in cities | orderBy:'name'" value="{{city.id}}">
+              {{city.name}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-md-10 col-md-offset-1 col-sm-10" style="padding: 0;" data-ng-if="!SEARCH_BY_ADDRESS && myOrder.city != ''" select-content>
+          <select class="form-control" data-ng-model="myOrder.dropdownoption">
+            <option value="">{{ translate('FRONT_SELECT_NEIBORHOOD') }}</option>
+            <option data-ng-repeat="dropdownoption in dropdownoptions | filter:{enabled:true} | orderBy:'name'" data-ng-if="myOrder.city == dropdownoption.city_id || dropdownoption.id == ''" value="{{dropdownoption.id}}">
+              {{dropdownoption.name}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group content-left col-md-10 col-md-offset-1 col-sm-10" style="padding: 0;">
+          <button type="submit" class="btn btn-primary" data-ng-click="findRest()">
+            {{ translate('NEW_MOBILE_HOME_START_FIND_RESTAURANT') }}
+          </button>
+        </div>
+        </form>
+      </div>
+      <div class="clean"></div>
+    </div>
+  </div>
+  <p>{{CUSTOM_HOME_CONTENT}}</p>
+  <script type="text/javascript">
+    function randomImage() {
+      var images = [
+        'https://boxetekitchen.tryordering.com/templates/web/img/custom/home-background-kfood.png', 'https://boxetekitchen.tryordering.com/templates/web/img/custom/home-main-banner.png'
+      ];
+      var size = images.length;
+      var x = Math.floor(size * Math.random());
+      console.log(x);
+      var element = document.getElementsByClassName("welcome");
+      console.log(element);
+      element[0].style["background-image"] = "url(" + images[x] + ")";
+    }
+    
+    document.addEventListener("DOMContentLoaded", randomImage);
+    </script>
+    <style>
+    
+      .navbar {
+      position: absolute;
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid transparent;
+      }
+      @media (max-width: 750px){
+      .navbar {
+      position: relative;
+      min-height: 50px;
+      border: 1px solid transparent;
+        }
+      }
+      @media (min-width: 768px){
+      .navbar-right {
+          background-color: white;
+          border-radius: 30px;
+       }
+      }
+  </style>
+<div data-ng-show="!NEW_FEATURES.CUSTOM_HOME_CONTENT" data-ng-include src="rootTheme+'/views/home-content.html'"></div>
+<div data-ng-show="NEW_FEATURES.CUSTOM_HOME_CONTENT" id="home-content"></div>

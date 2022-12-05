@@ -1,0 +1,122 @@
+<div data-ng-controller="businessTypesEditorCtrl">
+	<div class="col-sm-12">
+		<br />
+
+		<div class="business-type-t-e color-main">
+			{{translate('BUSINESS_TYPES')}}
+		</div>
+
+		<div class="form editable">
+			<div class="group">
+				<label>{{ translate('FILTER') }}</label>
+				<input data-ng-model="filterBusinessType" class="editable" type="text" placeholder="{{ translate('SEARCH') }}" data-ng-change="updateFilteredBusinessTypes()" />
+			</div>
+		</div>
+		<div class="eitems">
+			<div class="eitem title" style="display: flex">
+				<div class="f50 left">
+					<input
+						class="editable"
+						type="text"
+						value="{{ translate('ID') }}"
+						disabled="disabled"
+					/>
+				</div>
+
+				<div class="dynamic" style="width: 90%">
+					<input
+						class="editable"
+						type="text"
+						value="{{ translate('NAME') }}"
+						disabled="disabled"
+					/>
+				</div>
+				<button style="visibility: hidden"><i class="fa fa-trash"></i></button>
+			</div>
+
+			<div
+				class="eitem fixdir"
+				data-ng-repeat="businessType in filteredBusinessTypes | orderBy:'id*1' | startFrom:((businessTypesPagination.current-1)*businessTypesPagination.items) | limitTo:businessTypesPagination.items"
+				style="display: flex"
+			>
+				<div class="f50 left">
+					<input
+						class="editable"
+						type="text"
+						data-ng-model="businessType.id"
+						value="{{ translate('ID') }}"
+						disabled="disabled"
+					/>
+				</div>
+				<div class="dynamic" style="width: 90%">
+					<input
+						class="editable"
+						type="text"
+						data-ng-model="businessType.name"
+						data-ng-change="updateBusinessType(businessType)"
+						tabindex="{{($index*2)+3000}}"
+					/>
+				</div>
+				<div class="f50">
+					<label class="toggle xs toggle-balanced">
+						<input
+							type="checkbox"
+							data-ng-model="businessType.enabled"
+							data-ng-change="updateBusinessType(businessType)"
+						/>
+						<div class="track">
+							<div class="handle"></div>
+						</div>
+					</label>
+				</div>
+				<button data-ng-click="editBusinessType(businessType)">
+					<i class="fa fa-edit"></i>
+				</button>
+				<button data-ng-click="removeBusinessType(businessType)">
+					<i class="fa fa-trash"></i>
+				</button>
+			</div>
+
+			<div class="eitem">
+				<form data-ng-submit="editBusinessType(newBusinessType)">
+					<button type="submit"><i class="fa fa-plus-circle"></i></button>
+					<div class="dynamic">
+						<input
+							class="editable"
+							type="text"
+							data-ng-model="newBusinessType.name"
+							placeholder="{{ MLanguages.BUSINESS_TYPE_SUBCATEGORY }}"
+							tabindex="4000"
+						/>
+					</div>
+				</form>
+			</div>
+			<div class="pages" style="margin-bottom: 20px">
+				{{ translate('ITEMS_PER_PAGES') }}:
+				<select data-ng-model="businessTypesPagination.items">
+					<option data-ng-repeat="items in businessTypesPagination.itemsPerPage" value="{{items}}" data-ng-selected="businessTypesPagination.items == items">
+						{{items}}
+					</option>
+				</select>
+				{{((businessTypesPagination.current-1)*businessTypesPagination.items)+1}} <span data-ng-if="businessTypesPagination.current*businessTypesPagination.items <= filteredBusinessTypes.length">
+					- {{businessTypesPagination.current*businessTypesPagination.items}}
+				</span
+				><span
+					data-ng-if="businessTypesPagination.current*businessTypesPagination.items > filteredBusinessTypes.length"
+					>{{filteredBusinessTypes.length}}</span
+				>
+				{{ translate('OF') }} {{filteredBusinessTypes.length}}
+				<i
+					class="fa fa-chevron-left"
+					data-ng-if="businessTypesPagination.current > 1"
+					data-ng-click="backPage(businessTypesPagination)"
+				></i>
+				<i
+					class="fa fa-chevron-right"
+					data-ng-if="businessTypesPagination.current < businessTypesPagination.pages"
+					data-ng-click="nextPage(businessTypesPagination)"
+				></i>
+			</div>
+		</div>
+	</div>
+</div>

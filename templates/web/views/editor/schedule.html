@@ -1,0 +1,59 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('SCHEDULE') }}</span>
+        </ion-item>
+        <div focus-group="" focus-group-index="3">
+            <div data-ng-repeat="day in [0,1,2,3,4,5,6]">
+                <ion-item>
+                    <button class="btn-accordion" data-ng-click="changeDay($index)">
+                        <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ getWeekdayName($index) }}</span>
+                        <div class="float-right icon-more-down"></div>
+                    </button>
+                </ion-item>
+                <div class="sub-accordion" data-ng-if="curDay == $index">
+                    <!--{{ schedule[$index] }}-->
+                    <div class="form editable">
+                        <ion-item class="detail-item schedule editable">
+                            <span class="float-left mg-top-sm">{{ getWeekdayName($index) }}</span>
+                            <span class="float-right">
+                                <ion-checkbox class="checkbox-item xs inline" data-ng-model="schedule[$index].enabled" data-ng-change="autosave && save()">
+                                    {{ translate('MOBILE_ENABLED') }}
+                                </ion-checkbox>
+                            </span>
+                        </ion-item>
+                        <table class="table" data-ng-if="schedule[$index].lapses && schedule[$index].lapses.length > 0">
+                            <thead style="font-weight: bold;">
+                                <tr>
+                                    <th>#</th>
+                                    <th>{{ translate('LAPSE') }}</th>
+                                    <th><button class="btn btn-primary btn-sm" data-ng-click="add(schedule[$index])">{{translate('ADD')}}</button></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="lapse in schedule[$index].lapses">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{parseTime(lapse.open)}} - {{parseTime(lapse.close)}}</td>
+                                    <td>
+                                        <i class="fa fa-edit" data-ng-click="edit($index)"></i>
+                                        <i class="fa fa-trash" data-ng-click="remove($index)" data-ng-if="schedule[curDay].lapses.length > 1"></i> 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="!autosave">
+            <br>
+            <center>
+                <button class="btn btn-primary" data-ng-click="save()">{{ translate('SAVE').toUpperCase() }}</button>
+            </center>
+        </div>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_SCHEDULE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_SCHEDULE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_SCHEDULE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_SCHEDULE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

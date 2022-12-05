@@ -1,0 +1,30 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hide()"></i>
+  <ion-content class="color-bg popup-mode" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('PAYMENTS_METHODS') }}</span>
+    </ion-item>
+    <!-- <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+      <span class="divider-padding no-padding-h">Extra options</span>
+    </ion-item> -->
+    <ion-item>
+      <div class="extras editor">
+        <div class="extra" data-ng-repeat="paymethod in paymethods" ng-hide="(!ADDONS.stripeconnect_payment && paymethod.gateway == 'stripe_connect') || (!ADDONS.striperedirect_payment.enable && paymethod.gateway == 'stripe_redirect') || (!ADDONS.authorize_payment && paymethod.gateway == 'authorize') || (!ADDONS.paypal_express_payment && paymethod.gateway == 'paypal_express') || (!ADDONS.stripedirect_payment && paymethod.gateway == 'stripe_direct') || (!ADDONS.stripe_payment && paymethod.gateway == 'stripe')">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="paymethod.enabled" data-ng-change="changeStatePaymethod(paymethod)">
+          </ion-checkbox>
+          <div class="buttons" data-ng-if="paymethod.credentials && paymethod.gateway != 'cash' && paymethod.gateway != 'stripe' && paymethod.gateway != 'card_delivery'">
+          <!-- <div class="buttons" data-ng-if="(ADDONS.metafields_editor || (paymethod.gateway != 'cash' && paymethod.gateway != 'stripe' && paymethod.gateway != 'card_delivery')) && paymethod.credentials"> -->
+            <button data-ng-click="showPaymentsMethodSettings(paymethod)"><i class="fa fa-edit"></i> {{ translate('MORE') }}</button>
+          </div>
+          <div class="input" data-ng-click="paymethod.enabled=!paymethod.enabled;changeStatePaymethod(paymethod)">
+            <input class="editable" type="text" data-ng-model="paymethod.name" disabled="disabled" style="cursor: pointer;">
+          </div>
+        </div>
+      </div>
+    </ion-item>
+    <!-- <br> data-ng-if="paymethod.more && paymethod.credentials" -->
+    <!-- <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="updateProduct(curProduct)">Save</button> -->
+  </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_PAYMENT_GATEWAY')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_PAYMENT_GATEWAY')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_PAYMENT_GATEWAY')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_PAYMENT_GATEWAY')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

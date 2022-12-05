@@ -1,0 +1,197 @@
+<div data-ng-controller="placesSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('COUNTRY') }}</h3>
+    <!-- <div class="form editable">
+      <div class="group">
+          <label>{{ translate('FILTER') }}</label>
+          <input data-ng-model="filterCou" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div> -->
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="f50">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="country in countries | orderBy:'id*1' | filter:filterCou | startFrom:((coupagination.current-1)*coupagination.items) | limitTo:coupagination.items">
+        <!-- <button data-ng-click="removeCountry(country)"><i class="fa fa-trash"></i></button> -->
+        <!-- <button data-ng-click="showNeighborhoodSettings(country)"><i class="fa fa-edit"></i></button> -->
+        <!-- <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="country.enabled" data-ng-change="updateCountry(country, true)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+ -->        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="country.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="country.name" value="{{ translate('NAME') }}" data-ng-change="updateCountry(country)" tabindex="{{($index*1)+1000}}">
+        </div>
+      </div>
+      <div class="eitem" data-ng-if="countries.length == 0">
+        <form data-ng-submit="addCountry(curCountry)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curCountry.name" placeholder="{{ translate('NAME') }}" tabindex="2000}}">
+        </div>
+        </form>
+      </div>
+      <!-- <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="coupagination.items">
+          <option data-ng-repeat="items in coupagination.itemsPerPage" value="{{items}}" data-ng-selected="coupagination.items == items">{{items}}</option>
+        </select>
+        {{((coupagination.current-1)*coupagination.items)+1}}-<span data-ng-if="coupagination.current*coupagination.items <= countries.length">{{coupagination.current*coupagination.items}}</span><span data-ng-if="coupagination.current*coupagination.items > countries.length">{{countries.length}}</span> {{ translate('OF') }} {{countries.length}}
+        <i class="fa fa-chevron-left" data-ng-if="coupagination.current > 1" data-ng-click="backPage(coupagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="coupagination.current < coupagination.pages" data-ng-click="nextPage(coupagination)"></i>
+      </div> -->
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('CITIES') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterCit" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+        <button style="visibility: hidden;"><i class="fa fa-edit"></i></button>
+        <div class="f50">&nbsp;</div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <!--<div class="p40">
+          <input class="editable" type="text" value="{{ translate('COUNTRY') }}" disabled="disabled">
+        </div>-->
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="city in cities | orderBy:'id*1' | filter:filterCit | startFrom:((citpagination.current-1)*citpagination.items) | limitTo:citpagination.items">
+        <button data-ng-click="removeCity(city)" data-ng-if="!ADDONS.limit_cities"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showCitySettings(city)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="city.enabled" data-ng-change="changeCity(city, true)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <!--<div class="p40">
+          <select data-ng-model="city.country" class="editable" style="width: 100%;" data-ng-change="changeCity(city)" tabindex="{{($index*2)+3001}}">
+            <option value="">{{ translate('SELECT_COUNTRY') }}</option>
+            <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="city.country == country.id">{{country.name}}</option>
+          </select>
+        </div>-->
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="city.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="city.name" value="{{ translate('NAME') }}" data-ng-change="changeCity(city)" tabindex="{{($index*2)+3000}}">
+        </div>
+      </div>
+      <div class="eitem" data-ng-if="!ADDONS.limit_cities">
+        <form data-ng-submit="showCitySettings(curCity)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <!--<div class="p50">
+          <select data-ng-model="curCity.country_id" class="editable" style="width: 100%;" tabindex="4001">
+            <option value="">{{ translate('SELECT_COUNTRY') }}</option>
+            <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="curCity.country_id == country.id">{{country.name}}</option>
+          </select>
+        </div>-->
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curCity.name" placeholder="{{ translate('NAME') }}" tabindex="4000">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="citpagination.items">
+          <option data-ng-repeat="items in citpagination.itemsPerPage" value="{{items}}" data-ng-selected="citpagination.items == items">{{items}}</option>
+        </select>
+        {{((citpagination.current-1)*citpagination.items)+1}}-<span data-ng-if="citpagination.current*citpagination.items <= cities.length">{{citpagination.current*citpagination.items}}</span><span data-ng-if="citpagination.current*citpagination.items > cities.length">{{cities.length}}</span> {{ translate('OF') }} {{cities.length}}
+        <i class="fa fa-chevron-left" data-ng-if="citpagination.current > 1" data-ng-click="backPage(citpagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="citpagination.current < citpagination.pages" data-ng-click="nextPage(citpagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DROPDOWN_OPTIONS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+          <label>{{ translate('FILTER') }}</label>
+          <input data-ng-model="filterNeig" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="f50">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="dropdownoption in dropdownoptions | orderBy:'id*1' | filter:filterNeig | startFrom:((neigpagination.current-1)*neigpagination.items) | limitTo:neigpagination.items">
+        <button data-ng-click="removeNeighborhood(dropdownoption)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showNeighborhoodSettings(dropdownoption)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="dropdownoption.enabled" data-ng-change="updateNeighborhood(dropdownoption)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="dropdownoption.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="dropdownoption.name" value="{{ translate('NAME') }}" data-ng-change="updateNeighborhood(dropdownoption)" tabindex="{{($index*1)+1000}}">
+        </div>
+      </div>
+      <div class="eitem">
+        <form data-ng-submit="showNeighborhoodSettings(curNeighborhood)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curNeighborhood.name" placeholder="{{ translate('NAME') }}" tabindex="2000">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="neigpagination.items">
+          <option data-ng-repeat="items in neigpagination.itemsPerPage" value="{{items}}" data-ng-selected="neigpagination.items == items">{{items}}</option>
+        </select>
+        {{((neigpagination.current-1)*neigpagination.items)+1}}-<span data-ng-if="neigpagination.current*neigpagination.items <= dropdownoptions.length">{{neigpagination.current*neigpagination.items}}</span><span data-ng-if="neigpagination.current*neigpagination.items > dropdownoptions.length">{{dropdownoptions.length}}</span> {{ translate('OF') }} {{dropdownoptions.length}}
+        <i class="fa fa-chevron-left" data-ng-if="neigpagination.current > 1" data-ng-click="backPage(neigpagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="neigpagination.current < neigpagination.pages" data-ng-click="nextPage(neigpagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn btnHelpGuides  btnHelp btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_COUNTRIES_CITIES')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_COUNTRIES_CITIES')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn btnHelpGuides btnHelp btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_COUNTRIES_CITIES')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_COUNTRIES_CITIES')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

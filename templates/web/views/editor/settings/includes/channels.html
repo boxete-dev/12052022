@@ -1,0 +1,63 @@
+<div data-ng-controller="channelsSettingsEditorCtrl">
+  <div class="col-sm-12" data-ng-if="ADDONS.editor_channel_modal_widget">
+    <br>
+    <h3 class="h3">{{ translate('INTEGRATION_WEBSITE') }} ({{ translate('POPUP') }})</h3>
+    <br><br>
+    <div class="form editable" select-content>
+      <div>
+        <label>{{ translate('TYPE_MODAL') }}</label><br>
+        <select class="editable" style="width: 100%;" data-ng-model="type">
+          <option value="modal">{{ translate('TYPE_MODAL_POPUP') }}</option>
+          <option value="chat">{{ translate('TYPE_MODAL_CHAT') }}</option>
+        </select>
+        <br><br>
+      </div>
+      <div>
+        <label>1. {{ translate('INSERT_ON_END_BODY') }}</label>
+        <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;button onclick="toggleOrderingWidget()"&gt;Open widget&lt;/button&gt;</textarea>
+        <br>
+      </div>
+      <div>
+        <label>2. {{ translate('INSERT_ON_END_BODY') }} ({{ translate('IF_USED_PAYPALEXPRESS') }})</label>
+        <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;script src="https://www.paypalobjects.com/api/checkout.js"&gt;&lt;/script&gt;</textarea>
+        <br>
+      </div>
+      <div data-ng-if="type == 'modal'">
+        <label>3. {{ translate('INSERT_ON_END_BODY') }}</label>
+        <textarea data-ng-model="widget_popup" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+      </div>
+      <div data-ng-if="type == 'chat'">
+        <label>3. {{ translate('INSERT_ON_END_BODY') }}</label>
+        <textarea data-ng-model="widget_bot" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12" data-ng-if="ADDONS.editor_channel_inline">
+    <br>
+    <h3 class="h3">{{ translate('INTEGRATION_WEBSITE') }} ({{ translate('INLINE') }})</h3>
+    <br><br>
+    <div class="form editable">
+      <div>
+        <label>1. {{ translate('INSERT_ON_END_BODY') }} ({{ translate('IF_USED_PAYPALEXPRESS') }})</label>
+        <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;script src="https://www.paypalobjects.com/api/checkout.js"&gt;&lt;/script&gt;</textarea>
+        <br>
+      </div>
+      <div>
+        <label>2. {{ translate('INSERT_ON_DIV_DISPLAY') }}</label>
+        <textarea data-ng-model="widget_inline" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+      </div>
+      <br>
+      <div>
+        <label>3. .htaccess</label>
+        <textarea rows="2" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">RewriteEngine On
+RewriteRule ^inline/(.+)$ /inline/ [NC,L] #where inline is the folder</textarea>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_CREATESTORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_ORDERING_CHANNELS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MYSTORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_ORDERING_CHANNELS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

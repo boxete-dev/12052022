@@ -1,0 +1,436 @@
+<div class="container-fluid full">
+  <div class="col-lg-9 col-md-8 col-sm-8 full form pre-checkout">
+    <form class="form-horizontal usr_info">
+      <div class="form-group" select-content>
+        <label class="col-sm-3 control-label">{{ translate('USER_DETAILS') }}</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" placeholder="{{ translate('MOBILE_CHECKOUT_NAME') }}"
+            data-ng-model="buyer.name" data-ng-if="checkoutfields.name.enabled"
+            data-ng-class="{'invalid': errors.name.status }" data-ng-change="errors.name.status = false">
+          <input type="text" class="form-control" placeholder="{{ translate('MOBILE_CHECKOUT_MIDDLENAME') }}"
+            data-ng-model="buyer.middle_name" data-ng-if="checkoutfields.middle_name.enabled"
+            data-ng-class="{'invalid': errors.middle_name.status }" data-ng-change="errors.middle_name.status = false">
+          <input type="text" class="form-control" placeholder="{{ translate('MOBILE_CHECKOUT_LASTNAME') }}"
+            data-ng-model="buyer.lastname" data-ng-if="checkoutfields.lastname.enabled"
+            data-ng-class="{'invalid': errors.lastname.status }" data-ng-change="errors.lastname.status = false">
+          <input type="text" class="form-control" placeholder="{{ translate('MOBILE_CHECKOUT_SECOND_LASTNAME') }}"
+            data-ng-model="buyer.second_lastname" data-ng-if="checkoutfields.second_lastname.enabled"
+            data-ng-class="{'invalid': errors.second_lastname.status }"
+            data-ng-change="errors.second_lastname.status = false">
+          <input type="text" class="form-control" placeholder="{{ translate('MOBILE_CHECKOUT__EMAIL') }}"
+            data-ng-model="buyer.email" data-ng-if="checkoutfields.email.enabled"
+            data-ng-change="buyer.email = buyer.email.toLowerCase();errors.email.status = false"
+            data-ng-class="{'invalid': errors.email.status }">
+          <p class="help-error" data-ng-if="errors.email.status && errors.email.message">{{ errors.email.message }}</p>
+          <input type="tel" class="form-control" placeholder="{{ translate('MOBILE_FRONT_PHONE_NUMBER') }}"
+            data-ng-model="buyer.cellphone" data-ng-if="checkoutfields.mobile_phone.enabled"
+            data-ng-class="{'invalid': errors.mobile_phone.status }" data-ng-change="errors.mobile_phone.status = false"
+            onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+          <p class="help-error" data-ng-if="errors.mobile_phone.status && errors.mobile_phone.message">{{
+            errors.mobile_phone.message }}</p>
+          <div data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+            <select class="form-control" id="city-field" data-ng-model="buyer.city_id"
+              data-ng-if="checkoutfields.city_dropdown_option.enabled"
+              data-ng-change="buyer.dropdown_option_id = ''; errors.city.status = false"
+              data-ng-class="{'invalid': errors.city.status }">
+              <option value="" data-ng-selected="!buyer.city_id || buyer.city_id == ''">
+                {{ translate('FRONT_SELECT_CITY') }}
+              </option>
+              <option data-ng-repeat="city in cities | orderBy:'name'" value="{{city.id}}"
+                data-ng-selected="city.id == buyer.city_id" data-ng-if="city.options.length > 0">
+                {{city.name}}
+              </option>
+            </select>
+
+            <select class="form-control" id="neiborhood-field" data-ng-model="buyer.dropdown_option_id"
+              data-ng-if="buyer.city_id > 0 && checkoutfields.city_dropdown_option.enabled"
+              data-ng-class="{'invalid': errors.dropdown_option.status }"
+              data-ng-change="changeDropdownopton();errors.dropdown_option.status = false">
+              <option value="" data-ng-selected="!buyer.dropdown_option_id || buyer.dropdown_option_id == ''">
+                {{ translate('FRONT_SELECT_NEIBORHOOD') }}
+              </option>
+              <option
+                data-ng-repeat="dropdownoption in dropdownoptions | filter:{city_id: buyer.city_id} | filter:{enabled: true} | orderBy:'name'"
+                value="{{dropdownoption.id}}" data-ng-selected="dropdownoption.id == buyer.dropdown_option_id">
+                {{dropdownoption.name}}
+              </option>
+            </select>
+            <input type="text" id="address_checkout" class="form-control"
+              placeholder="{{ translate('MOBILE_CHECKOUT_FULL_ADDRESS') }}" data-ng-model="buyer.address" googleplace
+              data-ng-click="onAutoCompleteAddress()" data-ng-focus="showCheckAddress()" data-ng-search-disabled="true"
+              data-ng-autocomplete-disabled="{{ADDONS.check_address_checkout}}"
+              data-ng-if="checkoutfields.address.enabled" data-ng-class="{'invalid': errors.address.status }"
+              data-ng-change="errors.address.status = false">
+            <input type="text" class="form-control" placeholder="{{ translate('MOBILE_ZIP_POSTAL_CODE') }}"
+              data-ng-model="buyer.zipcode" data-ng-if="checkoutfields.zipcode.enabled"
+              data-ng-class="{'invalid': errors.zipcode.status }" data-ng-change="errors.zipcode.status = false">
+            <textarea class="form-control" rows="2" placeholder="{{ translate('MOBILE_FRONT_ORDER_COMMENT_HINT') }}"
+              data-ng-model="buyer.address_notes" data-ng-if="checkoutfields.address_notes.enabled"
+              data-ng-class="{'invalid': errors.address_notes.status }"
+              data-ng-change="errors.address_notes.status = false"></textarea>
+          </div>
+
+        </div>
+      </div>
+      <div class="form-group address" select-content data-ng-if="NEW_FEATURES.MULTI_ADDRESS">
+        <label class="col-sm-3 control-label">{{ translate('ADDRESS') }}</label>
+        <div class="col-sm-9">
+          <img data-ng-if="order.type == 1" class="map" data-ng-src="{{ getStaticMapByAddress(curAddress) }}"
+            style="width: 100%;">
+          <img data-ng-if="order.type == 2 || order.type == 3 || order.type == 4 || order.type == 5" class="map"
+            data-ng-src="{{ getStaticMapByAddress(curAddress, business) }}" style="width: 100%;">
+          <div class="info">
+            <div class="action" data-ng-if="order.type == 1">
+              <button data-ng-click="openChangeAddress()" class="btn btn-sm" type="button">{{ translate('CHANGE')
+                }}</button>
+            </div>
+            <div class="address">
+              <p class="main">
+                {{ curAddress.address }}
+              </p>
+              <p class="extra" data-ng-if="order.type == 1">
+                {{ translate(curAddress.tag.toUpperCase()) }}<span data-ng-if="curAddress.internal_number"> &dot; {{
+                  curAddress.internal_number }}</span>
+              </p>
+            </div>
+          </div>
+          <input type="text" class="form-control" placeholder="{{ translate('INTERNAL_NUMBER') }}"
+            data-ng-model="curAddress.internal_number"
+            data-ng-if="order.type == 1 && !curAddress.id && addressfields.internal_number.enabled"
+            data-ng-class="{'invalid': errors.internal_number.status }"
+            data-ng-change="errors.internal_number.status = false">
+          <textarea class="form-control" rows="2" placeholder="{{ translate('ADDRESS_NOTES') }}"
+            data-ng-model="curAddress.address_notes"
+            data-ng-if="order.type == 1 && !curAddress.id && addressfields.address_notes.enabled"
+            data-ng-class="{'invalid': errors.address_notes.status }"
+            data-ng-change="errors.address_notes.status = false"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label" ng-if="order.type == 1">{{ translate('MENU_LIST_DELIVERY_TIME') }}</label>
+        <label class="col-sm-3 control-label"
+          ng-if="order.type == 2 || order.type == 3 || order.type == 4 || order.type == 5">{{
+          translate('ESTIMATED_PICKUP_TIME') }}</label>
+        <div class="col-sm-9">
+          <p data-ng-if="!ADDONS.preorder">{{ translate('MOBILE_CHECKOUT_ASAP') }}</p>
+          <!-- <p data-ng-if="preorder.menu"> -->
+          <!-- {{ preorder }} -->
+          <div class="selects" data-ng-if="preorder.menu_id && ADDONS.preorder && !checkASAP" select-content>
+            <select class="form-control s50" data-ng-model="preorder.date"
+              data-ng-change="changePreorderDatetime(true)">
+              <option data-ng-repeat="day in preorder.days" value="{{day.value}}"
+                data-ng-selected="preorder.date == day.value || preorder.date == day.text">{{day.text}}</option>
+            </select>
+            <!--
+                --><select class="form-control s50" data-ng-model="preorder.time"
+              data-ng-change="changePreorderDatetime()">
+              <option data-ng-repeat="time in preorder.times" value="{{time.value}}"
+                data-ng-selected="preorder.time == time.value">{{time.text}}</option>
+            </select>
+          </div>
+          <div class="selects" data-ng-if="!preorder.menu_id && ADDONS.preorder && !checkASAP" select-content>
+            <select class="form-control s50" data-ng-model="wopreorder.date"
+              data-ng-change="wopreorder.time = '';changeWopreorderDatetime(true)">
+              <option value="">{{ translate('PREORDER_STEP_2_DATE') }}</option>
+              <option data-ng-repeat="day in wopreorder.dates" value="{{day.value}}"
+                data-ng-selected="wopreorder.date == day.value">{{day.text}}</option>
+            </select>
+            <!--
+                --><select class="form-control s50" data-ng-model="wopreorder.time"
+              data-ng-change="changeWopreorderDatetime()">
+              <option value="">{{ translate('PREORDER_STEP_2_TIME') }}</option>
+              <option data-ng-repeat="time in wopreorder.times" value="{{time.value}}"
+                data-ng-selected="wopreorder.time == time.value">{{time.text}}</option>
+            </select>
+          </div>
+          <div style="margin-top: 7px;" data-ng-if="ADDONS.preorder">
+            <input id="checkasap" type="checkbox" style="height: 14px; width: 14px;" data-ng-model="checkASAP"
+              data-ng-change="changeCheckASAP(checkASAP)">
+            <label style="vertical-align: middle;" for="checkasap" ng-if="order.type == 1">{{
+              translate('MOBILE_CHECKOUT_ASAP') }}<span data-ng-if="dateASAP != ''"> ({{dateASAP}} + {{
+                translate('ASAP_DELIVERY_TIME') }})</span></label> <label for="checkasap"
+              ng-if="order.type == 2 || order.type == 3 || order.type == 4 || order.type == 5">{{
+              translate('MOBILE_CHECKOUT_ASAP') }}<span data-ng-if="dateASAP != ''"> ({{dateASAP}} + {{
+                translate('ASAP_PICKUP_TIME') }})</span></label>
+          </div>
+          <!-- </p> -->
+        </div>
+      </div>
+      <div class="form-group" id="paymethods" data-ng-class="{'invalid': errors.paymethod.status}">
+        <label class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_PAYMENT_METHOD') }}</label>
+        <!--  -->
+        <div class="col-sm-9 modal popup inline" data-ng-style="{'display': 'block', 'left': 'auto', 'right': 'auto'}"
+          data-ng-if="mcartdata1.length >1">
+          <div class="popup-mode">
+            <ng-container data-ng-repeat="item in paymethods | orderBy:'id*1'" data-ng-if="item.gateway == 'cash'">
+              <ion-radio class="radio-item" name="gateway"
+                data-ng-style="{}"
+                data-ng-value="item.gateway" data-ng-model="gateway" data-ng-click="onPaymethod(item)"
+                data-ng-if="item.gateway != 'authorize'">
+                <div class="row">
+                  <span class="float-left dynamic-radio"></span>
+                  <p class="float-left">{{ translate(item.gateway.toUpperCase()) }}</p>
+                  <p class="float-right icon"><img data-ng-cache data-ng-src={{item.img}}></p>
+                </div>
+              </ion-radio>
+              <div data-ng-if="item.gateway == 'cash'"
+                data-ng-style="{}">
+                <input id="cash_amount" name="cash_amount" placeholder="{{translate('HOW_MUCH_CASH_AMOUNT')}}"
+                  type="number" data-ng-blur="onBlurAmount($event)" data-ng-style="{'border':'0'}">
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-sm-9 modal popup inline" data-ng-style="{'display': 'block', 'left': 'auto', 'right': 'auto'}"
+          data-ng-if="mcartdata1.length ==1">
+          <div class="popup-mode">
+            <ng-container data-ng-repeat="item in paymethods | orderBy:'id*1'">
+              <ion-radio class="radio-item" name="gateway"
+                data-ng-style="{}"
+                data-ng-value="item.gateway" data-ng-model="gateway" data-ng-click="onPaymethod(item)"
+                data-ng-if="item.gateway != 'authorize'">
+                <div class="row">
+                  <span class="float-left dynamic-radio"></span>
+                  <p class="float-left">{{ translate(item.gateway.toUpperCase()) }}</p>
+                  <p class="float-right icon"><img data-ng-cache data-ng-src={{item.img}}></p>
+                </div>
+              </ion-radio>
+              <div data-ng-if="item.gateway == 'cash'"
+                data-ng-style="{}">
+                <input id="cash_amount" name="cash_amount" placeholder="{{translate('HOW_MUCH_CASH_AMOUNT')}}"
+                  type="number" data-ng-blur="onBlurAmount($event)" data-ng-style="{'border':'0'}">
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <!--  -->
+      </div>
+      <div class="form-group" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1">
+        <label class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_DRIVER_TIP') }}:
+          <br><span>{{parsePrice(cart_data.driver_tip)}}</span></label>
+        <div class="col-sm-9">
+          <div class="diver-type checkout" id="driver-tip">
+            <div class="button-bar border-none-b">
+              <ion-radio name="driver_tip" data-ng-repeat="driver_tip in driver_tips" data-ng-value="driver_tip.value"
+                data-ng-model="order.driver_tip" data-ng-click="refreshCartData()" class="h-radio-bar">
+                <span class="float-left dynamic-radio"></span>
+                <span class="text-radio">{{driver_tip.text}}</span>
+              </ion-radio>
+            </div>
+
+            <div class="color-font-placeholder pd-top-4">{{ translate('MOBILE_FRONT_GOES_TO_YOUR_DRIVER') }}</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-3 full cart bordered">
+    <div class="order">
+      <div data-ng-mouseover="orderType = order.type" class="right"
+        data-ng-if="(ADDONS.pickup || ADDONS.eatin || ADDONS.curbside || ADDONS.driver_thru) && order.type">
+        <select id="myorderselectChek" class="form-control order-type border-primary color-primary "
+          data-ng-model="orderType" data-ng-change="changeOrderType(orderType)"
+          style="width: 60%; display: inline-block;">
+          <option value="1" class="item" data-ng-class="{'diselected': orderType != 1}">{{ translate('DELIVERY') }}
+          </option>
+          <option value="2" class="item" data-ng-class="{'diselected': orderType != 2}" data-ng-if="ADDONS.pickup">{{
+            translate('PICKUP') }}</option>
+          <option value="3" class="item" data-ng-class="{'diselected': orderType != 3}" data-ng-if="ADDONS.eatin">{{
+            translate('EATIN') }}</option>
+          <option value="4" class="item" data-ng-class="{'diselected': orderType != 4}" data-ng-if="ADDONS.curbside">{{
+            translate('CURBSIDE') }}</option>
+          <option value="5" class="item" data-ng-class="{'diselected': orderType != 5}" data-ng-if="ADDONS.driver_thru">
+            {{ translate('DRIVER_THRU') }}</option>
+        </select>
+        <!-- <div class="switcher">
+            <input type="radio" name="order_type" value="1" id="delivery" class="switcher__input switcher__input--one" data-ng-model="order.type">
+            <label for="_delivery" class="switcher__label" data-ng-click="changeOrderType(1)">{{ translate('DELIVERY') }}</label>
+            <input type="radio" name="order_type" value="2" id="pickup" class="switcher__input switcher__input--two" data-ng-model="order.type">
+            <label for="_pickup" class="switcher__label"  data-ng-click="changeOrderType(2)">{{ translate('PICKUP') }}</label>
+            <span class="switcher__toggle"></span>
+          </div> -->
+      </div>
+      <h3>{{translate('Your_order_V2')}}</h3>
+      <div data-ng-if="cart.length == 0">
+        <img data-ng-src="{{rootTheme}}/img/empty-cart.png">
+        <p>{{translate('YOUR_ORDER_IS_EMPTY')}}</p>
+      </div>
+      {{dishe.total}}
+      <div data-ng-repeat="mcart in mcartdata1">
+        <div data-ng-if="cart.length > 0">
+          {{mcart.name}}<br>
+          <h3 class="back-edit-order" data-ng-click="backEditOrder(mcart.slug)">{{translate('ORDER_TAB_REORDER_EDIT')}}
+          </h3>
+          <!--{{ translate('MINIMUM_ORDER') }}: {{ item.minimum  | number:DECIMAL.length | separator}}<br>-->
+          <!--<button class="btn btn-primary" data-ng-click="onFinalCheckOut()">
+              {{ translate('MOBILE_FRONT_CHECKOUT') }}
+          </button>-->
+          <table class="tbl_cart_list" data-ng-if="cart_ready">
+            <tr data-ng-repeat="mproduct in mcart.cartdata track by $index">
+              <td class="highlighted">{{ mproduct.quantity }}</td>
+              <td colspan="2">
+                {{mproduct.name}}<br>
+                <p class="options" data-ng-if="(mproduct.ingredients | filter: { selected: false }).length > 0">
+                  <strong>{{ translate('Ingredients_V2') }}</strong>
+                  <span data-ng-repeat="ingredient in mproduct.ingredients | filter: { selected: false }">
+                    <br>
+                    {{ translate('NO') }} {{ingredient.name}}
+                  </span>
+                </p>
+                <p class="options" data-ng-repeat="option in mproduct.options">
+                  <strong>{{option.name}}</strong>
+                  <span data-ng-repeat="suboption in option.suboptions">
+                    <br>
+                    {{suboption.name}}&nbsp;&nbsp;&nbsp;&nbsp;<span
+                      data-ng-if="suboption.price > 0">{{parsePrice(suboption.price)}}</span>
+                  </span>
+                </p>
+                <p class="options" data-ng-repeat="option in mproduct.extended_options">
+                  <strong>{{option.name}}</strong>
+                  <span data-ng-repeat="suboption in option.suboptions">
+                    <br>
+                    <span data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity
+                      }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                    {{suboption.name}}<span data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{
+                      translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span
+                      data-ng-if="(suboption.position != 'whole' && suboption.half_price > 0) || (suboption.position == 'whole' && suboption.price > 0)">{{parsePrice((suboption.position!='whole'?suboption.half_price:suboption.price)*suboption.quantity)}}</span>
+                  </span>
+                </p>
+                <p class="options" data-ng-if="mproduct.comment">
+                  <strong>{{translate('COMMENTS')}}</strong><br>
+                  {{mproduct.comment}}
+                </p>
+              </td>
+              <!--<td>
+                <i class="fa fa-pencil edit" aria-hidden="true" data-ng-click="onClickEdit(dishe)"></i>
+                <i class="fa fa-times remove" aria-hidden="true" data-ng-click="onClickRemove(dishe)"></i>
+              </td>-->
+              <td>{{ parsePrice(mproduct.total) }}</td>
+            </tr>
+            <tr class="fees">
+              <td colspan="3">{{ translate('SUBTOTAL') }}</td>
+              <td>{{ parsePrice(mcart.subtotal + ((constants.fix_order_summary && business.tax_type == 1) ?
+                cart_data.tax : 0)) }}</td>
+            </tr>
+            <tr class="fees" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && mcart.discount > 0">
+              <td colspan="3">{{ translate('APP_DISCOUNT') }} <span
+                  data-ng-if="mcart.offer.rate_type == 1">({{mcart.offer.rate}}%)</span>
+                <!-- (<span data-ng-if="curBusiness.discounttype == 2">{{currency}}</span>{{curBusiness.discountrate}} <span data-ng-if="curBusiness.discounttype == 1">%</span>)-->
+              </td>
+              <td>- {{ parsePrice(mcart.discount) }}</td>
+            </tr>
+            <tr class="fees" data-ng-if="business.tax_type == 2">
+              <td colspan="3">{{ translate('Tax_V2') }} ({{business.tax}}%)</td>
+              <td>{{ parsePrice(mcart.tax_price) }}</td>
+            </tr>
+            <tr class="fees" data-ng-if="order.type == 1">
+              <td colspan="3">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+              <td>{{parsePrice(mcart.delivery_price)}}</td>
+            </tr>
+            <!-- <tr class="fees" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1 && order.driver_tip!=-1" >
+              <td colspan="3">{{ translate('MOBILE_FRONT_DRIVER_TIP') }} ({{order.driver_tip}}%)</td>
+              <td>{{ parsePrice(mcart.driver_tip) }}</td>
+            </tr> -->
+            <tr class="fees" data-ng-if="business.service_fee != 0">
+              <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ business.service_fee }}%)</td>
+              <td>{{ parsePrice(mcart.service_fee_price) }}</td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <div class="flexContainer discount-container">
+                  <!-- data-ng-model="order.coupon[mcart.id]" data-ng-change="checkCoupon('change')" -->
+                  <input type="text" id="coupon_{{mcart.id}}" class="form-control border-primary discount-field"
+                    placeholder="{{ translate('MOBILE_CHECKOUT_DISCOUNT_COUPON') }}"
+                    data-ng-model="order.coupon[mcart.id]" data-ng-change="checkCoupon('change')"
+                    data-ng-readonly="order.offer"
+                    data-ng-if="ADDONS.discount_code && checkoutfields.coupon.enabled && (!order.offer || order.offer.type == 2)"
+                    data-ng-class="{'invalid': errors.coupon.status }">
+                  <button type="button" data-ng-click="checkCoupon({{ mcart.id}})"
+                    class="btn btn-primary btn-primary-code discount-btn"
+                    data-ng-if="ADDONS.discount_code && checkoutfields.coupon.enabled && (!order.offer || order.offer.type == 2)">{{
+                    translate('FRONT_VISUALS_APPLY')}}</button>
+                </div>
+                <p class="help-error">{{errors.coupon.message}}</p>
+              </td>
+            </tr>
+            <tr>
+              <!-- <td>{{cart_data.quantity}}</td> -->
+              <td>
+                {{ translate('TRACKORDER_TOTAL_VALUE') }}
+              </td>
+              <td>
+              </td>
+              <td>
+              </td>
+              <td>{{parsePrice(mcart.totalPrice)}}</td>
+            </tr>
+          </table>
+
+
+          <!-- <table>
+            <tr>
+              <td></td>
+              <td>
+                {{ translate('GRAND_TOTAL') }}
+              </td>
+              <td>
+              </td>
+              <td>{{parsePrice(allTotal)}}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                {{ translate('DELIVERY_TOTAL') }}
+              </td>
+              <td>
+              </td>
+              <td>{{parsePrice( sumDelv )}}</td>
+            </tr>
+          </table> -->
+
+        </div>
+      </div>
+
+      <!-- <table>
+        <tr>
+          <td></td>
+          <td>
+            {{ translate('GRAND_TOTAL') }}
+          </td>
+          <td>
+          </td>
+          <td>{{parsePrice(allTotal)}}</td>
+        </tr>
+        <tr>
+              <td></td>
+              <td>
+                {{ translate('DELIVERY_TOTAL') }}
+              </td>
+              <td>
+              </td>
+              <td>{{parsePrice( sumDelv )}}</td>
+            </tr>
+      </table> -->
+
+      <div id="paypal-button-container" style="margin-top: 15px;" ng-if="isPaypal"></div>
+
+      <div id="confirm" style="display: none;" ng-if="isPaypal">
+        <button id="confirmButton" class="btn btn-primary" data-ng-disabled="disableConfirmPayment">{{
+          translate('COMPLETE_PAYMENT') }}</button>
+      </div>
+      <button class="btn btn-primary" data-ng-click="onPlace()" data-ng-if="!isPaypal && !placing && partnerExt ==1">
+        {{ translate('MOBILE_BUSINESS_LIST_PLACE_ORDER') }}
+      </button>
+      <button class="btn btn-primary" data-ng-click="onPlaceOrg()" data-ng-if="!isPaypal && !placing && partnerExt ==0">
+        {{ translate('MOBILE_BUSINESS_LIST_PLACE_ORDER') }}
+      </button>
+      <button class="btn btn-primary" data-ng-if="placing && !isPaypal">
+        {{ translate('LOADING') }}...
+      </button>
+      <br>
+      <span class="fees" data-ng-if="placing">{{translate('ORDER_RELOAD_MESSAGE')}}</span>
+      <span
+        data-ng-if="errors.name.status || errors.lastname.status || errors.email.status || errors.address.status || errors.zipcode.status || errors.mobile_phone.status || errors.address_notes.status || errors.internal_number.status || (errors.coupon.status && checkoutfields.coupon.required && checkoutfields.coupon.enabled) || errors.city.status || errors.dropdown_option.status || errors.paymethod.status">{{translate('MOBILE_FILL_REQUIRED_FIELDS')}}</span>
+    </div>
+  </div>
+</div>

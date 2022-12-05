@@ -1,0 +1,51 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hide()"></i>
+  <ion-content class="order-cont popup-mode" overflow-scroll="false">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+        <span class="divider-padding no-padding-h" data-ng-if="!create_order">{{translate('MOBILE_MYACCOUNT_MY_ADDRESS')}}</span>
+        <span class="divider-padding no-padding-h" data-ng-if="create_order">{{translate('CREATE_ORDER')}}</span>
+    </ion-item>
+    <div class="form form-popup full">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <div class="col-sm-12" select-content>
+            <div class="col-xs-12" data-ng-if="ADDONS.pickup">
+              <select class="form-control" data-ng-model="order_data.type">
+                <option data-ng-repeat="order_type in order_types" value="{{order_type.type}}" data-ng-selected="order_data.type == order_type.type"
+									data-ng-if="(order_type.type == '1') || (order_type.type == '2' && ADDONS.pickup) || (order_type.type == '3' && ADDONS.eatin) || (order_type.type == '4' && ADDONS.curbside) || (order_type.type == '5' && ADDONS.driver_thru)"
+								>
+                  {{order_type.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-xs-12" data-ng-if="create_order">
+              <input id="cellphone-input" type="text" class="form-control" data-ng-model="curDataOrder.cellphone" placeholder="{{translate('MOBILE_NUMBER')}}" data-ng-change="searchByMobile(curDataOrder.cellphone, 'cellphone-input', order_data)" data-ng-focus="searchByMobile(curDataOrder.cellphone, 'cellphone-input', order_data)" autocomplete="off">
+              <div class="autocomplete"></div>
+            </div>
+            <div class="col-xs-12" data-ng-if="SEARCH_BY_ADDRESS || (create_order && SEARCH_BY_ADDRESS)">
+              <input type="text" class="form-control" data-ng-change="errors.address=false" data-ng-model="order_data.address" placeholder="{{translate('MOBILE_FRONT_VISUALS_ADDRESS_OR_ZIPCODE')}}" id="check-address" data-ng-focus="map()" data-ng-search-disabled="true">
+              <p class="help-error" data-ng-if="errors.address">{{ translate('ADDRESS_IS_REQUIRED') }}</p>
+            </div>
+            <div class="col-xs-12" data-ng-if="!SEARCH_BY_ADDRESS || (create_order && !SEARCH_BY_ADDRESS)">
+              <select class="form-control" data-ng-model="order_data.city" data-ng-change="selectCity(curDataOrder.curCity)">
+                <option value="">{{ translate('FRONT_SELECT_CITY') }}</option>
+                <option data-ng-repeat="city in cities | orderBy:'name'" value="{{city.id}}" data-ng-selected="city.id == order_data.city">
+                  {{city.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-xs-12" data-ng-if="(!SEARCH_BY_ADDRESS  || (create_order && !SEARCH_BY_ADDRESS)) && order_data.city != ''">
+              <select class="form-control" data-ng-model="order_data.dropdownoption">
+                <option value="">{{ translate('FRONT_SELECT_NEIBORHOOD') }}</option>
+                <option data-ng-repeat="dropdownoption in dropdownoptions | filter:{enabled: true} | orderBy:'name'" value="{{dropdownoption.id}}" data-ng-selected="dropdownoption.id == order_data.dropdownoption" data-ng-if="dropdownoption.city_id == order_data.city || dropdownoption.id == ''">
+                  {{dropdownoption.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="check()">{{translate('CHECK_ADDRESS')}}</button>
+    </ion-content>
+</ion-modal-view>

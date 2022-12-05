@@ -1,0 +1,22 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('ORDER_TYPES_ALLOWED') }}</span>
+					</ion-item>
+					<span class="format-subtitle">{{translate('ONLY_AVAILABLE_ON_REACT')}} <a href="https://reactdemo.ordering.co/">• {{translate('LEARN_MORE')}}</a></span>
+        <br>
+        <div class="sub-accordion">
+            <ul>
+                <li data-ng-repeat="i in [1,2,3,4,5]">
+                    <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="order_types_allowed[i]">{{ getOrderTypeAllowed(i) }}
+                    </ion-checkbox>
+                </li>
+            </ul>
+        </div>
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="save()">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>

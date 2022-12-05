@@ -1,0 +1,31 @@
+<!--<ion-nav-bar class="top-bar">
+    <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon w-4e" menu-toggle="left">
+        </button>
+    </ion-nav-buttons>
+</ion-nav-bar>-->
+<ion-header-bar class="top-bar">
+    <button class="button button-icon button-clear ion-navicon-round w-4e mg-top-btn" menu-toggle="left">
+    </button>
+</ion-header-bar>
+<ion-view class="form-content" name="homeContainer">
+
+    <div class="list search-form">
+        <ion-item>
+            <img src="{{rootTheme}}/img/hungry.png">
+            <br><br>
+        </ion-item>
+        <ion-item>
+            <button class="button-bordered" data-ng-click="delivery()">
+                <i class="icon ion-android-car"></i> {{translate('DELIVERY')}}
+            </button>
+        </ion-item>
+        <p class="help-or">{{translate('MOBILE_MYACCOUNT_OR')}}</p>
+        <ion-item style="padding-bottom: 0;">
+            <button class="button-bordered" data-ng-click="pickup()">
+                <i class="icon ion-android-walk"></i> {{translate('PICKUP')}}
+            </button>
+        </ion-item>
+    </div>
+
+</ion-view>

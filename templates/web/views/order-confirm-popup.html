@@ -1,0 +1,401 @@
+  <div class="container-fluid full" style="max-width: 100%; padding: 0;">
+    <!-- <div class="col-md-12 full checkout-header no-print">
+      <h1>
+        {{ translate('CONFIRMATION_BANNER_HEADING') }}<br>
+        <small>{{ translate('CONFIRMATION_BANNER_DESCRIPTION') }}</small>
+      </h1>
+      <div class="buttons">
+        <button class="btn btn-primary" data-ng-click="onGoMyProfile(1)">
+          {{ translate('MY_ORDERS') }}
+        </button>
+        <button class="btn btn-primary" data-ng-click="print()" data-ng-if="create_order">
+          {{ translate('PRINT') }}
+        </button>
+        <button class="btn btn-gray" data-ng-click="newCreateOrder()" data-ng-if="create_order">
+          {{ translate('MOBILE_NEW_ORDER') }}
+        </button>
+      </div>
+    </div> -->
+    <div class="col-lg-3">
+      <div style="display: flex ;justify-content: space-between;" data-ng-if="order.delivery_type == 4">
+        <div>
+        </div>
+        <div class="curbside" style="display: flex;">
+          <div class="text">
+            {{translate('IM_ON_SPOT_NUMBER').replace('_site_', '').trim()}}
+          </div>
+          <div >
+              <form class="message ng-pristine ng-valid" ng-submit="sendCurbside(curbside_site)">
+              <input type="text"  name="curbside" ng-model="curbside_site" class="ng-pristine ng-untouched ng-valid">
+              <div class="icon" ng-click="sendCurbside(curbside_site)">
+                  <i class="fa fa-send"></i>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+<!--  -->    
+      <style>
+        .confirm-section{
+          padding: 10px;
+        }
+        td{
+          padding: 5px 0 !important;
+          font-size: 14px;
+        }
+        p{
+          margin: 0 !important;
+        }
+      </style>
+      <!-- order number -->
+        <div class="confirm-section" style="padding-top:15px;">
+          <h3>{{ translate('EXPORT_ORDER_NUMBER') }} <span style="float: right; font-size:20px; color:#edc900;"><a href="https://boxetekitchen.tryordering.com/pages/help" style="color:#edc900;">Help</a></span></h3>
+            <h4>#{{order.id}}</h4>
+        </div>
+        <hr style="margin: 5px 0px;" />
+        <!-- customer information -->
+        <div class="confirm-section">
+          <h4>Customer</h4>
+          <p>{{order.customer.name}} {{order.customer.lastname}} <button onclick="myFunction()" class="btn" style="float: right; padding: 0; height: 0; background: transparent; "><span >Show Contact Info</span></p>
+        </div>
+        <div id="customerInfo" class="confirm-section" style="padding-top: 0; display: none;">
+          <p>{{order.customer.cellphone}}<br/>{{order.customer.email}}</p>
+       </div>
+       <hr style="margin: 5px 0px;" />
+       <!-- order information -->
+       <div class="confirm-section">
+        <h4>Order</h4>
+         <p>{{order.business.name}}<button onclick="myFunction1()" class="btn" style="float: right; padding: 0; height: 0; background: transparent; "><span >Show Order Details</span></p>
+       </div>
+       <div id="orderinfo" class="confirm-section" style="display: none;">
+        <div class="checkout" style="margin: 0;background: #fff; "data-ng-repeat="order in orderConfirmData">
+          <div class="content" style="padding: 0;">
+            <!-- <table style="table-layout:fixed">
+              <tbody class="information hidden-xs">
+                <tr class="title">
+                  <td>{{translate('CONFIRMATION_FROM')}}</td>
+                  <td>{{translate('CONFIRMATION_TO')}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type!=1">
+                  <td>{{order.customer.name}} {{order.customer.middle_name}} {{order.customer.lastname}} {{order.customer.second_lastname}}</td>
+                  <td>{{order.business.name}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type==1">
+                  <td>{{order.business.name}}</td>
+                  <td>{{order.customer.name}} {{order.customer.middle_name}} {{order.customer.lastname}} {{order.customer.second_lastname}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type!=1">
+                  <td>
+                    {{order.customer.address}}
+                    <span style="color: inherit;" data-ng-if="order.customer.internal_number">
+                      <br>
+                      {{order.customer.internal_number}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.address_notes">
+                      <br>
+                      {{order.customer.address_notes}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.dropdown_option">
+                      <br>
+                      {{order.customer.dropdown_option.name}}, {{order.customer.dropdown_option.city.name}}
+                    </span>
+                  </td>
+                  <td>{{order.business.address}} <a type="button" data-ng-click="goBusinessMap(order.business)">{{ translate('VIEW_ON_MAP') }}</a></td>
+                </tr>
+                <tr data-ng-if="order.delivery_type==1">
+                  <td>{{order.business.address}}</td>
+                  <td>
+                    {{order.customer.address}}
+                    <span style="color: inherit;" data-ng-if="order.customer.internal_number">
+                      <br>
+                      {{order.customer.internal_number}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.address_notes">
+                      <br>
+                      {{order.customer.address_notes}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.dropdown_option">
+                      <br>
+                      {{order.customer.dropdown_option.name}}, {{order.customer.dropdown_option.city.name}}
+                    </span>
+                  </td>
+                </tr>
+                <tr data-ng-if="order.delivery_type!=1">
+                  <td>{{order.customer.zipcode}}</td>
+                  <td>{{order.business.zipcode}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type==1">
+                  <td>{{order.business.zipcode}}</td>
+                  <td>{{order.customer.zipcode}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type!=1">
+                  <td>{{order.customer.cellphone}}</td>
+                  <td>{{order.business.phone}}<span class="omit" data-ng-id="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type==1">
+                  <td>{{order.business.phone}}<span class="omit" data-ng-id="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}</td>
+                  <td>{{order.customer.cellphone}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type!=1">
+                  <td>{{order.customer.email}}</td>
+                  <td>{{order.business.email}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type==1">
+                  <td>{{order.business.email}}</td>
+                  <td>{{order.customer.email}}</td>
+                </tr>
+              </tbody>
+            </table> -->
+            <!-- <table style="table-layout:fixed">
+              <tbody class="information hidden-sm hidden-md hidden-lg" data-ng-if="order.delivery_type!=1">
+                <tr>
+                  <td class="to"><strong>{{translate('CONFIRMATION_TO')}}</strong></td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.name}} {{order.customer.lastname}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    {{order.customer.address}}
+                    <span style="color: inherit;" data-ng-if="order.customer.internal_number">
+                      <br>
+                      {{order.customer.internal_number}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.address_notes">
+                      <br>
+                      {{order.customer.address_notes}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.dropdown_option">
+                      <br>
+                      {{order.customer.dropdown_option.name}}, {{order.customer.dropdown_option.city.name}}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.zipcode}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.cellphone}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.email}}</td>
+                </tr>
+                <tr>
+                  <td class="to"><strong>{{translate('CONFIRMATION_FROM')}}</strong></td>
+                </tr>
+                <tr>
+                  <td>{{order.business.name}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.address}} <a type="button" data-ng-click="goBusinessMap(order.business)">{{ translate('VIEW_ON_MAP') }}</button></td>
+                </tr>
+                <tr>
+                  <td>{{order.business.zipcode}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.phone}}<span class="omit" data-ng-id="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.email}}</td>
+                </tr>
+              </tbody>
+              <tbody class="information hidden-sm hidden-md hidden-lg" data-ng-if="order.delivery_type==1">
+                <tr>
+                  <td class="to"><strong>{{translate('CONFIRMATION_FROM')}}</strong></td>
+                </tr>
+                <tr>
+                  <td>{{order.business.name}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.address}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.zipcode}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.phone}}<span class="omit" data-ng-id="order.business.phone && order.business.cellphone"> - </span>{{order.business.cellphone}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.business.email}}</td>
+                </tr>
+                <tr>
+                  <td class="to"><strong>{{translate('CONFIRMATION_TO')}}</strong></td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.name}} {{order.customer.lastname}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    {{order.customer.address}}
+                    <span style="color: inherit;" data-ng-if="order.customer.internal_number">
+                      <br>
+                      {{order.customer.internal_number}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.address_notes">
+                      <br>
+                      {{order.customer.address_notes}}
+                    </span>
+                    <span style="color: inherit;" data-ng-if="order.customer.dropdown_option">
+                      <br>
+                      {{order.customer.dropdown_option.name}}, {{order.customer.dropdown_option.city.name}}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.zipcode}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.cellphone}}</td>
+                </tr>
+                <tr>
+                  <td>{{order.customer.email}}</td>
+                </tr>
+              </tbody>
+            </table> -->
+            <table>
+              <tbody class="price">
+                <tr class="title">
+                  <td colspan="2" >{{translate('MOBILE_FRONT_YOUR_ORDER')}}</td>
+                </tr>
+                <tr data-ng-repeat="product in order.products">
+                  <td>
+                    <span>{{product.quantity}}</span> <i class="fa fa-times"></i> {{product.name}}<br>
+                    <p style="">
+                      <span class="omit" data-ng-if="product.ingredients.length > 0">
+                        <strong>{{ translate('Ingredients_V2') }}</strong><br>
+                        <span class="omit" data-ng-repeat="ingredient in product.ingredients">
+                          {{ translate('NO') }} {{ingredient.name}}<br>
+                        </span>
+                      </span>
+                      <span class="omit" data-ng-repeat="option in product.options">
+                        <strong>{{option.name}}</strong><br>
+                        <span class="omit" data-ng-repeat="suboption in option.suboptions">
+                          <span class="omit" data-ng-if="option.allow_suboption_quantity">{{ suboption.quantity }}&nbsp;&nbsp;x&nbsp;&nbsp;</span>
+                          {{suboption.name}}<span class="omit" data-ng-if="option.with_half_option && suboption.position != 'whole'"> ({{ translate(suboption.position.toUpperCase())}})</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="omit" data-ng-if="Order.getSuboptionTotal(option, suboption) > 0">{{ parsePrice(Order.getSuboptionTotal(option, suboption)) }}</span><br>
+                        </span>
+                      </span>
+                      <span class="omit" style="display: block; max-width: 200px;" data-ng-if="product.comment">
+                        <strong>{{translate('COMMENTS')}}</strong><br>
+                        {{product.comment}}
+                      </span>
+                    </p>
+                  </td>
+                  <td>{{parsePrice(Order.getProductsTotal(product))}}</td>
+                </tr>
+              </tbody>
+              <tbody class="price">
+                <tr>
+                  <td>{{ translate('MOBILE_FRONT_SUB_TOTAL') }}</td>
+                  <td>{{ parsePrice(Order.getSubtotal(order) + ((constants.fix_order_summary && order.tax_type == 1) ? Order.getTax(order) : 0))}}</td>
+                </tr>
+                <tr data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && Order.getDiscount(order) > 0">
+                    <td>{{ translate('APP_DISCOUNT') }} <span class="omit" data-ng-if="order.offer_type == 1">({{order.offer_rate}}%)</span><!-- (<span class="omit" data-ng-if="curBusiness.discounttype == 2">-{{currency}}</span>{{curBusiness.discountrate}}<span class="omit" data-ng-if="curBusiness.discounttype == 1">%</span>)--></td>
+                    <td>-{{parsePrice(Order.getDiscount(order))}}</td>
+                  </tr>
+                <tr data-ng-if="order.tax_type == 2">
+                  <td>{{ translate('Tax_V2') }} ({{order.tax}}%)</td>
+                  <td>{{ parsePrice(Order.getTax(order))}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type == 1">
+                  <td>{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+                  <td>{{ parsePrice(order.custom_delivery_price)}}</td>
+                </tr>
+                <tr data-ng-if="order.delivery_type == 1" ng-show="order.driver_tip != 0">
+                  <td>{{ translate('MOBILE_FRONT_DRIVER_TIP') }} ({{order.driver_tip}}%)</td>
+                  <td>{{parsePrice(order.custom_trip)}}</td>
+                </tr>
+                <tr data-ng-if="(order.delivery_type == 1 && order.driver_tip == 0 && order.custom_trip>0)">
+                  <td>{{ translate('MOBILE_FRONT_DRIVER_TIP') }}</td>
+                  <td>{{parsePrice(order.custom_trip)}}</td>
+                </tr>
+                <tr data-ng-if="order.service_fee != 0">
+                  <td>{{ translate('SERVICE_FEE_V2') }} ({{ order.service_fee}}%)</td>
+                  <td>{{parsePrice(Order.getServiceFee(order))}}</td>
+                </tr>
+              </tbody>
+              <tbody class="price">
+                <tr class="title">
+                  <td>{{ translate('MOBILE_CHECKOUT_TOTAL') }}</td>
+                  <td>{{parsePrice(Order.getTotal(order))}}</td>
+                </tr>
+              </tbody>
+              <!-- <tbody class="footer">
+                <tr>
+                  <td colspan="2">
+                    {{translate('CONFIRMATION_PAYMENT_METHOD')}}: {{ translate(order.paymethod.gateway.toUpperCase()) }}<br>
+                    {{translate('CONFIRMATION_DELIVERY_METHOD')}}: {{ translate(order.delivery_type==1?'DELIVERY':'PICKUP') }}
+                  </td>
+                </tr>
+              </tbody> -->
+            </table>
+            <!-- <center id="addthis_icons"> -->
+              <!--<div class="addthis_inline_share_toolbox"></div>-->
+              <!-- <sn-addthis-toolbox class="addthis_inline_share_toolbox">
+              </sn-addthis-toolbox> -->
+            <!-- </div> -->
+            <!-- </center> -->
+          </div>
+        </div>    
+      </div>
+      <hr style="margin: 5px 0px;" />
+        <!-- delivery information -->
+        <div class="confirm-section">
+          <h4>Delivery Address</h4>
+          <p>{{order.customer.address}}</p>
+          <p>Apt and suite#: {{order.customer.internal_number}}</p>
+        </div>
+        
+        
+        <!--  -->       
+        <table style="width: 100%; background: #f9f9f9;"> 
+          <tr>
+            <td></td>
+            <td >
+              {{ translate('GRAND_TOTAL') }}
+            </td>
+            <td>
+            </td>
+            <td align="right">{{parsePrice(allTotal_r)}}</td>
+          </tr>
+          <!-- <tr>
+            <td></td>
+            <td>
+              {{ translate('DELIVERY_TOTAL') }}
+            </td>
+            <td>
+            </td>
+            <td align="right">{{parsePrice( sumDelv_r )}}</td>
+          </tr> -->
+          </table>  
+
+            </div>
+
+            <div class="col-lg-9" style="padding: 0;">
+            <div>
+              <a href="https://boxetekitchen.tryordering.com/profile?order">
+              <img src="https://drive.google.com/uc?id=1_khhGv2xf7mpYC4I1-XY8kZbG5ZUDIoW" width="100%">
+            </a>
+            </div>
+          </div>
+  </div>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("customerInfo");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+    </script>
+    <script>
+      function myFunction1() {
+        var x = document.getElementById("orderinfo");
+        if (x.style.display === "block") {
+          x.style.display = "none";
+        } else {
+          x.style.display = "block";
+        }
+      }
+      </script>
+    

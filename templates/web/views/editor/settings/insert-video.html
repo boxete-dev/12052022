@@ -1,0 +1,19 @@
+<ion-modal-view class="popup">
+	<i class="fa fa-times close" data-ng-click="hide()"></i>
+	<ion-content class="color-bg popup-mode">
+		<ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+			<span class="divider-padding no-padding-h">{{ translate('INSERT_VIDEO') }}</span>
+		</ion-item>
+		<ion-item class="form editable">
+			<div class="group">
+				<label>{{ translate('VIDEO_URL') }}</label>
+				<input type="text" data-ng-model="data.videoUrl" class="editable">
+			</div>
+		</ion-item>
+		<div>
+			<center>
+				<button class="btn btn-primary" data-ng-click="insertVideo()">{{ translate('INSERT').toUpperCase() }}</button>
+			</center> 
+		</div>
+	</ion-content>
+</ion-modal-view>

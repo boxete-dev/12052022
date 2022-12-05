@@ -1,0 +1,27 @@
+<div class="forms-apps" data-ng-controller="formSupportEditorCtrl">
+        <div class="forms-title">
+            {{translate('SUPPORT_FORMS_TITLE')}} {{translate('MOBILE_APPNAME_MANAGER')}}
+        </div>
+        <div class="forms-general">
+           <p class="forms-subtitle" data-ng-bind-html="translate('SUPPORT_FORMS_SUBTITLE')" ></p>
+           <ul class="forms-list-options" style="list-style-type:disc;">
+               <li>{{translate('SUPPORT_FORMS_POINT_1')}}</li>
+               <li>{{translate('SUPPORT_FORMS_POINT_2')}}</li>
+               <li>{{translate('SUPPORT_FORMS_POINT_3')}}</li>
+               <li>{{translate('SUPPORT_FORMS_POINT_4')}}</li>
+               <li>{{translate('SUPPORT_FORMS_POINT_5')}}</li>
+           </ul>
+           <p>
+               {{translate('SUPPORT_FORMS_TEXT_1')}}
+               <a href="https://my.ordering.co/" target="_blank">{{translate('SUPPORT_FORMS_LINK_1')}}</a>
+               {{translate('SUPPORT_FORMS_TEXT_2')}}
+               <a href="https://ordering.co/contact/" target="_blank">{{translate('SUPPORT_FORMS_LINKS_2')}}</a>
+           </p>
+           <p data-ng-bind-html="translate('SUPPORT_FORMS_QUESTION')" ></p>
+        </div>
+        <div class="forms-buttons">
+            <a style="background-color: #FF9800 !important;" class="button-forms" href="https://ordering.co/app-form/?app_=Business-App" target="_blank">{{translate('MOBILE_APPNAME_MANAGER')}}</a>
+            <p class="forms-notes"> <span data-ng-bind-html="translate('SUPPORT_FORMS_NOTE')"></span> <a href="mailto:support@ordering.co?subject=Application process tracking" target="_blank"> {{translate('MOBILE_SUPPORT')}} </a> <span> {{translate('SUPPORT_FORMS_NOTE_2')}}</span></p>
+        </div>
+    </div>
+    

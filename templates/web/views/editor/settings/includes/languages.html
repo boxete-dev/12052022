@@ -1,0 +1,97 @@
+<div data-ng-controller="languagesSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <h3 class="h3">{{ translate('MAIN') }}</h3>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('TEXT') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem" data-ng-repeat="translation in main | orderBy:'i'">
+        <!-- <button data-ng-click="updatetranslation(translation, translation.admin)"><i class="fa fa-floppy-o"></i></button> -->
+        <div class="p50f">
+          <input class="editable" type="text" data-ng-model="translation.text" value="{{ Mtranslationuages.TEXT }}" tabindex="{{($index+1)+1000}}" data-ng-change="updateTranslation(translation)">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="translation.name" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12" data-ng-init="filterTranslation={key:'',text:''}">
+    <br>
+    <h3 class="h3">{{ translate('TRANSLATIONS') }} <button  class="btn btn-gray" data-ng-click="changeView('table')" data-ng-if="view=='visual'">{{translate('SPREADSHEET_EDITOR_MODE')}}</button><button  class="btn btn-primary" data-ng-click="changeView('visual')" data-ng-if="view=='table'">{{translate('SPREADSHEET_EDITOR_MODE')}}</button></h3>
+    <div class="form editable">
+      <div class="group">
+        <div class="w50">
+          <label>{{ translate('FILTER') }}</label>
+          <input data-ng-model="filterTranslation.key" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}" data-ng-change="filterTable(view)">
+        </div><!--
+        --><div class="w50">
+          <label>&nbsp;</label>
+          <input data-ng-model="filterTranslation.text" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}" data-ng-change="filterTable(view)">
+        </div>
+      </div>
+    </div>
+    <div class="eitems" data-ng-show="view=='visual'">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('TEXT') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('KEY') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem" data-ng-repeat="translation in translations | orderBy:'key' | filter:filterTranslation | startFrom:((pagination.current-1)*pagination.items) | limitTo:pagination.items">
+        <!-- <button data-ng-click="updateTranslation(lang)"><i class="fa fa-floppy-o"></i></button> -->
+        <div class="p50f">
+          <input class="editable" type="text" data-ng-model="translation.text" value="{{ translate('TEXT') }}" tabindex="{{($index+1)+9000}}" data-ng-change="updateTranslation(translation); filterTranslation.key=translation.key; filterTranslation.text=''; pagination.current = 1;">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="translation.key" value="{{ translate('KEY') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem">
+        <form data-ng-submit="addTranslations(curLang)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="curLang.text" placeholder="{{ translate('TEXT') }}" tabindex="{{($index+1)+14001}}">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curLang.key" placeholder="{{ translate('KEY') }}" tabindex="{{($index+1)+14000}}">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="pagination.items">
+          <option data-ng-repeat="items in pagination.itemsPerPage" value="{{items}}" data-ng-selected="pagination.items == items">{{items}}</option>
+        </select>
+        {{((pagination.current-1)*pagination.items)+1}}-<span data-ng-if="pagination.current*pagination.items <= translations.length">{{pagination.current*pagination.items}}</span><span data-ng-if="pagination.current*pagination.items > translations.length">{{translations.length}}</span> {{ translate('OF') }} {{translations.length}}
+        <i class="fa fa-chevron-left" data-ng-if="pagination.current > 1" data-ng-click="backPage(pagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="pagination.current < pagination.pages" data-ng-click="nextPage(pagination)"></i>
+      </div>
+      </div>
+    <div data-ng-show="view=='table'">
+      <div style="background-color: lavender;border-radius: 10px;text-align: center;">
+        <p>{{translate('SPREADSHEET_ADVICE')}} <strong>Google Chrome +66</strong></p>
+      </div>
+      <hot-table hot-id="hot" height="600" settings="configs" min-spare-rows="1" datarows="dataTable" row-headers="false">
+        <hot-column data="key" title="'Key'" width="'50%'" validator="'empty-field'"></hot-column>
+        <hot-column data="text" title="'Name'" width="'50%'" validator="'empty-field'"></hot-column>
+      </hot-table>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_LENGUAJE_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_LENGUAJE_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_LENGUAJE_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_LENGUAJE_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

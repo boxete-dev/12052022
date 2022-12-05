@@ -1,0 +1,184 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideDrivertypeSettings()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h" data-ng-if="curDriverType.level == 5">{{ translate('DRIVER_MANAGER_SETTINGS') }}</span>
+            <span class="divider-padding no-padding-h" data-ng-if="curDriverType.level == 4">{{ translate('DRIVER_SETTINGS') }}</span>
+        </ion-item>
+        <!-- <ion-item> -->
+            <div class="webtabs" data-ng-if="NEW_FEATURES.MULTI_ADDRESS && curDriverType.id > 0">
+                <div class="tab" data-ng-class="{ 'active': tab == 0 }" data-ng-click="changeTab(0)">
+                    {{ translate('PROFILE') }}
+                </div>
+                <div class="tab" data-ng-class="{ 'active': tab == 1 }" data-ng-click="changeTab(1)">
+                    {{ translate('ADDRESSES') }}
+                </div>
+                <div class="tab" data-ng-if="curDriverType.qualification && ADDONS.user_reviews" data-ng-class="{ 'active': tab == 2 }" data-ng-click="changeTab(2)">
+                    {{ translate('QUALIFICATION') }} {{curDriverType.qualification}} <i class="fa fa-star"></i>
+                </div>
+            </div>
+            <div class="form editable" select-content data-ng-if="tab == 0">
+                <div class="photo-profile">
+                    <div id="photo_user_type_settings" class="drag" style="background-image: url({{curDriverType.image}}),url({{curDriverType.photo}});">
+                        <div class="edit xs">
+                            <p>
+                                <i class="fa fa-user"></i>
+                            </p>
+                            <input id="photo_user_type_settings_file" type="file" style="display: none;" accept="image/png,image/jpeg,image/jpg">
+                        </div>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('NAME') }}*</label>
+                        <input data-ng-model="curDriverType.name" class="editable" type="text">
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('LASTNAME') }}</label>
+                        <input data-ng-model="curDriverType.lastname" class="editable" type="text">
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('EMAIL') }}*</label>
+                        <input data-ng-model="curDriverType.email" class="editable" type="text">
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('PASSWORD') }}*</label>
+                        <input data-ng-model="curDriverType.password" class="editable" type="password" autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="group" data-ng-if="NEW_FEATURES.MULTI_ADDRESS">
+                    <label>{{ translate('CELLPHONE') }}</label>
+                    <input data-ng-model="curDriverType.cellphone" class="editable" type="text" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'>
+                </div>
+                <div class="group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+                    <div class="w50">
+                        <label>{{ translate('PHONE') }}</label>
+                        <input data-ng-model="curDriverType.phone" class="editable" type="text" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('CELLPHONE') }}</label>
+                        <input data-ng-model="curDriverType.cellphone" class="editable" type="text" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'>
+                    </div>
+                </div>
+                <div class="group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+                    <div>
+                        <label>{{ translate('ZIPCODE') }}</label>
+                        <input data-ng-model="curDriverType.zipcode" class="editable" type="text">
+                    </div>
+                </div>
+                <div class="group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+                    <div class="w50">
+                        <label>{{ translate('COUNTRY') }}</label>
+                        <div>
+                            <select data-ng-model="curDriverType.country_id" class="editable" style="width: 100%;">
+                                <option value="-1">{{ translate('SELECT_COUNTRY') }}</option>
+                                <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="curDriverType.country_id == country.id">{{country.name}}</option>
+                            </select>
+                        </div>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('CITY') }}</label>
+                        <div>
+                            <select data-ng-model="curDriverType.city_id" class="editable" style="width: 100%;">
+                                <option value="-1">{{ translate('SELECT_CITY') }}</option>
+                                <option data-ng-repeat="city in cities | filter: { country_id: curDriverType.country_id }" value="{{city.id}}" data-ng-selected="curDriverType.city_id == city.id">{{city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+                    <label>{{ translate('ADDRESS') }}</label>
+                    <input id="driver-type-address" data-ng-model="curDriverType.address" class="editable" type="text" data-ng-change="changeAddress()">
+                    <!-- <div id="user-map-street" style="height: 250px;"></div> -->
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 2% 0 2% 0;" ng-show='curDriverType.level == 4'>
+                    <label>{{ translate('DRIVER_ZONE_RESTRICTION') }}</label>
+                    <label class="toggle xs toggle-balanced">
+                      <input type="checkbox" data-ng-model="curDriverType.driver_zone_restriction">
+                      <div class="track">
+                        <div class="handle"></div>
+                      </div>
+                    </label>
+                  </div>
+                <div class="group" data-ng-if="curDriverType.level != 5  && curDriverType.id != -1">
+                    <label>{{translate('DRIVER_GROUPS_NAME')}}</label>
+                    <p data-ng-if="allGroupDrivers.length == 0">{{translate('DRIVER_GROUPS_NOT_SELECTED')}}</p>
+                    <p data-ng-repeat="groups in allGroupDrivers">&#9679; {{groups}}</p>
+                </div>
+                <br>
+                <div>
+                    <center data-ng-if="curDriverType.id != -1">
+                        <button class="btn btn-primary" data-ng-click="saveUser(curDriverType)">{{ translate('SAVE').toUpperCase() }}</button>
+                    </center>
+                    <center data-ng-if="curDriverType.id == -1">
+                        <button class="btn btn-primary" data-ng-click="saveUser(curDriverType)">{{ translate('ADD').toUpperCase() }}</button>
+                    </center> 
+                </div>
+            </div>
+            <div class="form editable" select-content data-ng-if="tab == 1">
+                <!-- <div class="loading" data-ng-if="loading">
+                    <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+                </div> -->
+                <div class="list" data-ng-if="addresses.length > 0">
+                    <div data-ng-click="change(address)" data-ng-repeat="address in addresses" class="list-item" data-ng-class="{ 'selected': address.default }">
+                        <div class="left">
+                            <i data-ng-if="address.default" class="fa fa-check-circle"></i>
+                            <i data-ng-if="!address.default" class="fa fa-circle-o"></i>
+                        </div>
+                        <div class="right">
+                            <i data-ng-click="edit(address);$event.stopPropagation();" class="fa fa-pencil-square-o"></i>
+                            <i data-ng-if="!address.default" data-ng-click="delete(address);$event.stopPropagation();" class="fa fa-trash-o"></i>
+                        </div>
+                        <div class="content">
+                            <div class="primary">{{ address.address }}</div>
+                            <!-- 
+                                SHOW ADDRESS TAG UNTIL ADD THE FUNCTIONALITY TO EDIT IT
+                                <div class="secondary">{{ translate(address.tag.toUpperCase()) }}<span data-ng-if="address.internal_number"> &dot; {{ address.internal_number }}</span></div> 
+                            -->
+                            <div class="secondary" data-ng-if="address.internal_number">{{translate('INTERNAL_NUMBER')}}: {{ address.internal_number }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-offset-2 col-sm-8 center">
+                    <button class="btn btn-primary btn-block" data-ng-click="add()">{{translate('ADD_NEW_ADDRESS')}}</button>
+                </div>
+            </div>
+            <div class="form editable" select-content data-ng-if="tab == 2">
+                <div class="order-reviews" data-ng-repeat="(key, value) in reviews">
+                    <table style="width: 100%;">
+                        <tr>
+                            <th class="col-sm-4 header">
+                                {{translate('FRONT_MAIN_EMAIL_ORDER_NO')}} {{key}}
+                            </th>
+                            <th class="col-sm-2 center-table header">
+                                {{averageReview(value)}} <i class="fa fa-star" style="color: orange"></i>
+                            </th>
+                            <th class="col-sm-6 header">
+                                {{translate('COMMENT')}}
+                            </th>
+                        </tr>
+                        <tr data-ng-repeat="review in value">
+                            <td class="col-sm-4 review-item">
+                                <img data-ng-src="{{ optimizeImage(review.reviewer.photo) }}"> 
+                                {{review.reviewer.name}}
+                                <i class="fa fa-car user" data-ng-if="review.type == 2"></i>
+                                <i class="fa fa-building user" data-ng-if="review.type == 3"></i>
+                                <i class="fa fa-user user" data-ng-if="review.type == 4"></i>
+                            </td>
+                            <td class="col-sm-2 center-table review-item">
+                                {{review.qualification}} <i class="fa fa-star" style="color: orange"></i>
+                            </td>
+                            <td class="col-sm-6 review-item">
+                                {{review.comment}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        <!-- </ion-item> -->
+    </ion-content>
+</ion-modal-view>

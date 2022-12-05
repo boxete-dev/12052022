@@ -1,0 +1,24 @@
+<div data-ng-controller="limitsSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('PROJECT_LIMITS') }}</h3>
+    <div data-ng-repeat="limit in limits" data-ng-if="limit.key != 'driver_locations_register_per_user'">
+      {{ translate('LIMIT_'+limit.type.toUpperCase()+'_'+limit.key.toUpperCase()) }} <span data-ng-if="limit.lapse && limit.lapse != 'always'">({{ translate('LIMIT_PER_'+limit.lapse.toUpperCase()) }})</span>
+      <div class="progress">
+        <div class="value-content">
+          <div class="value">
+            {{ limit.usage }}/{{limit.limit}}
+          </div>
+        </div>
+        <div data-ng-if="!wasLimitReached(limit)" class="progress-bar progress-bar-success" data-ng-style="{ 'width': getUsageBeforeSoftlimit(limit)+'%' }">
+        </div>
+        <div data-ng-if="!wasLimitReached(limit)" class="progress-bar progress-bar-warning" data-ng-style="{ 'width': getUsageAfterSoftlimit(limit)+'%' }">
+        </div>
+        <div data-ng-if="wasLimitReached(limit)" class="progress-bar progress-bar-danger" style="width: 100%">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+  </div>
+</div>

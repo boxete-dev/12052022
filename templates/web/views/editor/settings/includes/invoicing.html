@@ -1,0 +1,24 @@
+<div data-ng-controller="invoicingSettingsEditorCtrl">
+  <div class="col-sm-6">
+    <div class="panel panel-default" data-ng-click="openInvoiceBusiness()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('BUSINESS_INVOICE') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('BUSINESS_INVOICE_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="panel panel-default" data-ng-click="openInvoiceDriver()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DRIVER_INVOICE') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DRIVER_INVOICE_DESC') }}
+      </div>
+    </div>
+  </div>
+</div>
+  <!--SuperAdmin--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_INVOICE_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_INVOICE_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+ <!---Business--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_INVOICE_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_INVOICE_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

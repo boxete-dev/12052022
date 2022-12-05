@@ -1,0 +1,12 @@
+</ion-modal-view>
+<ion-modal-view class="popup">
+    <!--<i class="fa fa-times close" data-ng-click="hideIntegration()"></i>-->
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <div class="error-page">
+            <h1>{{translate('MOBILE_OOPS')}}</h1>
+            <p>{{translate('MOBILE_FRONT_CONNECTION_LOST')}}</p>
+            <a class="btn btn-primary" data-ng-if="!trying" data-ng-click="retry()">{{translate('WEB_CLICK_RETRY')}}</a>
+            <a class="btn btn-primary" data-ng-if="trying" data-ng-click="null">{{translate('LOADING')}}...</a>
+        </div>
+    </ion-content>
+</ion-modal-view>

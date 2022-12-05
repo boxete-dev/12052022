@@ -1,0 +1,69 @@
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" data-ng-click="onGoHome()">
+          <img class="logo" alt="logo" data-ng-src="{{rootTheme}}/img/logo.png">
+        </a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a data-ng-click="onGoHome()"><i class="fa fa-home" aria-hidden="true"></i> {{translate('MOBILE_MENU_LIST_HOME')}}</a></li>
+          <li class="dropdown" data-ng-if="editorAvilable">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-ng-repeat="page in pagesToEdit" data-ng-if="page.key == ''"><label class="round">{{page.name}} <span class="caret"></span></label></a>
+            <ul class="dropdown-menu">
+              <li data-ng-repeat="page in pagesToEdit" data-ng-if="(page.key != '' && page.key != 'deliveries' && page.key != 'settings' && page.key != 'driver_reports' && page.key != 'support') || (page.key != '' && (page.key == 'settings' || page.key == 'driver_reports') && superAdmin) || (page.key != '' && page.key == 'deliveries' && ADDONS.delivery_dashboard && SEARCH_BY_ADDRESS) || (page.key != '' && page.key == 'support' && SUPPORT_SECTION && superAdmin)"><a data-ng-click="goToPageEdit(page.key)">{{page.name}}</a></li>
+            </ul>
+          </li>
+          <li class="dropdown" data-ng-if="customPages.length > 0 || (settings.business_signup_allow && settings.business_signup_allow.value == 1 && !getLogState())">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><label class="round">{{translate('MORE')}}<span class="caret"></span></label></a>
+            <ul class="dropdown-menu">
+              <li data-ng-if="settings.business_signup_allow && settings.business_signup_allow.value == 1 && !getLogState()"><a data-ng-click="goSignupBusiness()">{{translate('SIGNUP_BUSINESS')}}</a></li>
+              <li data-ng-repeat="cpage in customPages"><a data-ng-click="goCustomPage(cpage.slug)">{{cpage.name}}</a></li>
+            </ul>
+          </li>
+          <li><a data-ng-if="!getLogState()" data-ng-click="onGoLogin()"><i class="fa fa-sign-in" aria-hidden="true"></i> {{translate('LOGIN')}}</a></li>
+          <li><a data-ng-if="!getLogState()" data-ng-click="onGoMyProfile()"><i class="fa fa-user-plus" aria-hidden="true"></i> {{translate('SIGNUP')}}</a></li>
+          <li>
+            <a data-ng-if="getLogState()" data-ng-click="onGoMyProfile()">
+              <i class="fa fa-user" aria-hidden="true"></i> {{translate('FRONT_MY_ACCOUNT')}}
+              <label class="notifications" data-ng-if="reviewStatus.pending > 0 && ADDONS.order_reviews" data-ng-click="onGoMyProfile(1, $event)">
+                <i class="fa fa-bell-o" aria-hidden="true"></i>
+                <span class="count">{{reviewStatus.pending}}</span>
+              </label>
+            </a>
+          </li>
+          <li data-ng-if="NEW_FEATURES.MULTI_ADDRESS && getLogState()">
+              <a data-ng-if="!sharedData.curAddress" data-ng-click="openAddresses()"><i class="fa fa-address-book-o" aria-hidden="true"></i> {{translate('SELECT_ADDRESS')}}</a>
+              <a data-ng-if="sharedData.curAddress" data-ng-click="openAddresses()"><i class="fa fa-address-book-o" aria-hidden="true"></i> {{ truncate(sharedData.curAddress.address, 15) }}</a>
+          </li>
+          <li><a data-ng-if="getLogState()" data-ng-click="onSignOut()"><i class="fa fa-power-off" aria-hidden="true"></i> {{translate('MOBILE_FRONT_LOGOUT')}}</a></li>
+          <li><a data-ng-click="onCart()" class="cart" data-ng-class="{'empty': numCart == 0}">
+            <label>
+              <i class="fa fa-shopping-bag" aria-hidden="true"></i> {{numCart}}</a>
+            </label>
+          </li>
+          <li class="dropdown" data-ng-if="ADDONS.multilanguage">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><label class="round"><span data-ng-if="!cur_lang">EN</span><span data-ng-if="cur_lang">{{cur_lang.toUpperCase()}}</span> <span class="caret"></span></label></a>
+            <ul class="dropdown-menu">
+              <li data-ng-repeat="lang in languages | orderBy:'name' | filter: {enabled: true}"><a data-ng-click="selectLanguage(lang.id, lang.code)">{{lang.name}}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div ui-view='content'>
+  </div>
+  <div class="container footer no-print" style="color: #fff">
+    <div class="footer_cont" data-ng-include src="rootTheme+'/views/layouts/footer.html'" data-ng-hide="NEW_FEATURES.ONLY_EDITOR"></div>
+    <div style="height: 15px;" data-ng-if="NEW_FEATURES.ONLY_EDITOR">        </div>
+  </div>

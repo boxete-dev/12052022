@@ -1,0 +1,15 @@
+<div class="container-fluid no-print" style="padding-top: 20px">
+  <div data-ng-if="superAdmin" class="page-buttons">
+    <div class="btn-group btn-group-sm">
+      <div class="btn btn-success ng-binding" data-ng-click="editPage()">{{translate('EDIT')}} <i class="fa fa-edit"></i></div>
+      <!-- <div class="btn btn-danger ng-binding" data-ng-click="deletePage()">{{translate('DELETE')}}<i class="fa fa-trash"></i></div> -->
+    </div>
+    <!-- <label class="toggle toggle-balanced">
+      <input type="checkbox" data-ng-model="page.enabled" data-ng-change="enablePage(page)">
+      <div class="track">
+        <div class="handle"></div>
+      </div>
+    </label> -->
+  </div>
+  <div class="static-pages" data-ng-bind-html="trustAsHtml" style="min-height: 300px;"></div>
+</div>

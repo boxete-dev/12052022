@@ -1,0 +1,101 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hideChannels()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <!-- Product Images -->
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('EXTENSIONS') }}</span>
+    </ion-item>
+    <br>
+    <!-- <div class="tab-item-cont">
+      <div class="button-bar" focus-group focus-group-index="1" fm-group="1" tabindex="0" fm-parent-group="14">
+        <button focus-index="2" fm-parent="1"  fm-id="2" class="button tab {{(type == menu.info) &&  'active' || ''}}" data-ng-click="setType($event);onClickCategory(1)">Information</button>
+      </div>
+    </div> -->
+    <div focus-group="" focus-group-index="3" select-content>
+      <!--<ion-item class="text-center">
+        <h2>{{HeaderTitle}}</h2>
+        <p>{{ item.restData.info.address }} - {{ item.restData.info.city.name }}</p>
+      </ion-item>-->
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(0)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('CUSTOM_SLUG') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 0" data-ng-init="curProvider = deal.provider">
+        <div class="form editable">
+          <div>
+            <label>{{translate('SLUG')}} (<a href="{{baseurl}}{{deal.slug}}">{{baseurl}}{{deal.slug}}</a>)</label>
+            <input data-ng-model="deal.slug" class="editable" type="text">
+          </div>
+          <center>
+            <button class="btn btn-primary btn-sm" data-ng-click="changeCustomslug()">{{ translate('SAVE').toUpperCase() }}</button>
+          </center>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(1)" data-ng-if="ADDONS.editor_channel_modal_widget">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('INTEGRATION_WEBSITE') }} ({{ translate('POPUP') }})</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 1">
+        <div class="form editable">
+          <div>
+            <label>{{ translate('TYPE_MODAL') }}</label><br>
+            <select class="editable" style="width: 100%;" data-ng-model="type">
+              <option value="modal">{{ translate('TYPE_MODAL_POPUP') }}</option>
+              <option value="chat">{{ translate('TYPE_MODAL_CHAT') }}</option>
+            </select>
+            <br><br>
+          </div>
+          <div>
+            <label>1. {{ translate('INSERT_ON_DIV_DISPLAY') }}</label>
+            <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;button onclick="toggleOrderingWidget()"&gt;{{ translate('Online_Ordering') }}&lt;/button&gt;</textarea>
+            <br>
+          </div>
+          <div>
+            <label>2. {{ translate('INSERT_ON_END_BODY') }} ({{ translate('IF_USED_PAYPALEXPRESS') }})</label>
+            <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;script src="https://www.paypalobjects.com/api/checkout.js"&gt;&lt;/script&gt;</textarea>
+            <br>
+          </div>
+          <div data-ng-if="type == 'modal'">
+            <label>3. {{ translate('INSERT_ON_END_BODY') }}</label>
+            <textarea data-ng-model="widget_popup" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+          </div>
+          <div data-ng-if="type == 'chat'">
+            <label>3. {{ translate('INSERT_ON_END_BODY') }}</label>
+            <textarea data-ng-model="widget_bot" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+          </div>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(2)" data-ng-if="ADDONS.editor_channel_inline">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('INTEGRATION_WEBSITE') }} ({{ translate('INLINE') }})</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 2">
+        <div class="form editable">
+          <div>
+            <label>1. {{ translate('INSERT_ON_END_BODY') }} ({{ translate('IF_USED_PAYPALEXPRESS') }})</label>
+            <textarea rows="1" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">&lt;script src="https://www.paypalobjects.com/api/checkout.js"&gt;&lt;/script&gt;</textarea>
+            <br>
+          </div>
+          <div>
+            <label>2. {{ translate('INSERT_ON_DIV_DISPLAY') }}</label>
+            <textarea data-ng-model="widget_inline" rows="7" onclick="this.focus();this.select()" class="editable" type="text" readonly="true"></textarea>
+          </div>
+          <div>
+            <label>3. .htaccess</label>
+            <textarea rows="2" onclick="this.focus();this.select()" class="editable" type="text" readonly="true">RewriteEngine On
+RewriteRule ^inline/(.+)$ /inline/ [NC,L] #where inline is the folder</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>
+
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_ORDERING_CHANNELS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_ORDERING_CHANNELS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_ORDERING_CHANNELS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_ORDERING_CHANNELS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

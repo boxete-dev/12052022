@@ -1,0 +1,102 @@
+<div data-ng-controller="usersSettingsEditorCtrl">
+  <div id="navbar-example">
+    <ul class="nav nav-tabs">
+      <li>
+        <a href="#" data-ng-class="{'active': curTab == 'users'}" data-ng-click="changeTap('users', $event)">{{ translate('USERS') }}</a>
+      </li>
+      <li>
+        <a href="#" data-ng-class="{'active': curTab == 'owners'}" data-ng-click="changeTap('owners', $event)">{{ translate('BUSINESS_OWNER') }}</a>
+      </li>
+      <li>
+        <a href="#" data-ng-class="{'active': curTab == 'citymanager'}" data-ng-click="changeTap('citymanager', $event)">{{ translate('CITY_MANAGER') }}</a>
+      </li>
+      <li>
+        <a href="#" data-ng-class="{'active': curTab == 'administrators'}" data-ng-click="changeTap('administrators', $event)">{{ translate('ADMINISTRATORS') }}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <!-- <h3 class="h3">Admin</h3> -->
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <div class="dropdown" style="float: right;">
+          <a id="dropdown-export" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="fa fa-file-excel-o"></i> {{translate('EXPORT')}}
+            <span class="caret"></span>
+          </a>
+          <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-export">
+            <li>
+              <a href="#" data-ng-click="exportAll()">{{ translate('EXPORT_ALL') }}</a>
+            </li>
+            <li>
+              <a href="#" data-ng-click="exportFiltered()">{{ translate('EXPORT_FILTERED') }}</a>
+            </li>
+          </ul>
+        </div>
+        <input data-ng-model="filter" data-ng-change="changefilterText()" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}" autocomplete="off">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('EMAIL') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="user in filtered | orderBy:'id*1'">
+        <button data-ng-click="removeUser(user)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showUserSettings(user)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="user.enabled" data-ng-change="changeUserState(user)" data-ng-disabled="session_user.id == user.id">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="user.email" value="{{ translate('EMAIL') }}" data-ng-change="changeUserData(user)" tabindex="{{($index*2)+1001}}">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="user.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="user.name" value="{{ translate('NAME') }}" data-ng-change="changeUserData(user)" tabindex="{{($index*2)+1000}}">
+        </div>
+      </div>
+      <form class="eitem fixdir">
+        <button data-ng-click="showUserSettings(curUser)"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="curUser.email" placeholder="{{ translate('EMAIL') }}" tabindex="5001">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curUser.name" placeholder="{{ translate('NAME') }}" tabindex="5000">
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="pagination.items" data-ng-change="loadUsers()">
+          <option data-ng-repeat="items in pagination.itemsPerPage" value="{{items}}" data-ng-selected="pagination.items == items">{{items}}</option>
+        </select>
+        {{((pagination.current-1)*pagination.items)+1}}-<span data-ng-if="pagination.current*pagination.items <= pagination.total_items">{{pagination.current*pagination.items}}</span><span data-ng-if="pagination.current*pagination.items > pagination.total_items">{{pagination.total_items}}</span> {{ translate('OF') }} {{pagination.total_items}}
+        <i class="fa fa-chevron-left" data-ng-if="pagination.current > 1" data-ng-click="backPage(pagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="pagination.current < pagination.pages" data-ng-click="nextPage(pagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn btnHelpGuides  btnHelp btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_USERS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_USERS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn btnHelpGuides  btnHelp btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_USERS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_USERS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

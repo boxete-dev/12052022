@@ -1,0 +1,266 @@
+<div data-ng-controller="driversSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DRIVER_MANAGERS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterDriM" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('EMAIL') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="drivermanager in drivermanagers | orderBy:'id*1' | filter:filterDriM | startFrom:((drimpagination.current-1)*drimpagination.items) | limitTo:drimpagination.items">
+        <button data-ng-click="removeUser(drivermanager)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showDrivermanagerSettings(drivermanager)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="drivermanager.enabled" data-ng-change="updateUser(drivermanager, true)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="p40">
+          <input class="editable" type="text" data-ng-model="drivermanager.email" value="{{ translate('NAME') }}" data-ng-change="changeUserData(drivermanager)" tabindex="{{($index*2)+1001}}">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="drivermanager.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="drivermanager.name" value="{{ translate('EMAIL') }}" data-ng-change="changeUserData(drivermanager)"  data-ng-blur="updateUser(drivermanager)" tabindex="{{($index*2)+1000}}">
+        </div>
+      </div>
+      <form class="eitem">
+        <button data-ng-click="showDrivermanagerSettings(curDriverManager)"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="curDriverManager.email" placeholder="{{ translate('EMAIL') }}" tabindex="2001">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curDriverManager.name" placeholder="{{ translate('NAME') }}" tabindex="2000">
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="drimpagination.items">
+          <option data-ng-repeat="items in drimpagination.itemsPerPage" value="{{items}}" data-ng-selected="drimpagination.items == items">{{items}}</option>
+        </select>
+        {{((drimpagination.current-1)*drimpagination.items)+1}}-<span data-ng-if="drimpagination.current*drimpagination.items <= drivermanagers.length">{{drimpagination.current*drimpagination.items}}</span><span data-ng-if="drimpagination.current*drimpagination.items > drivermanagers.length">{{drivermanagers.length}}</span> of {{drivermanagers.length}}
+        <i class="fa fa-chevron-left" data-ng-if="drimpagination.current > 1" data-ng-click="backPage(drimpagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="drimpagination.current < drimpagination.pages" data-ng-click="nextPage(drimpagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DRIVERS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterDri" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('EMAIL') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="driver in drivers | orderBy:'id*1' | filter:filterDri | startFrom:((dripagination.current-1)*dripagination.items) | limitTo:dripagination.items">
+        <button data-ng-click="removeUser(driver)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showDriverSettings(driver)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="driver.enabled" data-ng-change="updateUser(driver, true)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="p40">
+          <input class="editable" type="text" data-ng-model="driver.email" value="{{ translate('EMAIL') }}" data-ng-change="changeUserData(driver)" data-ng-blur="updateUser(driver)" tabindex="{{($index*2)+5001}}">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="driver.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="driver.name" value="{{ translate('NAME') }}" data-ng-change="updateUser(driver)" tabindex="{{($index*2)+5000}}">
+        </div>
+      </div>
+      <form class="eitem">
+        <button data-ng-click="showDriverSettings(curDriverType)"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="curDriverType.email" placeholder="{{ translate('EMAIL') }}" tabindex="6001">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curDriverType.name" placeholder="{{ translate('NAME') }}" tabindex="6000">
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="dripagination.items">
+          <option data-ng-repeat="items in dripagination.itemsPerPage" value="{{items}}" data-ng-selected="dripagination.items == items">{{items}}</option>
+        </select>
+        {{((dripagination.current-1)*dripagination.items)+1}}-<span data-ng-if="dripagination.current*dripagination.items <= drivers.length">{{dripagination.current*dripagination.items}}</span><span data-ng-if="dripagination.current*dripagination.items > drivers.length">{{drivers.length}}</span> of {{drivers.length}}
+        <i class="fa fa-chevron-left" data-ng-if="dripagination.current > 1" data-ng-click="backPage(dripagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="dripagination.current < dripagination.pages" data-ng-click="nextPage(dripagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('DRIVER_COMPANIES') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterDriC" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('LIMIT') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="driver_company in driver_companies | orderBy:'id*1' | filter:filterDriC | startFrom:((dcopagination.current-1)*dcopagination.items) | limitTo:dcopagination.items">
+        <button data-ng-click="removeDriverCompany(driver_company)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showDriverCompanySettings(driver_company)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="driver_company.enabled" data-ng-change="updateDriverCompany(driver_company, ['enabled'])">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="p40">
+          <input class="editable" type="text" data-ng-model="driver_company.limit" value="{{ translate('LIMIT') }}" data-ng-change="updateDriverCompany(driver_company, ['limit'])" tabindex="{{($index*2)+7001}}">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="driver_company.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="driver_company.name" value="{{ translate('NAME') }}" data-ng-change="updateDriverCompany(driver_company, ['name'])" tabindex="{{($index*2)+7000}}">
+        </div>
+      </div>
+      <form class="eitem">
+        <button data-ng-click="showDriverCompanySettings(newDriverCompany)"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" data-ng-model="newDriverCompany.limit" placeholder="{{ translate('LIMIT') }}" tabindex="8001">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="newDriverCompany.name" placeholder="{{ translate('NAME') }}" tabindex="8000">
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="dcopagination.items">
+          <option data-ng-repeat="items in dcopagination.itemsPerPage" value="{{items}}" data-ng-selected="dcopagination.items == items">{{items}}</option>
+        </select>
+        {{((dcopagination.current-1)*dcopagination.items)+1}}-<span data-ng-if="dcopagination.current*dcopagination.items <= driver_companies.length">{{dcopagination.current*dcopagination.items}}</span><span data-ng-if="dcopagination.current*dcopagination.items > driver_companies.length">{{driver_companies.length}}</span> of {{driver_companies.length}}
+        <i class="fa fa-chevron-left" data-ng-if="dcopagination.current > 1" data-ng-click="backPage(dcopagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="dcopagination.current < dcopagination.pages" data-ng-click="nextPage(dcopagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12" select-content>
+    <br>
+    <h3 class="h3">{{ translate('DRIVER_GROUPS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterDriG" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="p50">
+          <input class="editable" type="text" value="{{ translate('MANAGER') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="drivergroup in drivergroups | orderBy:'id*1' | filter:filterDriG | startFrom:((drigpagination.current-1)*drigpagination.items) | limitTo:drigpagination.items">
+        <button data-ng-click="removeDrivergroup(drivergroup)"><i class="fa fa-trash"></i></button>
+        <button data-ng-click="showDrivergroupSettings(drivergroup)"><i class="fa fa-edit"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="drivergroup.enabled" data-ng-change="updateDrivergroup(drivergroup, ['enabled'])">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <div class="p40">
+          <select data-ng-model="drivergroup.administrator_id" class="editable" style="width: 100%;" data-ng-change="updateDrivergroup(drivergroup, ['administrator_id'])" tabindex="{{($index*2)+3000}}">
+            <option value="">{{ translate('SELECT_MANAGER') }}</option>
+            <option data-ng-repeat="user in drivermanagers | filter: { level: 5 }" value="{{user.id}}" data-ng-selected="drivergroup.administrator_id == user.id">{{user.id}}. {{user.name}} {{user.lastname}}</option>
+          </select>
+        </div>
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="drivergroup.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="drivergroup.name" value="{{ translate('NAME') }}" data-ng-change="updateDrivergroup(drivergroup, ['name'])" tabindex="{{($index*2)+3000}}">
+        </div>
+      </div>
+      <form class="eitem">
+        <button data-ng-click="showDrivergroupSettings(curDrivergroup)"><i class="fa fa-plus-circle"></i></button>
+        <div class="p50">
+          <select data-ng-model="curDrivergroup.administrator_id" class="editable" style="width: 100%;" tabindex="4001">
+            <option value="">{{ translate('SELECT_MANAGER') }}</option>
+            <option data-ng-repeat="user in drivermanagers | filter: { level: 5 }" value="{{user.id}}" data-ng-selected="curDrivergroup.administrator_id == user.id">{{user.id}}. {{user.name}} {{user.lastname}}</option>
+          </select>
+        </div>
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curDrivergroup.name" placeholder="{{ translate('NAME') }}" tabindex="4000">
+        </div>
+      </form>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="drigpagination.items">
+          <option data-ng-repeat="items in drigpagination.itemsPerPage" value="{{items}}" data-ng-selected="drigpagination.items == items">{{items}}</option>
+        </select>
+        {{((drigpagination.current-1)*drigpagination.items)+1}}-<span data-ng-if="drigpagination.current*drigpagination.items <= drivergroups.length">{{drigpagination.current*drigpagination.items}}</span><span data-ng-if="drigpagination.current*drigpagination.items > drivergroups.length">{{drivergroups.length}}</span> of {{drivergroups.length}}
+        <i class="fa fa-chevron-left" data-ng-if="drigpagination.current > 1" data-ng-click="backPage(drigpagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="drigpagination.current < drigpagination.pages" data-ng-click="nextPage(drigpagination)"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <br>
+    <br>
+  </div>
+</div>
+<!--SuperAdmin--><div id="buttonFixed" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_DELIVERY_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_DELIVERY_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  id="buttonFixed" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM1"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_DELIVERY_MANAGER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_DELIVERY_MANAGER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

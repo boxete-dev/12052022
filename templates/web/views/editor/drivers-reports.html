@@ -1,0 +1,713 @@
+<div class="container-fluid" style="padding-top: 15px;">
+    <div class="charts-filters col-xs-12">
+        <div class="controls col-xs-12 col-md-4 full">
+            <div class="btn-group btn-group-xs" data-toggle="buttons">
+                <label class="btn btn-default" data-ng-click="openDriverFilter()">
+                    {{ translate('DRIVERS') }} ({{ filters.drivers.length==0?translate('ALL'):filters.drivers.length }})
+                </label>
+                <label class="btn btn-default" data-ng-click="clearBusinessFilter()">
+                    <i class="fa fa-times"></i>
+                </label>
+            </div>
+            <div class="btn-group btn-group-xs" data-toggle="buttons">
+                <label class="btn btn-default" data-ng-class="{'active': filters.filter == 'today'}">
+                    <input type="radio" data-ng-model="filters.filter" value="today"> {{ translate('TODAY') }}
+                </label>
+                <label class="btn btn-default" data-ng-class="{'active': filters.filter == 'yesterday'}">
+                    <input type="radio"data-ng-model="filters.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                </label>
+                <label class="btn btn-default" data-ng-class="{'active': filters.filter == 'last_7_days'}">
+                    <input type="radio" data-ng-model="filters.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                </label>
+                <label class="btn btn-default" data-ng-class="{'active': filters.filter == 'last_30_days'}">
+                    <input type="radio" data-ng-model="filters.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                </label>
+            </div>
+        </div>
+        <!-- timezone -->
+        <div class="dates timezone col-xs-12 col-md-4 full" style="position: relative; text-align: center;">
+            <div class="autocomplete" style="width:300px;">
+                <input id="myInputTimezone" type="text" class="editable" name="myTimeZone"  data-ng-model="timezone" placeholder="timezone" style="width: 100%;">
+            </div>
+            <button class="btn btn-primary" data-ng-click="changeTimezone()">{{ translate('CHANGE') }}</button>
+        </div>
+        <!-- endtimezone -->
+        <div class="dates col-xs-12 col-md-4 full" style="position: relative;">
+            <!-- <div class="form editable"> -->
+                <!-- <div class="group"> -->
+                    <div style="position: relative;">
+                        <input id="filter-from" class="editable" data-ng-model="filters.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                    </div><!--
+                    --><div style="position: relative;">
+                        <input id="filter-to" class="editable" data-ng-model="filters.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                    </div><!--
+                    --><button class="btn btn-primary" data-ng-disabled="!filters.lapse.from || !filters.lapse.to" data-ng-click="filters.filter = filters.lapse.from+','+filters.lapse.to">{{ translate('FILTER') }}</button>
+                <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+    <div data-ng-if="NEW_ADDONS.HEATMAP">
+        <div id="heatmap"></div>
+        <div class="floating-panel">
+            <button data-ng-click="toggleHeatmap()" class="btn btn-primary">{{translate(isHeat?'GROUPED':'HEATMAP')}}</button>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.orders.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDERS') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.orders)">
+                        {{ translate('BUSINESS') }} ({{ reports.orders.businesses.length==0?translate('ALL'):reports.orders.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.orders)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.orders.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.orders.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.orders.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.orders.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.orders.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.orders.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.orders.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.orders.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="ordersfrom" class="editable" data-ng-model="reports.orders.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="ordersto" class="editable" data-ng-model="reports.orders.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.orders.lapse.from || !reports.orders.lapse.to" data-ng-click="reports.orders.filter = reports.orders.lapse.from+','+reports.orders.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="ordersHistory"></canvas>
+        <div style="margin-right: auto; margin-left: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <div class="header">
+                                <div class="title" style="padding: 0;">{{ translate('ORDERS') }} {{ translate('TOTALS') }}: {{total_orders}}</div>
+                            </div>
+                        </th>
+                        <tr>
+                            <th>{{translate('TIMES')}} </th>
+                            <th>{{translate('PRODUCT_POTIONS_QUANTITY')}}</th>
+                        </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="order in Orders">
+                        <td><strong>{{ getTimeFormat(order.time, filters.filter)}}</strong></td>
+                        <td>{{ order.orders }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.sales.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('SALES') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.sales)">
+                        {{ translate('BUSINESS') }} ({{ reports.sales.businesses.length==0?translate('ALL'):reports.sales.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.sales)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.sales.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.sales.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.sales.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.sales.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.sales.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.sales.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.sales.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.sales.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="salesfrom" class="editable" data-ng-model="reports.sales.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="salesto" class="editable" data-ng-model="reports.sales.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.sales.lapse.from || !reports.sales.lapse.to" data-ng-click="reports.sales.filter = reports.sales.lapse.from+','+reports.sales.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="ordersSales"></canvas>
+        <div style="margin-right: auto; margin-left: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <div class="header">
+                                <div class="title" style="padding: 0;">{{ translate('SALES') }} {{ translate('TOTALS') }}: {{parsePrice(total_sales)}}</div>
+                            </div>
+                        </th>
+                        <tr>
+                            <th>{{translate('TIMES')}} </th>
+                            <th>{{translate('TOTALS')}}</th>
+                        </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="sale in Sales">
+                        <td><strong>{{ getTimeFormat(sale.time, filters.filter)}}</strong></td>
+                        <td>{{ parsePrice(sale.sales) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.topSelling.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('TOP_PRODUCTS') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.topSelling)">
+                        {{ translate('BUSINESS') }} ({{ reports.topSelling.businesses.length==0?translate('ALL'):reports.topSelling.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.topSelling)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topSelling.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.topSelling.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topSelling.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.topSelling.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topSelling.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.topSelling.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topSelling.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.topSelling.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="topproductsfrom" class="editable" data-ng-model="reports.topSelling.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="topproductsto" class="editable" data-ng-model="reports.topSelling.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.topSelling.lapse.from || !reports.topSelling.lapse.to" data-ng-click="reports.topSelling.filter = reports.topSelling.lapse.from+','+reports.topSelling.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="topSelling"></canvas>
+        <br>
+        <ul>
+            <li data-ng-repeat="product in topSelling">
+                <strong>{{ product.sales }}</strong> {{ product.name }}
+            </li>
+        </ul>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.topCategories.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('TOP_CATEGORIES') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.topCategories)">
+                        {{ translate('BUSINESS') }} ({{ reports.topCategories.businesses.length==0?translate('ALL'):reports.topCategories.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.topCategories)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.topCategories.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="topcategoriesfrom" class="editable" data-ng-model="reports.topCategories.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="topcategoriesto" class="editable" data-ng-model="reports.topCategories.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.topCategories.lapse.from || !reports.topCategories.lapse.to" data-ng-click="reports.topCategories.filter = reports.topCategories.lapse.from+','+reports.topCategories.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="topCategories"></canvas>
+        <br>
+        <ul>
+            <li data-ng-repeat="category in topCategories">
+                <strong>{{ category.sales }}</strong> {{ category.name }}
+            </li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.topOrders.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('TOP_ORDERS') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.topCategories)">
+                        {{ translate('BUSINESS') }} ({{ reports.topCategories.businesses.length==0?translate('ALL'):reports.topCategories.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.topCategories)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.topCategories.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.topCategories.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.topCategories.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="topcategoriesfrom" class="editable" data-ng-model="reports.topCategories.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="topcategoriesto" class="editable" data-ng-model="reports.topCategories.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.topCategories.lapse.from || !reports.topCategories.lapse.to" data-ng-click="reports.topCategories.filter = reports.topCategories.lapse.from+','+reports.topCategories.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="topOrders"></canvas>
+        <br>
+        <ul>
+            <li data-ng-repeat="driver in topOrders">
+                <strong>{{ driver.orders_count }}</strong> {{ driver.name }} ({{ driver.id }})
+            </li>
+        </ul>
+    </div>
+    <!-- <div class="clearfix"></div> -->
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.customerSatisfaction.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('CUSTOMER_SATISFACTION') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.customerSatisfaction)">
+                        {{ translate('BUSINESS') }} ({{ reports.customerSatisfaction.businesses.length==0?translate('ALL'):reports.customerSatisfaction.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.customerSatisfaction)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.customerSatisfaction.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.customerSatisfaction.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.customerSatisfaction.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.customerSatisfaction.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.customerSatisfaction.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.customerSatisfaction.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.customerSatisfaction.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.customerSatisfaction.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="customersatisfactionfrom" class="editable" data-ng-model="reports.customerSatisfaction.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="customersatisfactionto" class="editable" data-ng-model="reports.customerSatisfaction.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.customerSatisfaction.lapse.from || !reports.customerSatisfaction.lapse.to" data-ng-click="reports.customerSatisfaction.filter = reports.customerSatisfaction.lapse.from+','+reports.customerSatisfaction.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="customerSatisfaction"></canvas>
+    </div>
+    <div class="clearfix"></div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersStatus.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDERS_STATUS') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.ordersStatus)">
+                        {{ translate('BUSINESS') }} ({{ reports.ordersStatus.businesses.length==0?translate('ALL'):reports.ordersStatus.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.ordersStatus)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersStatus.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.ordersStatus.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersStatus.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.ordersStatus.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersStatus.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.ordersStatus.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersStatus.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.ordersStatus.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="ordersstatusfrom" class="editable" data-ng-model="reports.ordersStatus.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="ordersstatusto" class="editable" data-ng-model="reports.ordersStatus.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.ordersStatus.lapse.from || !reports.ordersStatus.lapse.to" data-ng-click="reports.ordersStatus.filter = reports.ordersStatus.lapse.from+','+reports.ordersStatus.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <canvas id="ordersStatus"></canvas>
+        <div style="margin-right: auto; margin-left: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <div class="header">
+                                <div class="title" style="padding: 0;">{{ translate('ORDERS') }} {{ translate('TOTALS') }}: {{total_orders}}</div>
+                            </div>
+                        </th>
+                        <tr>
+                            <th>{{translate('STATUS')}} </th>
+                            <th>{{translate('TOTALS')}}</th>
+                        </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="status in orderStatus">
+                        <td><strong>{{ getOrderState(status.status) }}</strong></td>
+                        <td>{{ status.orders }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- <div class="clearfix"></div> -->
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.sales.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('TIMES') }}</div>
+            
+        </div>
+        <canvas id="spendTimes"></canvas>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.availableTimes.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('AVAILABLE_TIMES') }}</div>
+            
+        </div>
+        <canvas id="availableTimes"></canvas>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.busyTimes.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('BUSY_TIMES') }}</div>
+            
+        </div>
+        <canvas id="busyTimes"></canvas>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersAcceptSpend.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDER_ACCEPT_SPEND') }}</div>
+            <!-- <div class="controls">
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-click="filterBusinessReport(reports.ordersAcceptSpend)">
+                        {{ translate('BUSINESS') }} ({{ reports.ordersAcceptSpend.businesses.length==0?translate('ALL'):reports.ordersAcceptSpend.businesses.length }})
+                    </label>
+                    <label class="btn btn-default" data-ng-click="clearBusiness(reports.ordersAcceptSpend)">
+                        <i class="fa fa-times"></i>
+                    </label>
+                </div>
+                <div class="btn-group btn-group-xs" data-toggle="buttons">
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersAcceptSpend.filter == 'today'}">
+                        <input type="radio" data-ng-model="reports.ordersAcceptSpend.filter" value="today"> {{ translate('TODAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersAcceptSpend.filter == 'yesterday'}">
+                        <input type="radio"data-ng-model="reports.ordersAcceptSpend.filter" value="yesterday"> {{ translate('YESTERDAY') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersAcceptSpend.filter == 'last_7_days'}">
+                        <input type="radio" data-ng-model="reports.ordersAcceptSpend.filter" value="last_7_days"> {{ translate('LAST_7_DAYS') }}
+                    </label>
+                    <label class="btn btn-default" data-ng-class="{'active': reports.ordersAcceptSpend.filter == 'last_30_days'}">
+                        <input type="radio" data-ng-model="reports.ordersAcceptSpend.filter" value="last_30_days"> {{ translate('LAST_30_DAYS') }}
+                    </label>
+                </div>
+            </div>
+            <div class="dates" style="position: relative;">
+                <div class="form editable">
+                    <div class="group">
+                        <div style="position: relative;">
+                            <input id="ordersacceptspendfrom" class="editable" data-ng-model="reports.ordersAcceptSpend.lapse.from" placeholder="{{ translate('FROM') }}" type="text">
+                        </div><!--
+                        <div style="position: relative;">
+                            <input id="ordersacceptspendto" class="editable" data-ng-model="reports.ordersAcceptSpend.lapse.to" placeholder="{{ translate('TO') }}" type="text">
+                        </div><!--
+                        <button class="btn btn-primary" data-ng-disabled="!reports.ordersAcceptSpend.lapse.from || !reports.ordersAcceptSpend.lapse.to" data-ng-click="reports.ordersAcceptSpend.filter = reports.ordersAcceptSpend.lapse.from+','+reports.ordersAcceptSpend.lapse.to">{{ translate('FILTER') }}</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="information" data-ng-class="{ 'very-good-bg': accept_spend && accept_spend <= 250, 'good-bg': accept_spend <= 500 && accept_spend > 250, 'regular-bg': accept_spend <= 1500 && accept_spend > 500, 'bad-bg': accept_spend <= 3600 && accept_spend > 1500, 'very-bad-bg': accept_spend > 3600 }">
+            <div class="data">
+                <span data-ng-if="accept_spend">
+                    {{ getLessUnitTime(accept_spend)[0] }}<br>
+                    <small>{{ getLessUnitTime(accept_spend)[1] }}</small>
+                </span>
+                <span data-ng-if="!accept_spend">
+                    --<br>
+                    <small>--</small>
+                </span>
+            </div>
+            <p class="description" data-ng-if="accept_spend">
+                <span data-ng-if="accept_spend <= 250">{{ translate('VERY_GOOD') }}</span>
+                <span data-ng-if="accept_spend <= 500 && accept_spend > 250">{{ translate('GOOD') }}</span>
+                <span data-ng-if="accept_spend <= 1500 && accept_spend > 500">{{ translate('REGULAR') }}</span>
+                <span data-ng-if="accept_spend <= 3600 && accept_spend > 1500">{{ translate('BAD') }}</span>
+                <span data-ng-if="accept_spend > 3600">{{ translate('VERY_BAD') }}</span>
+            </p>
+            <p class="description" data-ng-if="!accept_spend">No data</p>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersPickupSpend.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDER_INBUSINESS_PICKUP_SPEND') }}</div>
+            
+        </div>
+        <div class="information" data-ng-class="{ 'very-good-bg': inbusiness_pickup_spend && inbusiness_pickup_spend <= 250, 'good-bg': inbusiness_pickup_spend <= 500 && inbusiness_pickup_spend > 250, 'regular-bg': inbusiness_pickup_spend <= 1500 && inbusiness_pickup_spend > 500, 'bad-bg': inbusiness_pickup_spend <= 3600 && inbusiness_pickup_spend > 1500, 'very-bad-bg': inbusiness_pickup_spend > 3600 }">
+            <div class="data">
+                <span data-ng-if="inbusiness_pickup_spend">
+                    {{ getLessUnitTime(inbusiness_pickup_spend)[0] }}<br>
+                    <small>{{ getLessUnitTime(inbusiness_pickup_spend)[1] }}</small>
+                </span>
+                <span data-ng-if="!inbusiness_pickup_spend">
+                    --<br>
+                    <small>--</small>
+                </span>
+            </div>
+            <p class="description" data-ng-if="inbusiness_pickup_spend">
+                <span data-ng-if="inbusiness_pickup_spend <= 250">{{ translate('VERY_GOOD') }}</span>
+                <span data-ng-if="inbusiness_pickup_spend <= 500 && inbusiness_pickup_spend > 250">{{ translate('GOOD') }}</span>
+                <span data-ng-if="inbusiness_pickup_spend <= 1500 && inbusiness_pickup_spend > 500">{{ translate('REGULAR') }}</span>
+                <span data-ng-if="inbusiness_pickup_spend <= 3600 && inbusiness_pickup_spend > 1500">{{ translate('BAD') }}</span>
+                <span data-ng-if="inbusiness_pickup_spend > 3600">{{ translate('VERY_BAD') }}</span>
+            </p>
+            <p class="description" data-ng-if="!inbusiness_pickup_spend">No data</p>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersPickupSpend.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDER_PICKUP_SPEND') }}</div>
+            
+        </div>
+        <div class="information" data-ng-class="{ 'very-good-bg': pickup_spend && pickup_spend <= 250, 'good-bg': pickup_spend <= 500 && pickup_spend > 250, 'regular-bg': pickup_spend <= 1500 && pickup_spend > 500, 'bad-bg': pickup_spend <= 3600 && pickup_spend > 1500, 'very-bad-bg': pickup_spend > 3600 }">
+            <div class="data">
+                <span data-ng-if="pickup_spend">
+                    {{ getLessUnitTime(pickup_spend)[0] }}<br>
+                    <small>{{ getLessUnitTime(pickup_spend)[1] }}</small>
+                </span>
+                <span data-ng-if="!pickup_spend">
+                    --<br>
+                    <small>--</small>
+                </span>
+            </div>
+            <p class="description" data-ng-if="pickup_spend">
+                <span data-ng-if="pickup_spend <= 250">{{ translate('VERY_GOOD') }}</span>
+                <span data-ng-if="pickup_spend <= 500 && pickup_spend > 250">{{ translate('GOOD') }}</span>
+                <span data-ng-if="pickup_spend <= 1500 && pickup_spend > 500">{{ translate('REGULAR') }}</span>
+                <span data-ng-if="pickup_spend <= 3600 && pickup_spend > 1500">{{ translate('BAD') }}</span>
+                <span data-ng-if="pickup_spend > 3600">{{ translate('VERY_BAD') }}</span>
+            </p>
+            <p class="description" data-ng-if="!pickup_spend">No data</p>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersDeliverySpend.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDER_DELIVERY_SPEND') }}</div>
+            
+        </div>
+        <div class="information" data-ng-class="{ 'very-good-bg': delivery_spend && delivery_spend <= 250, 'good-bg': delivery_spend <= 500 && delivery_spend > 250, 'regular-bg': delivery_spend <= 1500 && delivery_spend > 500, 'bad-bg': delivery_spend <= 3600 && delivery_spend > 1500, 'very-bad-bg': delivery_spend > 3600 }">
+            <div class="data">
+                <span data-ng-if="delivery_spend">
+                    {{ getLessUnitTime(delivery_spend)[0] }}<br>
+                    <small>{{ getLessUnitTime(delivery_spend)[1] }}</small>
+                </span>
+                <span data-ng-if="!delivery_spend">
+                    --<br>
+                    <small>--</small>
+                </span>
+            </div>
+            <p class="description" data-ng-if="delivery_spend">
+                <span data-ng-if="delivery_spend <= 250">{{ translate('VERY_GOOD') }}</span>
+                <span data-ng-if="delivery_spend <= 500 && delivery_spend > 250">{{ translate('GOOD') }}</span>
+                <span data-ng-if="delivery_spend <= 1500 && delivery_spend > 500">{{ translate('REGULAR') }}</span>
+                <span data-ng-if="delivery_spend <= 3600 && delivery_spend > 1500">{{ translate('BAD') }}</span>
+                <span data-ng-if="delivery_spend > 3600">{{ translate('VERY_BAD') }}</span>
+            </p>
+            <p class="description" data-ng-if="!delivery_spend">No data</p>
+        </div>
+    </div>
+    <div class="chart col-xs-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="loader" data-ng-if="reports.ordersCompleteSpend.loading">
+            <div class="content">
+                {{ translate('LOADING') }}...
+            </div>
+        </div>
+        <div class="header">
+            <div class="title">{{ translate('ORDER_COMPLETE_SPEND') }}</div>
+            
+        </div>
+        <div class="information" data-ng-class="{ 'very-good-bg': complete_spend && complete_spend <= 250, 'good-bg': complete_spend <= 500 && complete_spend > 250, 'regular-bg': complete_spend <= 1500 && complete_spend > 500, 'bad-bg': complete_spend <= 3600 && complete_spend > 1500, 'very-bad-bg': complete_spend > 3600 }">
+            <div class="data">
+                <span data-ng-if="complete_spend">
+                    {{ getLessUnitTime(complete_spend)[0] }}<br>
+                    <small>{{ getLessUnitTime(complete_spend)[1] }}</small>
+                </span>
+                <span data-ng-if="!complete_spend">
+                    --<br>
+                    <small>--</small>
+                </span>
+            </div>
+            <p class="description" data-ng-if="complete_spend">
+                <span data-ng-if="complete_spend <= 250">{{ translate('VERY_GOOD') }}</span>
+                <span data-ng-if="complete_spend <= 500 && complete_spend > 250">{{ translate('GOOD') }}</span>
+                <span data-ng-if="complete_spend <= 1500 && complete_spend > 500">{{ translate('REGULAR') }}</span>
+                <span data-ng-if="complete_spend <= 3600 && complete_spend > 1500">{{ translate('BAD') }}</span>
+                <span data-ng-if="complete_spend > 3600">{{ translate('VERY_BAD') }}</span>
+            </p>
+            <p class="description" data-ng-if="!complete_spend">No data</p>
+        </div>
+    </div>
+    <!-- <div class="clearfix"></div> -->
+     <!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxManager"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_REPORTS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_REPORTS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxManager"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_REPORTS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_REPORTS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+</div>

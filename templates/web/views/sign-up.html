@@ -1,0 +1,77 @@
+  <div class="container-fluid bg-gray">
+    <div class="form-vertical col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
+      <h3 data-ng-if="!signUpBusiness">{{translate('FRONT_CREATE_ACCOUNT')}}</h3>
+      <h3 data-ng-if="signUpBusiness">{{translate('SIGNUP_BUSINESS')}}</h3>
+      <p class="help">{{translate('MOBILE_FRONT_ALREADY_HAVE_AN_ACCOUNT')}} <a data-ng-click="onGoLogin()"><b>{{translate('LOGIN')}}</b></a></p>
+      <button data-ng-if="ADDONS.facebook_login && !signUpBusiness" class="btn btn-facebook btn-block" data-ng-click="fbLogin()">
+        <i class="fa fa-facebook-official" aria-hidden="true"></i>
+        {{ translate('LOGIN_WITH_FACEBOOK') }}
+      </button>
+      <button data-ng-if="ADDONS.guest_login && !signUpBusiness" class="btn btn-default btn-block btn-upper" data-ng-click="onClickGuest()">
+        <i class="fa fa-user-secret" aria-hidden="true"></i>
+        {{ translate('MOBILE_FRONT_VISUALS_COUNTINUE_AS_GUEST') }}
+      </button>
+      <div class="divider" data-ng-if="(ADDONS.facebook_login || ADDONS.guest_login) && !signUpBusiness">
+        <hr>
+        <span>{{translate('MYACCOUNT_OR').toLowerCase()}}</span>
+      </div>
+      <form name="signup_form" data-ng-submit="onClickSignUp()">
+      <div class="form-group">
+        <label for="name">{{ translate('LOGIN_CREATE_FIRST_NAME') }}</label>
+        <input type="text" class="form-control" name="name" id="name" pattern="[a-z]" placeholder="{{ translate('LOGIN_CREATE_FIRST_NAME') }}" ng-required="true" data-ng-model="signUpUser.name">
+        <div role="alert">
+          <span class="error" ng-show="signup_form.name.$error.required && signup_form.name.$touched">
+           {{ translate('NAME_REQUIRED') }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="lastname">{{ translate('LOGIN_CREATE_LAST_NAME') }}</label>
+        <input type="text" class="form-control" name="name" id="lastname" pattern="[a-z]" placeholder="{{ translate('LOGIN_CREATE_LAST_NAME') }}" ng-required="true" data-ng-model="signUpUser.lastname">
+        <div role="alert">
+          <span class="error" ng-show="signup_form.lastname.$error.required && signup_form.lastname.$touched">
+           {{ translate('NAME_REQUIRED') }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">{{ translate('MOBILE_FRONT_EMAIL') }}</label>
+        <input type="text" class="form-control" name="email" id="email" placeholder="{{ translate('MOBILE_FRONT_EMAIL') }}" data-ng-model="signUpUser.email" ng-required="true" data-ng-change="signUpUser.email=signUpUser.email.toLowerCase()">
+        <div role="alert">
+          <span class="error" ng-show="signup_form.email.$error.required && signup_form.email.$touched">
+           {{ translate('EMAIL_REQUIRED') }}</span>
+        </div>
+      </div>
+      <div class="form-group" >
+          <label for="phone">{{ translate('PHONE_NUMBER') }}</label>
+          <input type="number" class="form-control" name="phone" id="phone" placeholder="{{ translate('PHONE_NUMBER') }}" data-ng-model="signUpUser.cellphone" ng-required="true" data-ng-change="signUpUser.phone=signUpUser.phone.toLowerCase()">
+          <div role="alert">
+            <span class="error" ng-show="signup_form.email.$error.required && signup_form.phone.$touched">
+             {{ translate('PHONE_REQUIRED') }}</span>
+          </div>
+        </div>
+      <div class="form-group">
+        <label for="password">{{ translate('MOBILE_FRONT_PASSWORD') }}</label>
+        <input type="password" class="form-control" name="password" id="password" placeholder="{{ translate('MOBILE_FRONT_PASSWORD') }}" ng-required="true" data-ng-model="signUpUser.password">
+        <div role="alert">
+          <span class="error" ng-show="signup_form.password.$error.required && signup_form.password.$touched">
+           {{ translate('PASSWORD_REQUIRED') }}</span>
+        </div>
+      </div>
+      <div class="form-group" ng-if="SETTINGS.terms_and_conditions">
+        <p>
+          <input type="checkbox" class="form-control terms-check" name="checkbox" id="checkbox" data-ng-model="signUpUser.checkbox">
+          <label for="checkbox">{{ translate('TERMS_AND_CONDITIONS_TEXT') }}</label> <a href="{{SETTINGS.terms_and_conditions_url}}" target="_blank">{{ translate('TERMS_AND_CONDITIONS') }}</a>
+        </p>
+        <div role="alert">
+          <span class="error" ng-show="signup_form.checkbox.$error.required && signup_form.checkbox.$touched">
+           {{ translate('PASSWORD_REQUIRED') }}</span>
+        </div>
+      </div>
+      <div id="signup-recaptcha" class="recaptcha-container"></div>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block sign-up-btn" type="submit" ng-disabled="!signUpUser.checkbox && SETTINGS.terms_and_conditions">
+          {{ translate('SIGNUP').toUpperCase() }}
+        </button>
+      </div>
+      </form>
+    </div>
+  </div>

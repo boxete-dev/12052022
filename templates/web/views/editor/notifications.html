@@ -1,0 +1,95 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideNotifications()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('NOTIFICATIONS') }}</span>
+        </ion-item>
+        <br>
+        <div focus-group="" focus-group-index="3" select-content>
+            <!--<ion-item class="text-center">
+                <h2>{{HeaderTitle}}</h2>
+                <p>{{ item.restData.info.address }} - {{ item.restData.info.city.name }}</p>
+            </ion-item>-->
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(6)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('EMAILS_AND_PHONES') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 6">
+                <div class="eitems">
+                    <div class="eitem" data-ng-init="curEmailOrder = deal.email">
+                        <label>{{ translate('EMAIL_RECEIVE_ORDERS') }}</label>
+                        <!-- <button data-ng-click="saveEmailOrders(curEmailOrder)"><i class="fa fa-floppy-o"></i></button> -->
+                        <div class="dynamic">
+                            <input class="editable" type="text" data-ng-model="curEmailOrder" placeholder="{{ translate('EMAIL_RECEIVE_ORDERS') }}" data-ng-change="saveEmailOrders(curEmailOrder)" tabindex="1001">
+                        </div>
+                    </div>
+                    <div class="eitem" data-ng-init="curBusTel = deal.phone">
+                        <label>{{ translate('PHONE_NUMBER') }}</label>
+                        <!-- <button data-ng-click="saveBusinessTel(curBusTel)"><i class="fa fa-floppy-o"></i></button> -->
+                        <div class="dynamic">
+                            <input class="editable" type="text" data-ng-model="curBusTel" placeholder="{{ translate('PHONE_NUMBER') }}" data-ng-submit="saveBusinessTel(curBusTel)" data-ng-change="checkBusinessTel(curBusTel)" tabindex="1002" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                        </div>
+                    </div>
+                    <div class="eitem" data-ng-init="curBusCel = deal.cellphone">
+                        <label>{{ translate('MOBILE_NUMBER') }} ({{ translate('OPTIONAL') }})</label>
+                        <!-- <button data-ng-click="saveBusinessCel(curBusCel)"><i class="fa fa-floppy-o"></i></button> -->
+                        <div class="dynamic">
+                            <input class="editable" type="text" data-ng-model="curBusCel" placeholder="{{ translate('MOBILE_NUMBER') }}" data-ng-submit="saveBusinessCel(curBusCel)" data-ng-change="checkBusinessCel(curBusCel)" tabindex="1003" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+                        </div>
+                    </div>
+                    <div class="eitem">
+                        <label>{{ translate('ORDERS_APP_PUSH') }}</label>
+                        <!-- <button data-ng-click="null"><i class="fa fa-floppy-o"></i></button> -->
+                        <p class="info">
+                            {{ translate('ORDERS_APP_PUSH_DESC') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <ion-item data-ng-if="ADDONS.editor_gprs_printer">
+                <button class="btn-accordion" data-ng-click="changeCollapse(0)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('GPRS_PRINTERS') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item data-ng-if="ADDONS.editor_gprs_printer">
+            <div class="sub-accordion" data-ng-if="curCollapse == 0">
+                <div class="eitems">
+                    <div class="eitem">
+                        <label>{{ translate('ACCEPT_GPRS_PRINTER') }}</label>
+                        <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none"   data-ng-model="deal.use_printer" data-ng-change="changePrinter(curPrinter)">
+                         {{ translate('ACCEPT_GPRS_PRINTER') }}
+                        </ion-checkbox>
+                    </div>
+                    <div class="eitem">
+                        <label>{{ translate('PRINTER_MODEL') }}</label>
+                        <div class="dynamic">
+                            <select class="editable" data-ng-model="deal.printer_id" data-ng-change="changePrinter()">
+                                <option value="" disabled="true">{{ translate('SELECT_PRINTER') }}</option>
+                                <option data-ng-repeat="printer in printers" value="{{printer.id}}" data-ng-selected="deal.printer_id == printer.id">{{printer.model}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="eitem" data-ng-if="deal.printer_id && deal.use_printer">
+                        <label>{{ translate('GPRS_QUEUE_PATH') }}</label>
+                        <div class="dynamic">
+                            <input class="editable" type="text" value="{{filePath}}"  readonly>
+                        </div>
+                    </div>
+                    <div class="eitem" data-ng-if="deal.printer_id && deal.use_printer">
+                        <label>{{ translate('GPRS_QUEUE_PATH_CONFIRM') }}</label>
+                        <div class="dynamic">
+                            <input class="editable" type="text" value="{{filePathConfirm}}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+        </div>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_NOTIFICATION')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_NOTIFICATION')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_NOTIFICATION')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_NOTIFICATION')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+ 

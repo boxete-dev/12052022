@@ -1,0 +1,90 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideModal()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+        <span class="divider-padding no-padding-h">{{ translate('CUSTOM_FIELDS') }}</span>
+        </ion-item>
+        <br>
+        <div class="form editable" data-ng-if="model == 'ProductExtraSubOption'">
+            <div class="group">
+                <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none" data-ng-model="curdata.suboption.issku" data-ng-change="updateProductSubOption(curdata.extra, curdata.option, curdata.suboption)">
+                {{ translate('SKU') }}
+                </ion-checkbox>
+            </div>
+        </div>
+        <div class="form editable" data-ng-if="model == 'ProductExtraSubOption' && curdata.suboption.issku">
+            <div class="group">
+                <label>{{ translate('SKU_STOCK') }}</label>
+                <input class="editable" type="text" data-ng-model="curdata.suboption.sku" data-ng-change="updateProductSubOption(curdata.extra, curdata.option, curdata.suboption)" >
+            </div>
+        </div>
+
+        <div class="form editable">
+        
+        <div class="custom_files" data-ng-repeat="item in customMetafields track by $index">
+            <div class="c_field">
+                <div class="col-xs-3">
+                    <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <form>
+                            <ng-container data-ng-if="isBoolVal(item.value_type)">
+                                <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                            </ng-container>
+                            <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                                <div class="txt_wrapper">{{ item.value }}</div>
+                            </ng-container>
+                            <button data-ng-if="model == 'ProductExtraSubOption'" class="editable" data-ng-click="removeCustomField(item, 'ProductExtraSubOption', curdata)"><i class="fa fa-trash"></i></button>
+                            <button data-ng-if="model == 'ProductExtraOption'" class="editable" data-ng-click="removeCustomField(item, 'ProductExtraOption', data)"><i class="fa fa-trash"></i></button>
+                            <button data-ng-if="model == 'Category'" class="editable" data-ng-click="removeCustomField(item, 'Category', data)"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="custom_files">
+            <div class="c_field">
+                <div class="col-xs-3">
+                    <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                    </select>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input">
+                        <form>
+                            <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input has_action">
+                        <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                            <select class="editable" data-ng-model="newField.value">
+                                <option value="1">True</option>
+                                <option value="0">False</option>
+                            </select>
+                        </ng-container>
+                        <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                            <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event, model, data.extra, data.option, data.suboption)">
+                            <!-- <textarea data-ng-model="newField.value" rows="5" data-ng-if="isJsonVal(newField.value_type)" ng-keypress="getEnterEvent($event, model,data.extra, data.option, data.suboption)"></textarea> -->
+                            <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                        </ng-container>
+                        <button data-ng-if="model == 'ProductExtraSubOption'" class="editable" data-ng-click="addCustomField('ProductExtraSubOption', curdata.extra, curdata.option, curdata.suboption)"><i class="fa fa-plus-circle"></i></button>
+                        <button data-ng-if="model == 'ProductExtraOption'" class="editable" data-ng-click="addCustomField('ProductExtraOption', data.extra, data.option)"><i class="fa fa-plus-circle"></i></button>
+                        <button data-ng-if="model == 'Category'" class="editable" data-ng-click="addCustomField('Category', data.extra, data.option)"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </ion-content>
+</ion-modal-view>

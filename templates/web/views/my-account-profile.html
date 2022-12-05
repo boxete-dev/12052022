@@ -1,0 +1,276 @@
+  <div class="container-fluid bg-gray">
+    <div class="form-vertical col-lg-10 col-lg-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+      <div data-ng-if="NEW_FEATURES.MULTI_ADDRESS" class="webtabs webtabs-xs bg-transparent">
+        <div class="tab" data-ng-class="{ 'active': curTab == 0 }" data-ng-click="onTab($event, 0)">
+          {{ translate('MOBILE_UPDATE_PROFILE') }}
+        </div>
+        <div data-ng-if="!NEW_FEATURES.ONLY_EDITOR" class="tab" data-ng-class="{ 'active': curTab == 4 }" data-ng-click="onTab($event, 4)">
+          {{ translate('ADDRESSES') }}
+        </div>
+        <div data-ng-if="!NEW_FEATURES.ONLY_EDITOR" class="tab" data-ng-class="{ 'active': curTab == 1 }" data-ng-click="onTab($event, 1)">
+          {{ translate('MY_ORDERS') }}
+        </div>
+        <div data-ng-if="!NEW_FEATURES.ONLY_EDITOR && (ADDONS.stripe_payment || ADDONS.stripeconnect_payment)" class="tab" data-ng-class="{ 'active': curTab == 2 }" data-ng-click="onTab($event, 2)">
+          {{ translate('MY_CARDS') }}
+        </div>
+        <div data-ng-if="updateUser.level == 0 || updateUser.level == 2" class="tab" data-ng-class="{ 'active': curTab == 3 }" data-ng-click="onTab($event, 3)">
+          {{ translate('KEYS') }}
+        </div>
+      </div>
+      <div id="navbar-example" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS">
+        <ul class="nav nav-tabs" data-ng-class="{'three': updateUser.level != 0 && updateUser.level != 2, 'four': updateUser.level == 0 || updateUser.level == 2}">
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 0}" data-ng-click="onTab($event, 0)">{{ translate('MOBILE_UPDATE_PROFILE') }}</a>
+          </li>
+          <li>
+            <a href="#" data-ng-class="{'active': curTab == 1}" data-ng-click="onTab($event, 1)">{{ translate('MY_ORDERS') }}</a>
+          </li>
+          <li data-ng-if="ADDONS.stripe_payment || ADDONS.stripeconnect_payment">
+            <a href="#" data-ng-class="{'active': curTab == 2}" data-ng-click="onTab($event, 2)">{{ translate('MY_CARDS') }}</a>
+          </li>
+          <li data-ng-if="updateUser.level == 0 || updateUser.level == 2">
+            <a href="#" data-ng-class="{'active': curTab == 3}" data-ng-click="onTab($event, 3)">{{ translate('KEYS') }}</a>
+          </li>
+        </ul>
+      </div>
+      <p data-ng-if="!NEW_FEATURES.MULTI_ADDRESS" class="help">&nbsp;</p>
+      <form class="form-horizontal usr_info" data-ng-if="curTab == 0" select-content>
+        <div class="photo-profile">
+          <div id="photo_profile" class="drag" style="background-image: url({{updateUser.image}}),url({{updateUser.photo}});">
+            <div class="edit xs">
+              <p>
+                <i class="fa fa-user"></i>
+              </p>
+              <input id="photo_profile_file" type="file" style="display: none;" accept="image/png,image/jpeg,image/jpg">
+            </div>
+          </div>
+        </div>
+        <div class="center" data-ng-if="updateUser && updateUser.qualification">
+          <!-- <div class="rating">
+            <div class="base">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+            <div class="points" style="width: {{getWidthRating(updateUser.qualification)}}px;">
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+          </div>  -->
+          {{updateUser.qualification | number:DECIMAL.length | separator}} <i class="fa fa-star" aria-hidden="true"></i>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.name.enabled">
+          <label for="fullname" class="col-sm-3 control-label">{{ translate('NAME') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="fullname" placeholder="{{ translate('NAME') }}" data-ng-model="updateUser.name">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.middle_name.enabled">
+          <label for="middle_name" class="col-sm-3 control-label">{{ translate('MIDDLE_NAME') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="middle_name" placeholder="{{ translate('MIDDLE_NAME') }}" data-ng-model="updateUser.middle_name">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.lastname.enabled">
+          <label for="lastname" class="col-sm-3 control-label">{{ translate('FRONT_VISUALS_LAST_NAME') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="lastname" placeholder="{{ translate('FRONT_VISUALS_LAST_NAME') }}" data-ng-model="updateUser.lastname">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.second_lastname.enabled">
+          <label for="sencond_lastname" class="col-sm-3 control-label">{{ translate('SECOND_LASTNAME') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="second_lastname" placeholder="{{ translate('SECOND_LASTNAME') }}" data-ng-model="updateUser.second_lastname">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.email.enabled">
+          <label for="email" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_EMAIL') }}</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" id="email" placeholder="{{ translate('MOBILE_FRONT_EMAIL') }}" data-ng-model="updateUser.email" data-ng-change="updateUser.email = updateUser.email.toLowerCase()">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="fbUserState != 'FB_USER'">
+          <label for="password" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_PASSWORD') }}</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" id="password" placeholder="{{ translate('MOBILE_FRONT_PASSWORD') }}" data-ng-model="updateUser.password" autocomplete="new-password">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="checkoutfields.mobile_phone.enabled">
+          <label for="tel" class="col-sm-3 control-label">{{ translate('CELLPHONE') }}</label>
+          <div class="col-sm-9">
+            <input type="tel" class="form-control" id="cel" placeholder="{{ translate('CELLPHONE') }}" data-ng-model="updateUser.cellphone" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS && checkoutfields.city_dropdown_option.enabled">
+          <label for="address" class="col-sm-3 control-label">{{ translate('CITY') }}</label>
+          <div class="col-sm-9">
+            <select class="form-control" data-ng-model="updateUser.city_id" style="border: 1px solid #ccc !important;" data-ng-change="resetDropdownoption()">
+              <option value="">{{ translate('FRONT_SELECT_CITY') }}</option>
+              <option data-ng-repeat="city in cities | orderBy:'name'" value="{{city.id}}" data-ng-selected="city.id == updateUser.city_id">
+              {{city.name}}
+               </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS && checkoutfields.city_dropdown_option.enabled && updateUser.city_id">
+          <label for="address" class="col-sm-3 control-label">{{ translate('NEIGHBORHOOD') }}</label>
+          <div class="col-sm-9">
+            <select class="form-control" data-ng-model="updateUser.dropdown_option_id" style="border: 1px solid #ccc !important;">
+              <option value="">{{ translate('FRONT_SELECT_CITY') }}</option>
+              <option data-ng-repeat="dropdown_option in dropdownoptions | orderBy:'name' | filter:{'city_id': updateUser.city_id}" value="{{dropdown_option.id}}" data-ng-selected="dropdown_option.id == updateUser.dropdown_option_id">
+              {{dropdown_option.name}}
+               </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS && checkoutfields.address.enabled">
+          <label for="address" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_FULL_ADDRESS') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="address-profile" placeholder="{{ translate('MOBILE_FRONT_FULL_ADDRESS') }}" data-ng-model="updateUser.address">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS && checkoutfields.zipcode.enabled">
+          <label for="zipcode" class="col-sm-3 control-label">{{ translate('MOBILE_ZIP_POSTAL_CODE') }}</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="zipcode" placeholder="{{ translate('MOBILE_ZIP_POSTAL_CODE') }}" data-ng-model="updateUser.zipcode">
+          </div>
+        </div>
+        <div class="form-group" data-ng-if="!NEW_FEATURES.MULTI_ADDRESS && checkoutfields.address.enabled">
+          <label for="addres_notes" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_ORDER_COMMENT_HINT') }}</label>
+          <div class="col-sm-9">
+            <textarea id="address_notes" type="text" class="form-control" placeholder="{{ translate('MOBILE_FRONT_ORDER_COMMENT_HINT') }}" data-ng-model="updateUser.address_notes" rows="3"></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="addres_notes" class="col-sm-3 control-label"></label>
+          <div class="col-sm-9">
+            <button type="submit" class="btn btn-primary" data-ng-click="updateProfile()">{{ translate('REGISTER_FORM_UPDATE_BUTTON').toUpperCase() }}</button>
+            <a type="submit" class="btn-delete-account" data-ng-if="isSelfDeleteAccount" data-ng-click="deleteMyAccount()">{{ translate('DELETE_MY_ACCOUNT_BUTTON').toUpperCase() }}</a>
+          </div>
+        </div>
+      </form>
+      <div data-ng-if="curTab == 4" data-ng-controller="addressesCtrl">
+        <div class="loading" data-ng-if="loading">
+            <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+        </div>
+        <div class="list" data-ng-if="addresses.length > 0">
+          <div data-ng-click="change(address)" data-ng-repeat="address in addresses" class="list-item" data-ng-class="{ 'selected': address.default }">
+            <div class="left">
+              <i data-ng-if="address.default" class="fa fa-check-circle" style="margin-right: 1rem;"></i>
+              <i data-ng-if="!address.default" class="fa fa-circle-o" style="margin-right: 1rem;"></i>
+              <i data-ng-if="address.tag == 'home'" class="fa fa-home"></i>
+              <i data-ng-if="address.tag == 'office'" class="fa fa-building"></i>
+              <i data-ng-if="address.tag == 'favorite'" class="fa fa-heart"></i>
+              <i data-ng-if="address.tag == 'other'" class="fa fa-address-card"></i>
+            </div>
+            <div class="right">
+              <i data-ng-click="edit(address);$event.stopPropagation();" class="fa fa-pencil-square-o"></i>
+              <i data-ng-if="!address.default" data-ng-click="delete(address);$event.stopPropagation();" class="fa fa-trash-o"></i>
+            </div>
+            <div class="content">
+              <div class="primary" data-ng-style="{'padding-top': (!address.internal_number)?'6px':'0'}">{{ address.address }}</div>
+              <!-- 
+                SHOW ADDRESS TAG UNTIL ADD THE FUNCTIONALITY TO EDIT IT
+                <div class="secondary">{{ translate(address.tag.toUpperCase()) }}<span data-ng-if="address.internal_number"> &dot; {{ address.internal_number }}</span></div> 
+              -->
+              <div class="secondary" data-ng-if="address.internal_number">{{translate('INTERNAL_NUMBER')}}: {{ address.internal_number }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-offset-2 col-sm-8 center">
+          <button class="btn btn-primary btn-block" data-ng-click="add()">{{translate('ADD_NEW_ADDRESS')}}</button>
+        </div>
+      </div>
+      <div data-ng-if="curTab == 1" data-ng-controller="orderCtrl">
+        <div class="text-center" data-ng-if="orders.length == 0">
+            {{translate('MOBILE_NO_ORDERS')}}
+        </div>
+        <div data-ng-repeat="order in orders | orderBy: 'id*-1' track by order.id" class="row-eq-height" >
+          <div class="unread-messages" data-ng-if="order.unread_count > 0"></div>
+          <div class="col-xs-12 my_orders" style="border-bottom: 1px solid lightgray; padding: 10px 0px 15px 0px;">
+            <div class="col-sm-3 col-xs-12">
+              <img class="img-my-orders" ng-src="{{order.business.logo}}" onerror="this.src='templates/web/img/dummy_logo.png'">
+            </div>
+            <div class="col-sm-9 col-xs-12 full middle-div">
+                <!-- <div>
+                    <img style="height: 70px; width: auto;" ng-src="{{order.business.logo}}" onerror="this.src='templates/web/img/dummy_logo.png'">
+                  </div> -->
+              <div class="col-sm-6 col-xs-12 full text-xs-center">
+                <strong>{{order.id}}. {{order.business.name}}</strong><br>
+                <div style="margin-top: 8px;">{{parseDate(order.delivery_datetime)}}</div>
+                <a data-ng-click="openDetails(order)" data-ng-if="NEW_ADDONS.REORDER">{{ translate('MOBILE_FRONT_BUTTON_VIEW_ORDER') }}</a>
+              </div>
+              <div class="col-sm-6 col-xs-12 text-center">
+                  <div>{{getOrderState(order.status)}}</div>
+                  <div class="text-center full" style="min-height: 21px;">
+                    <button class="btn btn-small btn-primary" data-ng-click="reOrder(order)" data-ng-if="NEW_ADDONS.REORDER">{{ translate('REORDER') }}</button></br>
+                    <button class="btn btn-small btn-primary" data-ng-click="openDetails(order)" data-ng-if="!NEW_ADDONS.REORDER">{{ translate('MOBILE_FRONT_BUTTON_VIEW_ORDER') }}</button></br>
+                    <button class="btn btn-small btn-primary" data-ng-if="(order.status == 1 || order.status == 11) && !order.review && order.business_id && ADDONS.order_reviews" ng-click="openModalReview(order, $event)">{{ translate('EMAIL_TEMPLATE_REVIEW_NOW') }}</button>
+                    <button class="btn btn-small btn-primary" data-ng-if="(order.status == 11) && !order.user_review && order.driver_id && ADDONS.user_reviews" ng-click="openModalUserReview(order, $event)">{{ translate('RATE_YOUR_DRIVER') }}</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-ng-if="curTab == 2" data-ng-controller="cardCtrl">
+        <p class="help-empty" data-ng-show="cards.length == 0">{{translate('MOBILE_LINK_CARD')}}</p>
+        <table class="table table-bordered table-orders" data-ng-show="cards.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{translate('CONTROL_PANEL_CARDSAVE_CARDNO')}}</th>
+              <th>{{translate('MOBILE_CARD_TYPE')}}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="card in cards | orderBy:'id'" data-ng-model="orderModel">
+              <td>{{$index + 1}}</td>
+              <td>XXXX-XXXX-XXXX-{{ card.last4 }}</td>
+              <td>{{ card.brand }}</td>
+              <td><a class="button view-more" data-ng-click="deleteCard(card)">{{translate('delete_V2')}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="col-sm-offset-2 col-sm-8">
+          <button class="btn btn-primary btn-block" data-ng-click="addNewCard()">{{translate('MOBILE_ADD_NEW_CARD')}}</button>
+        </div>
+      </div>
+      <div data-ng-if="curTab == 3" data-ng-controller="keyCtrl">
+        <div class="eitems">
+          <!--<div class="eitem title">
+            <div class="dynamic">
+              <input class="editable" type="text" value="{{ translate('KEY') }}" disabled="disabled">
+            </div>
+          </div>-->
+          <div class="eitem" data-ng-repeat="key in keys | orderBy:'id'">
+            <button data-ng-click="delete(key)"><i class="fa fa-trash"></i></button>
+            <!--<div class="p50f">
+              <input class="editable" type="text" data-ng-model="translation.text" value="{{ translate('TEXT') }}" tabindex="{{($index+1)+9000}}" data-ng-change="updateTranslation(translation)">
+            </div>-->
+            <div class="dynamic">
+              <input class="editable" type="text" data-ng-model="key.key" value="{{ translate('KEY') }}" readonly>
+            </div>
+          </div>
+          <div class="eitem">
+            <form data-ng-submit="add()">
+            <button type="submit"><i class="fa fa-plus-circle"></i> {{translate('ADD')}}</button>
+            <!--<div class="p50">
+              <input class="editable" type="text" data-ng-model="curLang.text" placeholder="{{ translate('TEXT') }}" tabindex="{{($index+1)+14001}}">
+            </div>
+            <div class="dynamic">
+              <input class="editable" type="text" data-ng-model="curLang.key" placeholder="{{ translate('KEY') }}" tabindex="{{($index+1)+14000}}">
+            </div>-->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

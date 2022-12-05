@@ -1,0 +1,122 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hidePreorder()"></i>
+  <ion-content class="order-cont popup-mode" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      {{translate('PREORDER')}}
+    </ion-item>
+    <br>
+    <div class="tab-item-cont" data-ng-if="NEW_FEATURES.PREORDER">
+      <div class="button-bar preorder" focus-group focus-group-index="1" fm-group="1" tabindex="0" fm-parent-group="14">
+        <button focus-index="2" fm-parent="1"  fm-id="4" class="button tab"  data-ng-class="{'active': preorder_by_date}" data-ng-click="onPreorderTab(2)">{{translate('SELECT_BY_DATETIME')}}</button>
+        <button focus-index="1" fm-parent="1"  fm-id="2" class="button tab" data-ng-class="{'active': !preorder_by_date}" data-ng-click="onPreorderTab(1)">{{translate('SELECT_BY_MENU')}}</button>
+      </div>
+    </div>
+    <div class="preorder">
+      <div class="business-modal" data-ng-if="!preorder_by_date">
+        <img ng-src="{{curBusiness.logo}}">
+        <div class="info">
+          <span class="name">{{curBusiness.name}}</span><br>
+        </div>
+      </div>
+      <!-- {{menus}} -->
+      <p class="step" data-ng-if="!preorder_by_date">{{translate('PREORDER_STEP_1')}}</p>
+      <p class="step" data-ng-if="preorder_by_date && ADDONS.pickup">{{translate('NEW_PREORDER_STEP_1')}}</p>
+      <div class="type" data-ng-if="preorder_by_date && ADDONS.pickup">
+        <div class="col-md-6">
+          <button class="btn btn-primary" data-ng-click="selectTypePreorder(1)" data-ng-class="{diselect: _type == 2}"><i class="fa fa-truck" style="margin-right: 10px;"></i>{{translate('DELIVERY')}}</button>
+        </div>
+        <div class="col-md-6">
+          <button class="btn btn-primary" data-ng-click="selectTypePreorder(2)" data-ng-class="{diselect: _type == 1}"><i class="fa fa-shopping-bag" style="margin-right: 10px;"></i>{{translate('PICKUP')}}</button>
+        </div>
+      </div>
+      <div class="menus" data-ng-if="!preorder_by_date">
+        <div class="resmenu" data-ng-repeat="menu in menus" data-ng-click="selectMenu(menu)">
+          <div class="check"><i class="fa fa-circle-o" data-ng-if="curPreorder.menu_id != menu.id"></i><i class="fa fa-check-circle checked" data-ng-if="curPreorder.menu_id == menu.id"></i></div>
+          <div class="content">
+            <span class="name">{{menu.name}}</span>
+          </div>
+          <div class="days">
+            <div class="day" data-ng-class="{ 'open': menu.schedule[1].enabled }">{{translate('DAY1')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[2].enabled }">{{translate('DAY2')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[3].enabled }">{{translate('DAY3')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[4].enabled }">{{translate('DAY4')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[5].enabled }">{{translate('DAY5')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[6].enabled }">{{translate('DAY6')}}</div><!--
+            --><div class="day" data-ng-class="{ 'open': menu.schedule[0].enabled }">{{translate('DAY7')}}</div>
+          </div>
+          <!--<div class="days">
+            <div class="day" data-ng-class="{ 'open': menu.schedule[1].enabled }">{{parseTime(menu.schedule[1].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[2].enabled }">{{parseTime(menu.schedule[2].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[3].enabled }">{{parseTime(menu.schedule[3].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[4].enabled }">{{parseTime(menu.schedule[4].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[5].enabled }">{{parseTime(menu.schedule[5].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[6].enabled }">{{parseTime(menu.schedule[6].open)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[0].enabled }">{{parseTime(menu.schedule[0].open)}}</div>
+          </div>
+          <div class="days">
+            <div class="day" data-ng-class="{ 'open': menu.schedule[1].enabled }">{{parseTime(menu.schedule[1].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[2].enabled }">{{parseTime(menu.schedule[2].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[3].enabled }">{{parseTime(menu.schedule[3].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[4].enabled }">{{parseTime(menu.schedule[4].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[5].enabled }">{{parseTime(menu.schedule[5].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[6].enabled }">{{parseTime(menu.schedule[6].close)}}</div>
+            <div class="day" data-ng-class="{ 'open': menu.schedule[0].enabled }">{{parseTime(menu.schedule[0].close)}}</div>
+          </div>-->
+        </div>
+      </div>
+      <div data-ng-if="(curPreorder.menu_id != -1 && !preorder_by_date) || preorder_by_date">
+        <p class="step" data-ng-if="(preorder_by_date && ADDONS.pickup) || !preorder_by_date">{{translate('PREORDER_STEP_2')}}</p>
+        <div class="menus" data-ng-if="!preorder_by_date">
+          <div class="resmenu">
+            <div class="selects" select-content>
+              <select class="form-control s50" data-ng-model="curPreorder.date" data-ng-change="selectDate()">
+                <option value="">{{translate('PREORDER_STEP_2_DATE')}}</option>
+                <option data-ng-repeat="day in curPreorder.days" value="{{day.value}}">{{day.text}}</option>
+              </select><!--
+              --><select class="form-control s50" data-ng-model="curPreorder.time" data-ng-change="selectHour()">
+                <option value="">{{translate('PREORDER_STEP_2_TIME')}}</option>
+                <option data-ng-repeat="time in curPreorder.times" value="{{time.value}}">{{time.text}}</option>
+              </select><!--
+              --><!-- <select class="form-control s25" data-ng-model="curPreorder.minute">
+                <option value="">{{translate('PREORDER_STEP_2_TIME_OPTION_MIN')}}</option>
+                <option data-ng-repeat="minute in curPreorder.minutes" value="{{minute.value}}">{{minute.text}}</option>
+              </select> -->
+            </div>
+          </div>
+        </div>
+        <div class="menu-new" style="padding-bottom: 30px;" data-ng-if="preorder_by_date">
+          <div class="col-md-6" style="padding: 10px 0 0px 10px;">
+            <label style="padding-left: 5px">{{translate('SELECT_PREORDER_DATE')}}</label>
+            <div class="row">
+              <input class="form-control s50" ng-disabled="unablePreorder" placeholder="{{translate('DATE')}}" data-ng-model="curPreorder.date" id="preordeDate" onkeydown="event.preventDefault()" avoid-autofill ><i id="preordeDate" class="fa fa-chevron-down date" data-ng-click="showDates()"></i>
+            </div>
+          </div>
+          <div class="col-md-6" style="padding: 10px 0 20px 10px;" data-ng-if="curPreorder.date">
+            <label style="padding-left: 5px">{{translate('SELECT_PREORDER_TIME')}}</label>
+            <div class="row" style="padding: 5px 0;">
+              <div class="time">
+                <select class="form-control" data-ng-model="_hour" data-ng-change="changeHour(_hour)">
+                  <option value="" disabled>{{translate('HH')}}</option>
+                  <option data-ng-repeat="time in curPreorder._times track by $index" value="{{time.hour}}" data-ng-selected="time.hour == _hour">{{time.hour}} {{(time.hour!=_hour && time.meridian)?'('+time.meridian+')':''}}</option>
+                </select>
+              </div>
+              <div class="time">
+                <select class="form-control" data-ng-model="_minute" data-ng-change="changeMinutes(_minute)">
+                  <option value="" disabled>{{translate('MM')}}</option>
+                  <option data-ng-repeat="minute in curPreorder._times[hour_index].minutes track by $index" value="{{minute}}" data-ng-selected="minute == _minute">{{minute}}</option>
+                </select>
+              </div>
+              <div class="time">
+                <span class="meridian">{{curPreorder._times[hour_index].meridian}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn col-xs-6 col-xs-offset-3" style="margin-top: 20px;" data-ng-if="((curPreorder.menu_id == -1 || curPreorder.date == '' || curPreorder.time == '') && !preorder_by_date) ||  (curPreorder.date == '' && preorder_by_date)" disabled="true">
+      {{translate('PREORDER_GO_TO_MENU')}}
+    </button>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="goToMenu()" data-ng-if="((curPreorder.menu_id != -1 && curPreorder.date != '' && curPreorder.time != '') && !preorder_by_date) || (curPreorder.date != '' && preorder_by_date)">{{translate('PREORDER_GO_TO_MENU')}}</button>
+    </ion-content>
+</ion-modal-view>

@@ -1,0 +1,23 @@
+<ion-modal-view class="popup">
+        <i class="fa fa-times close" data-ng-click="hide()"></i>
+        <ion-content class="color-bg popup-mode">
+                <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+			<span class="divider-padding no-padding-h">{{ translate('INSERT_LINK') }}</span>
+                </ion-item>
+                <ion-item class="form editable">
+			<div class="group">
+				<label>{{ translate('LINK_TEXT') }}</label>
+                                <input type="text" data-ng-model="data.text" class="editable">
+                                <label>{{ translate('LINK_URL') }}</label>
+                                <input type="text" data-ng-model="data.url" class="editable">
+                                <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="data.isNewWindow">{{ translate('IS_NEW_WINDOW') }}
+                                </ion-checkbox>
+			</div>
+                </ion-item>
+                <div>
+			<center>
+				<button class="btn btn-primary" data-ng-click="insertLink(data)">{{ translate('INSERT').toUpperCase() }}</button>
+			</center> 
+		</div>
+        </ion-content>
+</ion-modal-view>

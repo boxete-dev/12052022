@@ -1,0 +1,32 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('LOGISTIC_INFORMATION') }} #{{ logistic_information.id }}</span>
+        </ion-item>
+        <div>
+            <div>
+                <strong>{{ translate('DISTANCE_CUSTOMER_FROM_BUSINESS') }}:</strong> {{ parseDistance(logistic_information.distance_customer_from_business / 1000) }}
+            </div>
+            <h4>{{ translate('QUEUES') }}</h4>
+            <p data-ng-if="logistic_information.queues.length === 0">{{ translate('WITHOUT_QUEUES') }}</p>
+            <div class="driver-group-queues" data-ng-repeat="queue in logistic_information.queues">
+                <h5>{{ queue.id }}. {{ queue.name }}</h5>
+                <p><strong>{{ translate('AVAILABLE_DRIVERS') }}:</strong> {{ queue.drivers.length }}</p>
+                <p><strong>{{ translate('PRIORITY') }}:</strong> {{ queue.priority }}</p>
+                <p><strong>{{ translate('START_IN') }}:</strong> {{ getOrderState(queue.orders_group_start_in_status) }}</p>
+                <p><strong>{{ translate('QUEUE') }}:</strong></p>
+                <p class="queue-item" data-ng-repeat="order in queue.orders" data-ng-class="{ 'selected': order.id === logistic_information.id }">
+                    {{ $index + 1 }}. {{ order.id }} <span data-ng-if="order.waiting_for_preorder">({{ translate('WAITING_FOR_PREORDER') }})</span>
+                </p>
+            </div>
+        </div>
+        <div>
+            <h4>{{ translate('HISTORY_ATTEMPTS') }}</h4>
+            <p data-ng-if="logistic_information.logistic_attempts.length === 0">{{ translate('WITHOUT_ATTEMPTS') }}</p>
+            <ol>
+                <li data-ng-repeat="attempts in logistic_information.logistic_attempts"><strong>{{ translate('DRIVER_GROUP_ID') }}:</strong> {{ attempts.driver_group_id }} <strong>{{ translate('AT') }}</strong> {{ parseDate(attempts.created_at) }}</li>
+            </ol>
+        </div>
+    </ion-content>
+</ion-modal-view>

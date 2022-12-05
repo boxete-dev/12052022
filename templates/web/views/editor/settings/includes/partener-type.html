@@ -1,0 +1,107 @@
+<div data-ng-controller="partnerTypeEditorCtrl" data-tap-disabled="true">
+
+<div class="col-sm-12">
+    <br>
+
+    <div  class="business-type-t-e color-main" >{{translate('PARTNER_TYPE')}}</div>
+
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterbtype" class="editable" type="text" placeholder="{{ translate('SEARCH') }}">
+      </div>
+    </div>
+    <div class="eitems">
+
+    <div class="eitem title" style="display: flex;">
+      <div class="f50 left">
+          <input class="editable" type="text" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+
+        </div>
+
+        <div class="dynamic" style="width:90%;">
+          <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled">
+        </div>
+        
+        
+         <div class="dynamic" style="width:90%;">
+          <input class="editable" type="text" value="{{ translate('DELIVERY_FEE') }}" disabled="disabled">
+        </div>
+        <div class="f50 left">
+
+        </div>
+     <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+
+      </div>
+
+      <div class="eitem fixdir" data-ng-repeat="parttypes in partenertypes | orderBy:'id*1' | filter:filterbtype | startFrom:((newpagination.current-1)*newpagination.items) | limitTo:newpagination.items" style="display: flex;">
+
+
+        <div class="f50 left">
+          <input class="editable" type="text" data-ng-model="parttypes.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>
+
+        <div class="f50 left">
+          <div class="img" style="width: 28px; height: 28px;position:relative;">
+  <!--            <img data-ng-src="{{optimizeImage(parttypes.image, 'h_100,c_limit')}}" on-error-src > data-subcategory-id="{{parttypes.id}}"
+  -->         <div class="drag" id="{{parttypes.id}}" data-ng-click="upload({{parttypes}})" 
+  style="background-image: url({{optimizeImage(parttypes.image_link, 'h_100,c_limit')}}); padding: 3px;background-size: cover;">
+                  <div class="edit xs">
+                      <p style="top: 4px;left: 0px;right: 0px;bottom: 0px;">
+                        <i class="fa fa-picture-o" style="font-size: 14px;"></i><br>
+                      </p>
+                      <input id="{{parttypes.id}}_file" type="file" style="display: none;">
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="dynamic" style="width:90%;">
+          <input class="editable" type="text" data-ng-model="parttypes.name" value="{{ translate('BUSINESS_TYPE_SUBCATEGORY') }}" data-ng-change="updatePartenerTypes(parttypes)" tabindex="{{($index*2)+3000}}">
+        </div>
+        <div class="dynamic" style="width:90%;">
+          <input class="editable" type="text" data-ng-model="parttypes.delivery_fee" value="{{ translate('BUSINESS_TYPE_SUBCATEGORY') }}" data-ng-change="updatePartenerTypes(parttypes)" tabindex="{{($index*2)+3000}}">
+        </div>
+        
+        <div class="f50">
+          <ion-checkbox class="checkbox-item no-border" style="border-left: none; border-right: none" data-ng-model="parttypes.multi_cart"
+           data-ng-change="updatePartenerTypes(parttypes)">
+          </ion-checkbox>
+        </div>
+        
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="parttypes.enabled" data-ng-change="updatePartenerTypes(parttypes)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>		  
+    	<button data-ng-click="removePartenertypes(parttypes)"><i class="fa fa-trash"></i></button>    
+
+      </div>
+
+     <div class="eitem">
+        <form  data-ng-submit="savePartenerTypes(curpartenertypes)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <div class="dynamic">
+         <input class="editable" type="text" data-ng-model="curpartenertypes.name" placeholder="{{ MLanguages.BUSINESS_TYPE_SUBCATEGORY }}" tabindex="4000">
+        </div>
+        </form>
+      </div>
+    <div class="pages" style="margin-bottom: 20px">
+            {{ translate('ITEMS_PER_PAGES') }}:
+            <select data-ng-model="newpagination.items">
+              <option data-ng-repeat="items in newpagination.itemsPerPage" value="{{items}}" data-ng-selected="newpagination.items == items">{{items}}</option>
+            </select>
+            {{((newpagination.current-1)*newpagination.items)+1}}-<span data-ng-if="newpagination.current*newpagination.items <= partenertypes.length">{{newpagination.current*newpagination.items}}</span><span data-ng-if="newpagination.current*newpagination.items > partenertypes.length">{{partenertypes.length}}</span> {{ translate('OF') }} {{partenertypes.length}}
+            <i class="fa fa-chevron-left" data-ng-if="newpagination.current > 1" data-ng-click="backPage(newpagination)"></i>
+            <i class="fa fa-chevron-right" data-ng-if="newpagination.current < newpagination.pages" data-ng-click="nextPage(newpagination)"></i>
+          </div>
+
+  </div>
+    </div>
+
+</div> 

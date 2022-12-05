@@ -1,0 +1,64 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="close()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('PRODUCTS') }}</span>
+        </ion-item>
+        <label>{{ translate('FILTER') }}</label>
+        <input style="width: 50%;"class="editable" data-ng-model="FilterProducts" type="text" placeholder="{{ translate('FILTER') }}">
+        <div class="eitems fixdir" select-content>
+            <div class="eitem title">
+              <!-- <div class="f70">&nbsp;</div> -->
+              <div class="dynamic grid-template">
+                <input class="editable" type="text" value="{{ translate('NAME') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('PRICE') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('QUANTITY') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('INVENTORIED') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('UPSELLING') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('FEATURED') }}" disabled="disabled"><!--
+                --><input class="editable" type="text" value="{{ translate('ENABLED') }}" disabled="disabled">
+              </div>
+            </div>
+            <div class="eitem" data-ng-repeat="product in products | orderBy:'id' | filter:FilterProducts">
+                <div class="dynamic grid-template">
+                    <input class="editable" type="text" data-ng-model="product.name" disabled="disabled"><!--
+                    --><input class="editable" type="number" data-ng-model="product.price" data-ng-change="updateProductShared(product)"><!--
+                    --><input class="editable" type="number" data-ng-model="product.quantity" data-ng-change="updateProductShared(product)">
+                    <div>
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="product.inventoried" data-ng-change="updateToggleProductShared(product)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="product.upselling" data-ng-change="updateToggleProductShared(product)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="product.featured" data-ng-change="updateToggleProductShared(product)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="product.enabled" data-ng-change="updateToggleProductShared(product)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <button data-ng-show="product.extras != 0"data-ng-click="openExtraOptionsMenuShared(product)" style="font-size: initial;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

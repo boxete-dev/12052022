@@ -1,0 +1,19 @@
+<div>
+  <h1>{{translate('EDITOR_TITLE')}}</h1>
+  <ion-item class="form editable">
+    <div class="group">
+      <label>{{ translate('NAME') }}</label>
+      <input type="text" data-ng-model="page.name" class="editable" data-ng-change="metaChange()" ng-readonly="page.slug == 'content'">
+      <label data-ng-if="page.slug != 'content'">{{ translate('SLUG') }} <p>{{host}}/pages/{{page.slug}}</p></label>
+      <input type="text" data-ng-model="page.slug" class="editable" data-ng-change="metaChange()" data-ng-if="page.slug != 'content'">
+    </div>
+  </ion-item>
+  <div class="static-pages">
+    <div id="summernote"></div>
+  </div>
+  <div class="page-actions">
+    <button class="btn btn-primary" data-ng-click="cancel()">{{translate('CANCEL')}}</button>
+    <button class="btn btn-success" data-ng-if="unSaved" data-ng-click="save()">{{translate('SAVE')}}</button>
+    <button class="btn btn-secondary" data-ng-if="!unSaved" data-ng-click="save()">{{translate('SAVE')}}</button>
+  </div>
+</div>

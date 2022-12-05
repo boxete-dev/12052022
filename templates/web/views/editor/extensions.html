@@ -1,0 +1,277 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="hideExtensions()"></i>
+  <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+    <!-- Product Images -->
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{ translate('MORE') }}</span>
+    </ion-item>
+    <br>
+    <!-- <div class="tab-item-cont">
+      <div class="button-bar" focus-group focus-group-index="1" fm-group="1" tabindex="0" fm-parent-group="14">
+        <button focus-index="2" fm-parent="1"  fm-id="2" class="button tab {{(type == menu.info) &&  'active' || ''}}" data-ng-click="setType($event);onClickCategory(1)">Information</button>
+      </div>
+    </div> -->
+    <div focus-group="" focus-group-index="3" select-content>
+      <!--<ion-item class="text-center">
+        <h2>{{HeaderTitle}}</h2>
+        <p>{{ item.restData.info.address }} - {{ item.restData.info.city.name }}</p>
+      </ion-item>-->
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(0)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('TAX_MANAGER') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 0" data-ng-init="curProvider = deal.provider">
+        <div class="form editable">
+          <label>{{ translate('TAX_TYPE') }}</label>
+          <select class="editable" data-ng-model="deal.tax_type" style="width: 100%;" data-ng-change="changeTax()" >
+            <option value="2" data-ng-selected="deal.tax_type == 2">{{ translate('TAX_NOT_INCLUDED') }}</option>
+            <option value="1" data-ng-selected="deal.tax_type == 1">{{ translate('TAX_INCLUDED') }}</option>
+          </select>
+          <div>
+            <label>{{ translate('TAX_PERCENTAGE') }}</label>
+            <input data-ng-model="deal.tax" format="number" class="editable" type="text" data-ng-change="changeTax()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(1)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('DELIVERY_PICKUP_TIMES') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 1">
+        <ion-item class="detail-item schedule editable">
+          <span class="float-left mg-top-sm">{{ translate('DELIVERY_TIME') }} ({{ translate('HH_MM') }})</span>
+          <span class="float-right">
+            <select class="editable" data-ng-model="curDeliveryTime.hour" data-ng-change="changeDeliveryTime()">
+              <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == curDeliveryTime.hour">{{hour.textWithoutMeridian}}
+              </option>
+            </select> :
+            <select class="editable" data-ng-model="curDeliveryTime.minute" data-ng-change="changeDeliveryTime()">
+              <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == curDeliveryTime.minute">{{minute.text}}
+              </option>
+            </select>
+          </span>
+        </ion-item>
+        <ion-item class="detail-item schedule editable">
+          <span class="float-left mg-top-sm">{{ translate('PICKUP_TIME') }} ({{ translate('HH_MM') }})</span>
+          <span class="float-right">
+            <select class="editable" data-ng-model="curPickupTime.hour" data-ng-change="changePickupTime()">
+              <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == curPickupTime.hour">{{hour.textWithoutMeridian}}
+              </option>
+            </select> :
+            <select class="editable" data-ng-model="curPickupTime.minute" data-ng-change="changePickupTime()">
+              <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == curPickupTime.minute">{{minute.text}}
+              </option>
+            </select>
+          </span>
+        </ion-item>
+      </div>
+      <ion-item data-ng-if="ADDONS.discount_code">
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(2)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('COUPONS') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion eitems fixdir" data-ng-if="curCollapse == 2 && ADDONS.discount_code">
+        <div class="eitem title">
+          <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+          <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+          <div class="f50">&nbsp;</div>
+          <div class="f50">
+            <input class="editable" type="text" value="{{ translate('LIMIT') }}" disabled="disabled">
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" value="{{ translate('MIN') }}" disabled="disabled">
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" value="{{ translate('COUPON_CODE') }}" disabled="disabled">
+          </div>
+        </div>
+        <div class="eitem" data-ng-repeat="offer in deal.offers | orderBy:'-id' | filter: {type: '2'}">
+          <button data-ng-click="removeOffer(offer)"><i class="fa fa-trash"></i></button>
+          <button data-ng-click="showOfferSetting(offer)"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+          <div class="f50">
+            <label class="toggle xs toggle-balanced">
+              <input type="checkbox" data-ng-model="offer.enabled" data-ng-change="updateOffer(offer, true)">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="offer.limit" placeholder="{{ translate('LIMIT') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*3)+1002}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="offer.minimum" placeholder="{{ translate('MIN') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*3)+1001}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" data-ng-model="offer.coupon" placeholder="{{ translate('COUPON_CODE') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*3)+1000}}">
+          </div>
+        </div>
+        <div class="eitem">
+          <form data-ng-submit="showOfferSetting(curCoupon)">
+          <button data-ng-click="null" style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+          <button type="button" data-ng-click="showOfferSetting(curCoupon)"><i class="fa fa-plus-circle"></i> {{ translate('ADD') }}</button>
+          <div class="f50">
+            <label class="toggle xs toggle-balanced" style="visibility: hidden;">
+              <input type="checkbox">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="curCoupon.limit" placeholder="{{ translate('LIMIT') }}" data-ng-change="null" tabindex="2002" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="curCoupon.minimum" placeholder="{{ translate('MIN') }}" data-ng-change="null" tabindex="2001" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" data-ng-model="curCoupon.coupon" placeholder="{{ translate('COUPON_CODE') }}" data-ng-change="null" tabindex="2000">
+          </div>
+          </form>
+        </div>
+      </div>
+      <ion-item data-ng-if="ADDONS.discount_offer">
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(3)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('OFFERS') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion eitems fixdir" data-ng-if="curCollapse == 3 && ADDONS.discount_offer">
+        <div class="eitem title">
+          <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+          <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+          <div class="f50">&nbsp;</div>
+          <div class="f50">
+            <input class="editable" type="text" value="{{ translate('LIMIT') }}" disabled="disabled">
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" value="{{ translate('MIN') }}" disabled="disabled">
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" value="{{ translate('OFFER_TEXT') }}" disabled="disabled">
+          </div>
+        </div>
+        <div class="eitem" data-ng-repeat="offer in deal.offers | orderBy:'-id' | filter: {type: '1'}">
+          <button data-ng-click="removeOffer(offer)"><i class="fa fa-trash"></i></button>
+          <button data-ng-click="showOfferSetting(offer)"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+          <div class="f50">
+            <label class="toggle xs toggle-balanced">
+              <input type="checkbox" data-ng-model="offer.enabled" data-ng-change="updateOffer(offer, true)">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="offer.limit" placeholder="{{ translate('LIMIT') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*2)+3002}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="offer.minimum" placeholder="{{ translate('MIN') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*2)+3001}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" data-ng-model="offer.name" placeholder="{{ translate('OFFER_TEXT') }}" data-ng-change="updateOffer(offer)" tabindex="{{($index*2)+3000}}">
+          </div>
+        </div>
+        <div class="eitem">
+          <form data-ng-submit="showOfferSetting(curOffer)">
+          <button data-ng-click="null" style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+          <button type="button" data-ng-click="showOfferSetting(curOffer)"><i class="fa fa-plus-circle"></i> {{ translate('ADD') }}</button>
+          <div class="f50">
+            <label class="toggle xs toggle-balanced" style="visibility: hidden;">
+              <input type="checkbox">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="curOffer.limit" placeholder="{{ translate('LIMIT') }}" data-ng-change="null" tabindex="4002" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="f50">
+            <input class="editable" type="text" data-ng-model="curOffer.minimum" placeholder="{{ translate('MIN') }}" data-ng-change="null" tabindex="4001" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div class="dynamic">
+            <input class="editable" type="text" data-ng-model="curOffer.name" placeholder="{{ translate('OFFER_TEXT') }}" data-ng-change="null" tabindex="4000">
+          </div>
+          </form>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(4)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('EXTENSIONS') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion eitems" data-ng-if="curCollapse == 4">
+        <div class="form editable">
+          <div>
+            <label>{{ translate('MINIMUN_PURCHASED') }}</label>
+            <input data-ng-model="deal.minimum" format="number" class="editable" type="text" data-ng-change="changeMinimunPurchased()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div>
+            <label>{{ translate('SERVICE_FEE_SETTINGS') }}</label>
+            <input data-ng-model="deal.service_fee" format="number" class="editable" type="text" data-ng-change="changeServiceFee()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+          </div>
+          <div data-ng-if="ADDONS.featured_business && superAdmin">
+            <label>{{ translate('BUSINESS_FEATURE') }}</label>
+            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="deal.featured" data-ng-change="changeFeature()">{{ translate('FEATURE') }}
+            </ion-checkbox>
+          </div>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(5)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('LOGISTIC') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion eitems" data-ng-if="curCollapse == 5">
+        <div class="form editable">
+          <div>
+            <label>{{ translate('EXPIRE_ORDER_AFTER_MINUTES') }}</label>
+            <input data-ng-model="deal.cancel_order_after_minutes" class="editable" type="text" data-ng-change="changeExpireOrderAfterMinutes()" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.key === "Backspace")'>
+          </div>
+          <div data-ng-if="superAdmin">
+            <label>{{ translate('ORDER_DEFAULT_PRIORITY') }}</label>
+            <select class="editable" data-ng-model="deal.order_default_priority" style="width: 100%;" data-ng-change="changeOrderDefaultPriority()" >
+              <!-- <option value="1" data-ng-selected="deal.tax_type == 1">{{ translate('TAX_INCLUDED') }}</option> -->
+              <option value="" disabled="disabled">{{ translate('SELECT_PRIORITY') }}</option>
+              <option value="2">{{ translate('URGENT') }}</option>
+              <option value="1">{{ translate('HIGH') }}</option>
+              <option value="0">{{ translate('NORMAL') }}</option>
+              <option value="-1">{{ translate('LOW') }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <ion-item>
+        <button class="btn-accordion" data-ng-click="changeCollapseExt(6)">
+          <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('PREORDER') }}</span>
+          <div class="float-right icon-more-down"></div>
+        </button>
+      </ion-item>
+      <div class="sub-accordion" data-ng-if="curCollapse == 6">
+        <ion-item class="detail-item schedule editable">
+          <span class="float-left mg-top-sm">{{ translate('PREORDER_TIME') }} ({{ translate('HH_MM') }})</span>
+          <span class="float-right">
+            <select class="editable" data-ng-model="curPreOrderTime.hour" data-ng-change="changePreOrderTime()">
+              <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == curPreOrderTime.hour">{{hour.textWithoutMeridian}}
+              </option>
+            </select> :
+            <select class="editable" data-ng-model="curPreOrderTime.minute" data-ng-change="changePreOrderTime()">
+              <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == curPreOrderTime.minute">{{minute.text}}
+              </option>
+            </select>
+          </span>
+        </ion-item>
+      </div>
+    </div>
+  </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_MORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_MORE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_MORE')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_MORE')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

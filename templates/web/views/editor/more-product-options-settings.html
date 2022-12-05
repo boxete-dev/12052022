@@ -1,0 +1,409 @@
+<ion-modal-view class="popup product-options-settings">
+  <i class="fa fa-times close" data-ng-click="hideMoreProductOptionsSettings()"></i>
+  <ion-content class="color-bg popup-mode" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      <span class="divider-padding no-padding-h">{{extra.name}}</span>
+    </ion-item>
+    <div class="edit-options" data-ng-if="ADDONS.quantity_options">
+      <div class="edit-option" data-ng-repeat="option in extra.options | orderBy:'id'" select-content>
+        <div class="edit-option-content">
+          <div class="edit-option-content-top">
+            <div class="edit-option-content-top-image option-image">
+              <div class="drag" data-option-id="{{option.id}}" data-ng-style="{ 'background-image': 'url('+optimizeImage(option.image, 'h_50,c_limit')+')' }">
+                <div class="edit">
+                  <i class="fa fa-picture-o"></i>
+                </div>
+                <input data-ng-attr-id="{{ option.id + '_file' }}" type="file" style="display: none;">
+              </div>
+            </div>
+            <div class="input">
+              <input class="editable" type="text" data-ng-model="option.name" data-ng-change="updateExtraOption(option, extra)">
+            </div>
+            <label class="toggle toggle-balanced">
+              <input type="checkbox" data-ng-model="option.enabled" data-ng-change="updateExtraOption(option, extra)">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+            <button data-ng-if="ADDONS.metafields_editor" data-ng-click="openEditView({'extra':extra, 'option':option}, 'ProductExtraOption')"><i class="fa fa-ellipsis-v"></i></button>
+            <button data-ng-click="removeExtraOption(extra, option)"><i class="fa fa-trash"></i></button>
+          </div>
+          <div class="edit-option-content-inputs">
+            <div class="input">
+              <label data-ng-attr-for="{{ 'option-min-' + option.id }}">{{ translate('MIN') }}</label>
+              <input data-ng-attr-id="{{ 'option-min-' + option.id }}" class="editable" type="text" data-ng-model="option.min" data-ng-change="updateExtraOption(option, extra)" data-ng-attr-placeholder="{{ translate('MIN') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+            </div>
+            <div class="input">
+              <label data-ng-attr-for="{{ 'option-max-' + option.id }}">{{ translate('MAX') }}</label>
+              <input data-ng-attr-id="{{ 'option-max-' + option.id }}" class="editable" type="text" data-ng-model="option.max" data-ng-change="updateExtraOption(option, extra)" data-ng-attr-placeholder="{{ translate('MAX') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+            </div>
+          </div>
+          <div class="edit-option-content-inputs">
+            <div class="input">
+              <div class="check-box" data-ng-click="option.with_half_option=!option.with_half_option;updateExtraOption(option, extra)">
+                <div class="icon" data-ng-class="{'uncheck': !option.with_half_option}">
+                  <i class="fa fa-square" data-ng-if="!option.with_half_option"></i>
+                  <i class="fa fa-check-square" data-ng-if="option.with_half_option"></i>
+                </div>
+                <div class="text">{{ translate('WITH_HALF_PRICE') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="option.with_half_option">
+              </div>
+            </div>
+            <div class="input">
+              <div class="check-box" data-ng-click="option.allow_suboption_quantity=!option.allow_suboption_quantity;updateExtraOption(option, extra)">
+                <div class="icon" data-ng-class="{'uncheck': !option.allow_suboption_quantity}">
+                  <i class="fa fa-square" data-ng-if="!option.allow_suboption_quantity"></i>
+                  <i class="fa fa-check-square" data-ng-if="option.allow_suboption_quantity"></i>
+                </div>
+                <div class="text">{{ translate('SUBOPTION_QUANTITY') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="option.allow_suboption_quantity">
+              </div>
+            </div>
+            <div class="input" data-ng-if="option.allow_suboption_quantity">
+              <div class="check-box" data-ng-click="option.limit_suboptions_by_max=!option.limit_suboptions_by_max;updateExtraOption(option, extra)">
+                <div class="icon" data-ng-class="{'uncheck': !option.limit_suboptions_by_max}">
+                  <i class="fa fa-square" data-ng-if="!option.limit_suboptions_by_max"></i>
+                  <i class="fa fa-check-square" data-ng-if="option.limit_suboptions_by_max"></i>
+                </div>
+                <div class="text">{{ translate('LIMIT_SUBOPTIONS_BY_MAX') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="option.limit_suboptions_by_max">
+              </div>
+            </div>
+          </div>
+          <div class="edit-option-content-inputs">
+            <div class="input">
+              <div class="check-box" data-ng-click="option.conditioned=!option.conditioned;updateExtraOption(option, extra)">
+                <div class="icon" data-ng-class="{'uncheck': !option.conditioned}">
+                  <i class="fa fa-square" data-ng-if="!option.conditioned"></i>
+                  <i class="fa fa-check-square" data-ng-if="option.conditioned"></i>
+                </div>
+                <div class="text">{{ translate('CONDITIONAL') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="option.conditioned">
+              </div>
+            </div>
+            <div class="input" data-ng-if="option.conditioned">
+              <select class="editable" data-ng-model="option.option_respect_to">
+                <option value="" disabled>{{ translate('SELECT_OPTION') }}</option>
+                <option data-ng-repeat="s_option in extra.options" data-ng-if="s_option.id != option.id" value="{{s_option.id}}" data-ng-selected="option.option_respect_to == s_option.id">{{s_option.name}}</option>
+              </select>
+            </div>
+            <div class="input" data-ng-if="option.conditioned">
+              <select class="editable" data-ng-model="option.respect_to" data-ng-repeat="s_option in extra.options" data-ng-if="s_option.id == option.option_respect_to" data-ng-change="updateExtraOption(option, extra)">
+                <option value="" disabled>{{ translate('SELECT_CHOICE') }}</option>
+                <option data-ng-repeat="choice in s_option.suboptions" value="{{choice.id}}" data-ng-selected="option.respect_to == choice.id">{{choice.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="edit-option" data-ng-repeat="suboption in option.suboptions | orderBy:'id'" select-content>
+          <div class="edit-option-content">
+            <div class="edit-option-content-top">
+              <div class="edit-option-content-top-image suboption-image">
+                <div class="drag" data-suboption-id="{{suboption.id}}" data-ng-style="{ 'background-image': 'url('+optimizeImage(suboption.image, 'h_50,c_limit')+')' }">
+                  <div class="edit">
+                    <i class="fa fa-picture-o"></i>
+                  </div>
+                  <input data-ng-attr-id="{{ suboption.id + '_file' }}" type="file" style="display: none;">
+                </div>
+              </div>
+              <div class="input">
+                <input class="editable" type="text" data-ng-model="suboption.name" data-ng-change="updateExtraOptionChoice(extra, option, suboption)">
+              </div>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" data-ng-model="suboption.enabled" data-ng-change="updateExtraOptionChoice(extra, option, suboption)">
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+              <button data-ng-if="ADDONS.metafields_editor" data-ng-click="openEditView({'extra':extra, 'option':option, 'suboption':suboption},'ProductExtraSubOption')"><i class="fa fa-ellipsis-v"></i></button>
+              <button data-ng-click="removeSuboption(extra, option, suboption)"><i class="fa fa-trash"></i></button>
+            </div>
+            <div class="edit-option-content-inputs">
+              <div class="input">
+                <label data-ng-attr-for="{{ 'suboption-price-' + suboption.id }}">{{ translate('PRICE') }}</label>
+                <input data-ng-attr-id="{{ 'suboption-price-' + suboption.id }}" class="editable" type="text" data-ng-model="suboption.price" data-ng-change="updateExtraOptionChoice(extra, option, suboption)" data-ng-attr-placeholder="{{ translate('PRICE') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+              <div class="input" data-ng-if="option.with_half_option">
+                <label data-ng-attr-for="{{ 'suboption-half-price-' + suboption.id }}">{{ translate('HALF_PRICE') }}</label>
+                <input data-ng-attr-id="{{ 'suboption-half-price-' + suboption.id }}" class="editable" type="text" data-ng-model="suboption.half_price" data-ng-change="updateExtraOptionChoice(extra, option, suboption)"  data-ng-attr-placeholder="{{ translate('HALF_PRICE') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+              <div class="input" data-ng-if="option.allow_suboption_quantity">
+                <label data-ng-attr-for="{{ 'suboption-max-' + suboption.id }}">{{ translate('MAX') }}</label>
+                <input data-ng-attr-id="{{ 'suboption-mac-' + suboption.id }}" class="editable" type="text" data-ng-model="suboption.max" data-ng-change="updateExtraOptionChoice(extra, option, suboption)" data-ng-attr-placeholder="{{ translate('MAX') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- New Suboption -->
+        <div class="edit-option" data-ng-init="option.curNewSuboption = { max: 1, enabled: true }" select-content>
+          <div class="edit-option-content">
+            <div class="edit-option-content-top">
+              <div class="input">
+                <input class="editable" type="text" data-ng-model="option.curNewSuboption.name" data-ng-attr-placeholder="{{ translate('NAME') }}">
+              </div>
+              <label class="toggle toggle-balanced">
+                <input type="checkbox" data-ng-model="option.curNewSuboption.enabled">
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+              <button data-ng-click="addExtraOptionSuboption(extra, option, option.curNewSuboption)"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="edit-option-content-inputs">
+              <div class="input">
+                <label data-ng-attr-for="{{ 'new-suboption-price-' + option.id }}">{{ translate('PRICE') }}</label>
+                <input data-ng-attr-id="{{ 'new-suboption-price-' + option.id }}" class="editable" type="text" data-ng-model="option.curNewSuboption.price" data-ng-attr-placeholder="{{ translate('PRICE') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+              <div class="input" data-ng-if="option.with_half_option">
+                <label data-ng-attr-for="{{ 'new-suboption-half-price-' + option.id }}">{{ translate('HALF_PRICE') }}</label>
+                <input data-ng-attr-id="{{ 'new-suboption-half-price-' + option.id }}" class="editable" type="text" data-ng-model="option.curNewSuboption.half_price" data-ng-attr-placeholder="{{ translate('HALF_PRICE') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+              <div class="input" data-ng-if="option.allow_suboption_quantity">
+                <label data-ng-attr-for="{{ 'new-suboption-max-' + option.id }}">{{ translate('MAX') }}</label>
+                <input data-ng-attr-id="{{ 'new-suboption-mac-' + option.id }}" class="editable" type="text" data-ng-model="option.curNewSuboption.max" data-ng-attr-placeholder="{{ translate('MAX') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr style="border-color: #999;">
+      </div>
+      <!-- New option -->
+      <div class="edit-option" data-ng-init="curNewOption = { min:1, max: 1, enabled: true }" select-content>
+        <div class="edit-option-content">
+          <div class="edit-option-content-top">
+            <div class="input">
+              <input class="editable" type="text" data-ng-model="curNewOption.name" data-ng-attr-placeholder="{{ translate('NAME') }}">
+            </div>
+            <label class="toggle toggle-balanced">
+              <input type="checkbox" data-ng-model="curNewOption.enabled">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+            <button data-ng-click="addOption(extra, curNewOption)"><i class="fa fa-plus"></i></button>
+          </div>
+          <div class="edit-option-content-inputs">
+            <div class="input">
+              <label data-ng-attr-for="{{ 'new-option-min' }}">{{ translate('MIN') }}</label>
+              <input data-ng-attr-id="{{ 'new-option-min' }}" class="editable" type="text" data-ng-model="curNewOption.min" data-ng-attr-placeholder="{{ translate('MIN') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+            </div>
+            <div class="input">
+              <label data-ng-attr-for="{{ 'new-option-max' }}">{{ translate('MAX') }}</label>
+              <input data-ng-attr-id="{{ 'new-option-max' }}" class="editable" type="text" data-ng-model="curNewOption.max" data-ng-attr-placeholder="{{ translate('MAX') }}" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === 'Backspace')">
+            </div>
+          </div>
+          <div class="edit-option-content-inputs">
+            <div class="input">
+              <div class="check-box" data-ng-click="curNewOption.with_half_option=!curNewOption.with_half_option">
+                <div class="icon" data-ng-class="{'uncheck': !curNewOption.with_half_option}">
+                  <i class="fa fa-square" data-ng-if="!curNewOption.with_half_option"></i>
+                  <i class="fa fa-check-square" data-ng-if="curNewOption.with_half_option"></i>
+                </div>
+                <div class="text">{{ translate('WITH_HALF_PRICE') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="curNewOption.with_half_option">
+              </div>
+            </div>
+            <div class="input">
+              <div class="check-box" data-ng-click="curNewOption.allow_suboption_quantity=!curNewOption.allow_suboption_quantity">
+                <div class="icon" data-ng-class="{'uncheck': !curNewOption.allow_suboption_quantity}">
+                  <i class="fa fa-square" data-ng-if="!curNewOption.allow_suboption_quantity"></i>
+                  <i class="fa fa-check-square" data-ng-if="curNewOption.allow_suboption_quantity"></i>
+                </div>
+                <div class="text">{{ translate('SUBOPTION_QUANTITY') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="curNewOption.allow_suboption_quantity">
+              </div>
+            </div>
+            <div class="input" data-ng-if="curNewOption.allow_suboption_quantity">
+              <div class="check-box" data-ng-click="curNewOption.limit_suboptions_by_max=!curNewOption.limit_suboptions_by_max">
+                <div class="icon" data-ng-class="{'uncheck': !curNewOption.limit_suboptions_by_max}">
+                  <i class="fa fa-square" data-ng-if="!curNewOption.limit_suboptions_by_max"></i>
+                  <i class="fa fa-check-square" data-ng-if="curNewOption.limit_suboptions_by_max"></i>
+                </div>
+                <div class="text">{{ translate('LIMIT_SUBOPTIONS_BY_MAX') }}</div>
+                <input type="checkbox" name="type" value="charge" data-ng-model="curNewOption.limit_suboptions_by_max">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-ng-if="!ADDONS.quantity_options" class="option" data-ng-repeat="option in extra.options | orderBy:'id'" select-content>
+      <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}" style="font-size: 14px;">
+        <div class="option-image">
+          <!-- <img data-ng-src="{{optimizeImage(option.image, 'h_50,c_limit')}}"> -->
+          <!-- <button data-ng-click="deleteOptionImage(extra,option)" data-ng-if="suboption.image"><i class="fa fa-close"></i></button> -->
+          <div class="drag" data-option-id="{{option.id}}" data-ng-style="{ 'background-image': 'url('+optimizeImage(option.image, 'h_50,c_limit')+')' }">
+            <div class="edit">
+              <i class="fa fa-picture-o"></i>
+            </div>
+            <input id="{{option.id}}_file" type="file" style="display: none;">
+          </div>
+        </div>
+        <input class="editable" type="text" data-ng-model="option.name" data-ng-change="updateExtraOption(option, extra)">
+        ({{ translate('MIN') }} <input class="editable" type="text" data-ng-model="option.min" style="width: 40px;" data-ng-change="updateExtraOption(option, extra)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>/{{ translate('MAX') }}<input class="editable" type="text" data-ng-model="option.max" style="width: 40px;" data-ng-change="updateExtraOption(option, extra)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>)
+        <button data-ng-if="ADDONS.metafields_editor" data-ng-click="openEditView({'extra':extra, 'option':option}, 'ProductExtraOption')"><i class="fa fa-ellipsis-v"></i></button>
+        <button data-ng-click="removeExtraOption(extra, option)"><i class="fa fa-trash"></i></button>
+      </ion-item>
+      <div class="extras xs editor">
+        <div class="extra" data-ng-repeat="suboption in option.suboptions | orderBy:'id'">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none;visibility: hidden;">
+          </ion-checkbox>
+          <div class="suboption-image">
+            <!-- <img data-ng-src="{{optimizeImage(suboption.image, 'h_50,c_limit')}}"> -->
+            <!-- <button data-ng-click="deleteOptionImage(extra,option,suboption)" data-ng-if="suboption.image"><i class="fa fa-close"></i></button> -->
+            <div class="drag" data-suboption-id="{{suboption.id}}" data-ng-style="{ 'background-image': 'url('+optimizeImage(suboption.image, 'h_50,c_limit')+')' }">
+              <div class="edit">
+                <i class="fa fa-picture-o"></i>
+              </div>
+              <input id="{{suboption.id}}_file" type="file" style="display: none;">
+            </div>
+          </div>
+          <div class="buttons">
+            <input class="editable" type="text" data-ng-model="suboption.price" placeholder="{{ translate('PRICE') }}" format="number" data-ng-change="updateExtraOptionChoice(extra, option, suboption)" size="4" tabindex="{{(($index+1)*2)+(500*($parent.$index+1))+1}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+            <button data-ng-if="ADDONS.metafields_editor" data-ng-click="openEditView({'extra':extra, 'option':option, 'suboption':suboption},'ProductExtraSubOption')"><i class="fa fa-ellipsis-v"></i></button>
+            <button data-ng-click="removeSuboption(extra, option, suboption)"><i class="fa fa-trash"></i></button>
+          </div>
+          <div class="input">
+            <input class="editable" type="text" data-ng-model="suboption.name" placeholder="{{ translate('EXTRA_NAME') }}" data-ng-change="updateExtraOptionChoice(extra, option, suboption)" tabindex="{{(($index+1)*2)+(500*($parent.$index+1))}}">
+          </div>
+        </div>
+        <div class="extra" data-ng-init="curNewOption={}">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none;visibility: hidden;" data-ng-disabled="true">
+          </ion-checkbox>
+          <form data-ng-submit="addExtraOptionSuboption(extra, option, option.curNewSuboption)">
+          <div class="buttons">
+            <input class="editable" type="text" data-ng-model="option.curNewSuboption.price" placeholder="{{ translate('PRICE') }}" data-ng-change="null" size="4" tabindex="{{(750*($index+1))+1}}" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+            <button type="submit"><i class="fa fa-plus-circle"></i></button>
+            <!-- <button><i class="fa fa-trash"></i></button> -->
+          </div>
+          <div class="input">
+            <input class="editable" type="text" data-ng-model="option.curNewSuboption.name" placeholder="{{ translate('EXTRA_NAME') }}" tabindex="{{(750*($index+1))}}">
+          </div>
+          </form>
+        </div>
+        <div class="extra" data-ng-if="option.conditioned || extra.options.length > 1">
+          <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="option.conditioned" data-ng-change="option.respect_to && updateExtraOption(option, extra)">
+          </ion-checkbox> <span data-ng-click="option.conditioned=!option.conditioned;option.respect_to && updateExtraOption(option, extra)">{{ translate('CONDITIONAL') }}</span>
+          <!-- <div class="buttons">
+            <select data-ng-model="option.conditioned" class="conditional editable" data-ng-change="!option.conditioned?updateExtraOption(option, extra):null">
+              <option value="no">{{ translate('NO') }}</option>
+              <option value="yes">{{ translate('YES') }}</option>
+            </select>
+          </div>
+          <div class="input" data-ng-init="option.curConOption = option.with_respect_to_option" style="text-align: right;line-height: 24px;">
+            <span>{{ translate('CONDITIONAL') }}: </span>
+          </div> -->
+        </div>
+        <div class="extra" data-ng-if="option.conditioned && extra.options.length > 1">
+          <!--<div class="buttons">
+            <button data-ng-click="updateExtraOption(option, extra)"><i class="fa fa-check-circle"></i></button>
+          </div>-->
+          <div class="input" data-ng-init="option.curConOption = option.with_respect_to_option;option.curConChoice = option.with_respect_to_choice" style="text-align: center;">
+            <select class="editable" style="width: 45%;" data-ng-model="option.option_respect_to">
+              <option value="">{{ translate('SELECT_OPTION') }}</option>
+              <option data-ng-repeat="s_option in extra.options" data-ng-if="s_option.id != option.id" value="{{s_option.id}}" data-ng-selected="option.option_respect_to == s_option.id">{{s_option.name}}</option>
+            </select>
+            <select class="editable" style="width: 45%;" data-ng-model="option.respect_to" data-ng-repeat="s_option in extra.options" data-ng-if="s_option.id == option.option_respect_to" data-ng-change="updateExtraOption(option, extra)">
+              <option value="">{{ translate('SELECT_CHOICE') }}</option>
+              <option data-ng-repeat="choice in s_option.suboptions" value="{{choice.id}}" data-ng-selected="option.respect_to == choice.id">{{choice.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-ng-if="!ADDONS.quantity_options" style="font-size: 14px;">
+      <form data-ng-submit="addExtraOption(extra, curNewOption, curNewSuboption)">
+      <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <input class="editable" type="text" data-ng-model="curNewOption.name" placeholder="{{ translate('EXTRA_OPTION_NAME') }}" tabindex="20000">
+        ({{ translate('MIN') }} <input class="editable" type="text" data-ng-model="curNewOption.min" style="width: 40px;" tabindex="20001" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>/{{ translate('MAX') }}<input class="editable" type="text" data-ng-model="curNewOption.max" style="width: 40px;" tabindex="20002" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>)
+      </ion-item>
+      <div class="extras xs editor">
+        <div class="extra">
+          <ion-checkbox class="checkbox-item" style="border-left: none; border-right: none;visibility: hidden;" data-ng-disabled="true">
+          </ion-checkbox>
+          <div class="buttons">
+            <input class="editable" type="text" data-ng-model="curNewSuboption.price" placeholder="{{ translate('PRICE') }}" data-ng-change="null" size="4" tabindex="20004" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 13 || event.key === "Backspace")'>
+            <button type="submit"><i class="fa fa-plus-circle"></i></button>
+            <!-- <button><i class="fa fa-trash"></i></button> -->
+          </div>
+          <div class="input">
+            <input class="editable" type="text" data-ng-model="curNewSuboption.name" placeholder="{{ translate('OPTION_CHOICE_NAME') }}" tabindex="20003">
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <ng-container data-ng-if="ADDONS.metafields_editor && model == 'ProductExtra'">
+      <!-- Custom fields for product extra -->
+      <ion-item class="item-divider" data-ng-class="{'arabic_rtl': arabic_rtl}">
+        <span class="divider-padding no-padding-h">{{ translate('CUSTOM_FIELDS') }}</span>
+      </ion-item>
+      <ion-item>
+        <div class="form editable">
+          <div class="custom_files" data-ng-repeat="item in extra.metafields track by $index">
+              <div class="c_field">
+                <div class="col-xs-3">
+                  <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                </div>
+                <div class="col-xs-3">
+                  <div class="input">
+                    <form>
+                      <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                    </form>
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <div class="input has_action">
+                    <form>
+                      <ng-container data-ng-if="isBoolVal(item.value_type)">
+                        <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                      </ng-container>
+                      <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                        <div class="txt_wrapper">{{ item.value }}</div>
+                      </ng-container>
+                      <button class="editable" data-ng-click="removeCustomField(item, model, {'extra': extra})"><i class="fa fa-trash"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <hr>
+          </div>
+          <div class="custom_files">
+            <div class="c_field">
+              <div class="col-xs-3">
+                <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                </select>
+              </div>
+              <div class="col-xs-3">
+                <div class="input">
+                  <form>
+                    <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                  </form>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="input has_action">
+                  <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                    <select class="editable" data-ng-model="newField.value">
+                      <option value="1">True</option>
+                      <option value="0">False</option>
+                    </select>
+                  </ng-container>
+                  <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                    <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event, model, extra)">
+                    <!-- <textarea data-ng-model="newField.value" rows="5" data-ng-if="isJsonVal(newField.value_type)" ng-keypress="getEnterEvent($event, model, extra)"></textarea> -->
+                    <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                  </ng-container>
+                  <button class="editable" data-ng-click="addCustomField(model, extra)"><i class="fa fa-plus-circle"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-item>
+    </ng-container>
+    <!-- <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="updateProduct(curProduct)">Save</button> -->
+  </ion-content>
+</ion-modal-view>

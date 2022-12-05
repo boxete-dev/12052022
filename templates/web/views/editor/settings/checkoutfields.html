@@ -1,0 +1,47 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('CHECKOUT_FIELDS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="eitems">
+                <div class="eitem title">
+                    <div class="f70">
+                        <input class="editable" type="text" value="{{ translate('STATE') }}" disabled="disabled">
+                    </div>
+                    <div class="f70">
+                        <input class="editable" type="text" value="{{ translate('REQUIRED') }}" disabled="disabled">
+                    </div>
+                    <div class="dynamic">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="eitem" data-ng-repeat="field in checkoutfields | orderBy:'id*1'">
+                    <div class="f70" style="padding: 0 17px;">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="field.enabled" data-ng-change="update(field, true)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="f70" style="padding: 0 17px;">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="field.required" data-ng-change="update(field, true)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate(field.code.toUpperCase()) }}" disabled="true">
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_SETTINGS_CHECKOUT_FIELDS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_SETTINGS_CHECKOUT_FIELDS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_MORE_SETTINGS_CHECKOUT_FIELDS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_MORE_SETTINGS_CHECKOUT_FIELDS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

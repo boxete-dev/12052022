@@ -1,0 +1,312 @@
+
+  <div class="container-fluid" id="searchBusiness" style="padding: 15px 0px; ">
+ 
+  <div class="btype-section deskop-btype" id="dynamic_list_types" style="position: relative;">
+    <div id="elem">
+      <label data-ng-class="{'active': filterBusinessType == ''}" data-ng-click="selectChangeBusinessType($event, btypes)">
+        <div class="btype-dv">
+         <div class="btype-img">
+          <img  src="https://boxetekitchen.tryordering.com/templates/web/img/custom/all_categories.png"  data-ng-class="{'active': filterBusinessType == btypes.name}">
+         </div>
+         <span>{{translate('MOBILE_MENU_LIST_ALL')}}</span>
+        </div>
+      </label>
+        <label data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1' track by $index" 
+        data-ng-click="selectChangeBusinessType($event, btypes)">
+        <div class="btype-dv" data-ng-if="!btypes.hide_status">
+         <div class="btype-img">
+          <img data-ng-if="!btypes.imge && !btypes.hide_status" src="https://boxetekitchen.tryordering.com/templates/web/img/custom/all_categories.png" 
+            data-ng-class="{'active': filterBusinessType == btypes.name}">
+            <img data-ng-if="btypes.imge" src="{{btypes.imge}}" data-ng-class="{'active': filterBusinessType == btypes.name}"/>
+
+
+         </div>
+         <span data-ng-class="{'active': filterBusinessType == btypes.name}" data-ng-if = "!btypes.hide_status">{{btypes.view_name}}</span>
+          
+        </div>
+      </label>
+        </div>
+    </div>
+    <div class="btype-section mobile-type-b" id="dynamic_list_types">
+      <ul class="">
+        <li >
+          <a class="btype-dv">
+           <div class="btype-img">
+            <img  src="https://boxetekitchen.tryordering.com/templates/web/img/custom/all_categories.png" >
+           </div>
+           <span data-ng-class="{'active': filterBusinessType == ''}">{{translate('MOBILE_MENU_LIST_ALL')}}</span>
+          </a>
+        </li>
+          <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1' track by $index" data-ng-click="selectChangeBusinessType($event, btypes)">
+          <a class="btype-dv">
+           <div class="btype-img">
+            <img data-ng-if="!btypes.imge" src="https://boxetekitchen.tryordering.com/templates/web/img/custom/all_categories.png" 
+            data-ng-class="{'active': filterBusinessType == btypes.name}" >
+            <img data-ng-if="btypes.imge" src="{{btypes.imge}}" data-ng-class="{'active': filterBusinessType == btypes.name}"/>
+
+          <!--   <img  src="{{btypes.imge}}"  data-ng-class="{'active': filterBusinessType == btypes.name}">
+
+
+            <img ng-src="{{btypes.imge == 'https://boxetekitchen.tryordering.com/templates/web/img/custom/all_categories.png'?'green-checkmark.png' || 'big-black-X.png'}}" 
+             data-ng-class="{'active': filterBusinessType == btypes.name}"/> -->
+           </div>
+           <span>{{btypes.view_name}}</span>
+            
+          </a>
+        </li>
+      </ul>
+      </div>
+      <span id="dailycontents"></span>
+      <div class="subtitle  compress listing-section float-left w-100" style="padding: 0 20px;">
+        <div class="right" data-ng-if="(ADDONS.pickup || ADDONS.eatin || ADDONS.curbside || ADDONS.driver_thru) && orderType">
+          <select style="color:#000;" class="form-control order-type border-primary color-primary" data-ng-model="orderType" data-ng-change="changeOrdeType(orderType)">
+            <option value="1" class="item" data-ng-selected="orderType == 1" data-ng-class="{'diselected': orderType != 1}">{{ translate('DELIVERY') }}</option>
+            <option value="2" class="item" data-ng-selected="orderType == 2" data-ng-class="{'diselected': orderType != 2}" data-ng-if="ADDONS.pickup">{{ translate('PICKUP') }}</option>
+            <option value="3" class="item" data-ng-selected="orderType == 3" data-ng-class="{'diselected': orderType != 3}" data-ng-if="ADDONS.eatin">{{ translate('EATIN') }}</option>
+            <option value="4" class="item" data-ng-selected="orderType == 4" data-ng-class="{'diselected': orderType != 4}" data-ng-if="ADDONS.curbside">{{ translate('CURBSIDE') }}</option>
+            <option value="5" class="item" data-ng-selected="orderType == 5" data-ng-class="{'diselected': orderType != 5}" data-ng-if="ADDONS.driver_thru">{{ translate('DRIVER_THRU') }}</option>
+          </select>
+          <!-- <div class="switcher">
+            <input type="radio" name="order_type" value="1" id="delivery" class="switcher__input switcher__input--one" data-ng-model="orderType" data-ng-change="changeOrdeType(orderType)">
+            <label for="delivery" class="switcher__label">{{ translate('DELIVERY') }}</label>
+            <input type="radio" name="order_type" value="2" id="pickup" class="switcher__input switcher__input--two" data-ng-model="orderType" data-ng-change="changeOrdeType(orderType)">
+            <label for="pickup" class="switcher__label">{{ translate('PICKUP') }}</label>
+            <span class="switcher__toggle"></span>
+          </div> -->
+        </div>
+        <div class="content">
+          {{ businessFound }} {{ translate('MOBILE_FRONT_VISUALS_RESTAURANTS') }} {{ translate('MOBILE_FRONT_NEAR') }} {{curAddress}}
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    <div class="subtitle float-left">
+    
+     <!-- <div class="col-md-6 full" id="dynamic_list_types">
+      <ul class="nav nav-tabs inline ">
+        <li>
+          <a class="active" href="#" data-ng-class="{'active': filterBusinessType == ''}" data-ng-click="selectBusinessType($event, '')">{{translate('MOBILE_MENU_LIST_ALL')}}</a>
+        </li>
+        <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'" data-ng-if="$index+1 <= curNumTablist">
+          <a href="#" data-ng-class="{'active': filterBusinessType == btypes.name}" data-ng-click="selectChangeBusinessType($event, btypes)">{{btypes.view_name}}</a>
+        </li>
+        <li class="dropdown" data-ng-if="showMore">
+                <a id="dropdownMenu1" data-ng-class="{'active': checkMore() }" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{translate('MENU_LIST_MORE')}}
+                  <span class="caret"></span>
+                </a>
+                <ul id="dropdown-more" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'" data-ng-if="$index+1 > curNumTablist">
+                    <a href="#" data-ng-click="selectChangeBusinessType($event, btypes)" data-ng-class="{'active': filterBusinessType == btypes.name}">{{btypes.name}}</a>
+                  </li>
+                </ul>
+              </li>
+        
+      </ul>
+      </div>-->
+      
+    <!-- <div id="dynamic_list_types">
+    
+    <label>{{translate('MOBILE_MENU_LIST_ALL')}}</label>
+    
+    <label data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'" data-ng-click="selectChangeBusinessType($event, btypes)">
+
+      <div>
+    <img src="{{btypes.imge}}" alt="img" data-ng-class="{'active': filterBusinessType == btypes.name}" 
+    >
+  </div>
+    {{btypes.view_name}}
+
+    </label>
+    
+    </div> -->
+
+      
+      
+      <div class="form-group filter col-sm-3 col-xs-6" select-content>
+        <!-- <label>Filter by </label> -->
+        <select class="form-control" data-ng-model="sortBy">
+          <option value="" disabled="true" selected="true">{{ translate('SORT_BY') }}</option>
+          <option value="distance*1">{{ translate('DISTANCE') }}</option>
+          <option value="-reviews.total*1" data-ng-if="ADDONS.order_reviews">{{ translate('RATING') }}</option>
+          <option value="-id*1">{{ translate('NEWEST') }}</option>
+          <option value="name">{{ translate('A_TO_Z') }}</option>
+          <option value="minimum*1">{{ translate('MINIMUM_ORDER') }}</option>
+          <option value="delivery_time_min*1" data-ng-if="orderType==1">{{ translate('V3_ORDER_DELIVERY_TIME') }}</option>
+          <option value="pickup_time_min*1" data-ng-if="orderType==2">{{ translate('PICKUP_TIME') }}</option>
+          <!-- <option value="{{orderType==1?'-delivery_time_min*1':'-pickup_time_min*1'}}">{{ translate('V3_ORDER_DELIVERY_TIME') }}</option> -->
+        </select>
+      </div>
+      <div class="form-group col-sm-3 col-xs-6">
+        <div class="input-group">
+          <!-- <div class="input-group-addon"><i class="fa fa-search"></i></div> -->
+          <input type="text" class="form-control" data-ng-model="_filterBusiness" data-ng-change="changeFilterBusiness()" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
+        </div>
+      </div>
+      <!--<ul class="nav nav-tabs inline visible-xs-block">
+        <li>
+          <a class="active" href="#" data-ng-class="{'active': filterBusinessType == ''}" data-ng-click="selectBusinessType($event, '')">{{translate('MOBILE_MENU_LIST_ALL')}}</a>
+        </li>
+        <li data-ng-repeat="btypes in allbusinesstypes | orderBy:'id*1'">
+          <a href="#" data-ng-class="{'active': filterBusinessType == btypes.name}" data-ng-click="selectChangeBusinessType($event, btypes)">{{btypes.name}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'food'}" data-ng-click="selectBusinessType($event, 'food')">{{translate('BUSINESS_TYPE_FOOD')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'alcohol'}" data-ng-click="selectBusinessType($event, 'alcohol')">{{translate('BUSINESS_TYPE_ALCOHOL')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'groceries'}" data-ng-click="selectBusinessType($event, 'groceries')">{{translate('BUSINESS_TYPE_GROCERIES')}}</a>
+        </li>
+        <li>
+          <a href="#" data-ng-class="{'active': filterBusinessType == 'laundry'}" data-ng-click="selectBusinessType($event, 'laundry')">{{translate('BUSINESS_TYPE_LAUNDRY')}}</a>
+        </li>
+      </ul>-->
+      <div style="clear: both;"></div>
+    </div>
+    <div class="businesses float-left w-100">
+      <div class="help-message" data-ng-if="filterBusiness && filteredBusiness != '' && (filteredBusiness | bfilter:filterBusiness).length == 0">
+        {{ translate('NOT_BUSINESS_FOR') }} "<span>{{filterBusiness}}</span>"
+      </div>
+      <!-- BUSINESS OPEN FEATURED -->
+      <div class="col-md-3 col-sm-4 col-xs-12" data-ng-repeat="item in filteredBusiness | bfilter:filterBusiness | orderBy:sortBy track by item.id" data-ng-click="onBusiness(item)" data-ng-if="item.open && item.featured && ADDONS.featured_business">
+        <div class="thumbnail">
+          <div data-ng-if="ADDONS.featured_business" class="cartel featured">{{ translate('BLIST_FEATURED') }}</div>
+          <div data-ng-if="item.offers.length > 0 && ADDONS.show_discount" class="cartel-offers"><i class="fa fa-tags" aria-hidden="true"></i> {{ showOffer(item.offers)}} </div>
+          <div class="header" ng-style="{'background-image': 'url('+optimizeImage(item.header, 'h_300,c_limit')+'), url('+dummyHeader+')'}"></div>
+          <!-- <div class="logo">
+            <img data-ng-cache data-ng-src="{{optimizeImage(item.logo, 'h_300,c_limit')}}" err-src="{{dummyLogo}}" class="mg-bottom-none" data-ng-if="item.logo">
+            <img data-ng-src="{{dummyLogo}}" class="mg-bottom-none" data-ng-if="!item.logo">
+          </div> -->
+          <div class="caption">
+            <p>
+              <ul>
+                <li style="display: flex; align-items: center; justify-content: space-between;"><span>{{item.name}}</span>
+                  <div>
+                  <span data-ng-if="item.partner_image_link"><img src="{{item.partner_image_link}}" style="width: 20px;"></span> 
+                  <span i data-ng-if="item.partner_name" > {{item.partner_name}}</span>
+                </div>
+                </li>
+                <!-- <li data-ng-if="item.partner_name" ></li>
+                <li data-ng-if="item.partner_image_link" ></li> -->
+                <li data-ng-if="!item.today.enabled"><i style="font-style: italic;">{{ translate('CLOSED_TODAY') }}</i></li>
+                <li data-ng-if="orderType == 1" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.delivery_time) }}min • <span data-ng-if="item.delivery_price != 0">{{ parsePrice(item.delivery_price) }}</span><span data-ng-if="item.delivery_price == 0">{{ translate('FREE') }}</span> {{ translate('DELIVERY_V2') }}</li>
+                <li data-ng-if="orderType == 2" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.pickup_time) }}min</li>
+              </ul>
+              
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="not_businesses" data-ng-if="show_change_address">
+        {{ translate('NOT_BUSINESS_BY_ADDRESS') }}
+        <br>
+        <button class="btn btn-primary btn-sm" data-ng-click="openAddresses()">{{ translate('CHANGE_ADDRESS') }}</button>
+      </div>
+      <!-- BUSINESS OPEN -->
+      <div class="col-md-3 col-sm-4 col-xs-12" data-ng-repeat="item in filteredBusiness | bfilter:filterBusiness | orderBy:sortBy track by item.id" data-ng-click="onBusiness(item)" data-ng-if="item.open && (!item.featured || !ADDONS.featured_business)">
+        <div class="thumbnail">
+          <div data-ng-if="item.offers.length > 0 && ADDONS.show_discount" class="cartel-offers"><i class="fa fa-tags" aria-hidden="true"></i> {{ showOffer(item.offers)}} </div>
+          <div class="header" ng-style="{'background-image': 'url('+optimizeImage(item.header, 'h_300,c_limit')+'), url('+dummyHeader+')'}"></div>
+          
+          <div class="caption">
+            <p>
+              <ul>
+                <li style="display: flex; align-items: center; justify-content: space-between;"><span>{{item.name}}</span>
+                  <div>
+                  <span data-ng-if="item.partner_image_link"><img src="{{item.partner_image_link}}" style="width: 20px;"></span> 
+                  <span i data-ng-if="item.partner_name" > {{item.partner_name}}</span>
+                </div>
+                </li>
+                <li data-ng-if="!item.today.enabled"><i style="font-style: italic;">{{ translate('CLOSED_TODAY') }}</i></li>
+                <li data-ng-if="orderType == 1" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.delivery_time) }}min • <span data-ng-if="item.delivery_price != 0">{{ parsePrice(item.delivery_price) }}</span><span data-ng-if="item.delivery_price == 0">{{ translate('FREE') }}</span> {{ translate('DELIVERY_V2') }}</li>
+                <li data-ng-if="orderType == 2" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.pickup_time) }}min</li>
+              </ul>
+            
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- BUSINESS CLOSED FEATURE -->
+      <div class="col-md-3 col-sm-4 col-xs-12" data-ng-repeat="item in filteredBusiness | bfilter:filterBusiness | orderBy:sortBy track by item.id" data-ng-click="onBusiness(item)" data-ng-if="!item.open && item.featured && ADDONS.featured_business">
+        <div class="thumbnail" data-ng-class="{'closed': !item.open}">
+          <div data-ng-if="ADDONS.featured_business" class="cartel featured">{{ translate('BLIST_FEATURED') }}</div>
+          <div class="cartel">{{ translate('BUSINESS_CLOSED') }}</div>
+          <div class="cartel preorder" data-ng-if="ADDONS.preorder">{{ translate('PREORDER') }}</div>
+          <div data-ng-if="item.offers.length > 0 && ADDONS.show_discount" class="cartel-offers"><i class="fa fa-tags" aria-hidden="true"></i> {{ showOffer(item.offers)}} </div>
+          <div class="header" ng-style="{'background-image': 'url('+optimizeImage(item.header, 'h_300,c_limit')+'), url('+dummyHeader+')'}"></div>
+         
+          <div class="caption">
+            <p>
+              <ul>
+                <li style="display: flex; align-items: center; justify-content: space-between;"><span>{{item.name}}</span>
+                  <div>
+                  <span data-ng-if="item.partner_image_link"><img src="{{item.partner_image_link}}" style="width: 20px;"></span> 
+                  <span i data-ng-if="item.partner_name" > {{item.partner_name}}</span>
+                </div>
+                </li>
+                <li data-ng-if="!item.today.enabled"><i style="font-style: italic;">{{ translate('CLOSED_TODAY') }}</i></li>
+                <li data-ng-if="orderType == 1" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.delivery_time) }}min • <span data-ng-if="item.delivery_price != 0">{{ parsePrice(item.delivery_price) }}</span><span data-ng-if="item.delivery_price == 0">{{ translate('FREE') }}</span> {{ translate('DELIVERY_V2') }}</li>
+                <li data-ng-if="orderType == 2" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.pickup_time) }}min</li>
+              </ul>
+             
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- BUSINESS CLOSED -->
+      <div class="col-md-3 col-sm-4 col-xs-12" data-ng-repeat="item in filteredBusiness | bfilter:filterBusiness | orderBy:sortBy track by item.id" data-ng-click="onBusiness(item)" data-ng-if="!item.open && (!item.featured || !ADDONS.featured_business)">
+        <div class="thumbnail" data-ng-class="{'closed': !item.open}">
+          <div class="cartel">{{ translate('BUSINESS_CLOSED') }}</div>
+          <div class="cartel preorder" data-ng-if="ADDONS.preorder">{{ translate('PREORDER') }}</div>
+          <div data-ng-if="item.offers.length > 0 && ADDONS.show_discount" class="cartel-offers"><i class="fa fa-tags" aria-hidden="true"></i> {{ showOffer(item.offers)}} </div>
+          <div class="header" ng-style="{'background-image': 'url('+optimizeImage(item.header, 'h_300,c_limit')+'), url('+dummyHeader+')'}"></div>
+          
+          <div class="caption">
+            <p>
+              <ul>
+                <li style="display: flex; align-items: center; justify-content: space-between;"><span>{{item.name}}</span>
+                  <div>
+                  <span data-ng-if="item.partner_image_link"><img src="{{item.partner_image_link}}" style="width: 20px;"></span> 
+                  <span i data-ng-if="item.partner_name" > {{item.partner_name}}</span>
+                </div>
+                </li>
+                <li data-ng-if="!item.today.enabled"><i style="font-style: italic;">{{ translate('CLOSED_TODAY') }}</i></li>
+                <li data-ng-if="orderType == 1" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.delivery_time) }}min • <span data-ng-if="item.delivery_price != 0">{{ parsePrice(item.delivery_price) }}</span><span data-ng-if="item.delivery_price == 0">{{ translate('FREE') }}</span> {{ translate('DELIVERY_V2') }}</li>
+                <li data-ng-if="orderType == 2" style="font-weight: 500; color: #777777;">{{ parseWaitTime(item.pickup_time) }}min</li>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="help-message" data-ng-if="loading_more">
+        {{ translate('LOADING_MORE') }}
+      </div>
+    </div>
+  </div>
+  <script>
+    let day;
+    switch (new Date().getDay()) {
+      case 0:
+        day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1MlJeWPpz2J9vxD6grk519GtQW7XshNr7' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1oMbWJZIVJrXQ8j86qFAI1hALSD0-kmS2' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case 1:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1dxoU68apQBGBu9RPHt6FJfrDu86h-exw' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1AzAutFL3abgKy_nru8-U_knnTFeCk2xD' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case 2:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1IPp4ewzQCr5B_Z-jdpe2Mclzex9kydfc' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1EUteC3liM0VAxBTS0rDdHxFr1XUtNhJ_' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case 3:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1k9uExOOnOYeCWrkBnV0HMI-DGOUnTuGO' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1t952PHyFmdBcsmbYpftRcgCrx0z17T2m' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case 4:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=10EsL1mtwJLpetkXCsCbgO7AdNQHLheeH' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1I4RY8BwXB4pnEOt1HggwX1KtfaoCFAk-' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case 5:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1pgwzQ83bEmPE56IwK8wa46aZyZE8DBUz' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1IDFHIjJxdttNBzxk93Db7CCq8dT2Z-s8' width='100%'></a></div></div><!--</div>--></div>";
+        break;
+      case  6:
+      day = "<div class='' style=''><!--<div class='row full'>--><div class='row' style='margin:0;'><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=11VgUbvZwhCRvdy20MFFVI4SI3q3LO6xa' width='100%'></a></div><div class='col col-md-6'><a href = 'https://boxetekitchen.tryordering.com/'><img data-ng-src='https://drive.google.com/uc?id=1XJ4FSGk3abHTAbSha4xTH4lpJWfwosPH' width='100%'></a></div></div><!--</div>--></div>";
+    }
+    document.getElementById("dailycontents").innerHTML = day;
+    </script>

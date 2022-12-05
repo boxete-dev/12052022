@@ -1,0 +1,23 @@
+<ion-modal-view class="popup upselling-products">
+    <i class="fa fa-times close" data-ng-click="thanks()"></i>
+    <ion-content class="color-bg popup-mode has-footer" data-ng-class="{'classIsMobileSafari' : isMobileSafari}" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('UPSELLING_QUESTION') }}</span>
+        </ion-item>
+        <div class="products">
+            <div class="product" data-ng-repeat="product in upselling_products">
+                <div class="content">
+                    <div class="image" data-ng-style="{'background-image': 'url('+optimizeImage(product.images, 'w_800', rootTheme+'/img/dummy_product.png')+')'}"></div>
+                    <div class="name">{{ product.name }}</div>
+                    <div class="price">{{ parsePrice(product.price) }}</div>
+                    <button class="btn btn-primary" data-ng-click="add(product)">{{ translate('ADD') }}</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="color-main-bg footer-style">
+        <div data-ng-if="!some_product_added" class="button find-btn font-large btn-bar-bottom color-font-white button-positive" data-ng-click="thanks()">{{ translate('NO_THANKS') }}</div>
+        <div data-ng-if="some_product_added" class="button find-btn font-large btn-bar-bottom color-font-white button-positive" data-ng-click="thanks()">{{ translate('CONTINUE') }}</div>
+    </ion-footer-bar>
+</ion-modal-view>

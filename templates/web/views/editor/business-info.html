@@ -1,0 +1,346 @@
+
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideBusinessInfo()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{productOptionList.name}}</span>
+        </ion-item>
+        <div class="tab-item-cont">
+            <div class="button-bar" focus-group focus-group-index="1" fm-group="1" tabindex="0" fm-parent-group="14">
+                <button focus-index="2" fm-parent="1"  fm-id="2" class="button tab {{(type == menu.info) &&  'active' || ''}}" data-ng-click="setType($event);onClickCategory(1)">{{ translate('INFORMATION') }}</button>
+                <!-- <button focus-index="3" data-ng-if="ADDONS.order_reviews" fm-parent="1"  fm-id="3" class="button tab {{(type == menu.review) &&  'active' || ''}}" data-ng-click="setType($event);onClickCategory(2)">{{ menu.review }}</button> -->
+                <!-- <button focus-index="4" fm-parent="1"  fm-id="4" class="button tab {{(type == menu.offer) &&  'active' || ''}}" data-ng-click="setType($event);onClickCategory(3)" data-ng-if="ADDONS.discount_offer && offersList.offers.length > 0">{{ menu.offer }}</button> -->
+            </div>
+        </div>
+        <div focus-group="" focus-group-index="3" select-content>
+            <!--<ion-item class="text-center">
+                <h2>{{HeaderTitle}}</h2>
+                <p>{{ item.restData.info.address }} - {{ item.restData.info.city.name }}</p>
+            </ion-item>-->
+            <ion-item data-ng-if="superAdmin">
+                <button class="btn-accordion" data-ng-click="changeCollapse(6)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_OWNER') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item data-ng-if="superAdmin">
+            <div class="sub-accordion" data-ng-if="curCollapse == 6" data-ng-init="curProvider = deal.owner_id?deal.owner_id:''">
+                <ion-item class="text-center gallery editor" data-ng-if="ADDONS.business_multi_owners_module">
+                    <div>
+                        <!-- <div data-ng-bind-html="video.link | safeHtml" class="video-gallery"></div> -->
+                        <div class="videos" data-ng-repeat="owner in deal.owners track by $index">
+                            <div class="video">
+                                <div class="buttons">
+                                    <button class="editable" data-ng-click="removeBusinessOwner(owner.id)"><i class="fa fa-trash"></i></button>
+                                </div>
+                                <div class="input">
+                                    <input type="text" class="editable" value="{{owner.id}}. {{owner.name}} {{owner.middle_name}} {{owner.lastname}} {{owner.second_lastname}}" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="videos">
+                            <div class="video">
+                                <div class="buttons">
+                                    <button class="editable" data-ng-click="addBusinessOwner(curProvider)"><i class="fa fa-plus-circle"></i></button>
+                                </div>
+                                <div class="input">
+                                    <form>
+                                        <!-- <input type="text" class="editable" data-ng-model="newVideo.url" placeholder="Type url video"> -->
+                                        <select class="editable" style="width: 100%;" data-ng-model="data.curProvider" data-ng-change="setProvider(curProvider)">
+                                            <option value="" disabled="disabled">{{ translate('SELECT_BUSINESS_OWNER') }}</option>
+                                            <option data-ng-repeat="user in users" data-ng-if="user.level == 2 && !inBusiness(user.id)" value="{{user.id}}" data-ng-selected="user.id == data.curProvider">{{user.id}}. {{user.name}} {{user.middle_name}} {{user.lastname}} {{user.second_lastname}}</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ion-item>
+                <select class="editable" style="width: 100%;" data-ng-model="curProvider" data-ng-change="changeBusinessOwner(curProvider)" data-ng-if="!ADDONS.business_multi_owners_module">
+                    <option value="''" disabled="disabled">{{ translate('SELECT_BUSINESS_OWNER') }}</option>
+                    <option data-ng-repeat="user in users" data-ng-if="user.level == 0 || user.level == 2" value="{{user.id}}" data-ng-selected="user.id == curProvider">{{user.id}}. {{user.name}} {{user.middle_name}} {{user.lastname}} {{user.second_lastname}}</option>
+                </select>
+            </div>
+            <!--  -->
+            <ion-item data-ng-if="superAdmin">
+                <button class="btn-accordion" data-ng-click="changeCollapse(8)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('PARTNER_TYPE') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item data-ng-if="superAdmin">
+            <div class="sub-accordion" data-ng-if="curCollapse == 8" data-ng-init="curProvider = deal.partner_id?deal.partner_id:''">
+                <select class="editable" style="width: 100%;" data-ng-model="curProvider" 
+                data-ng-change="changeBusinessPrtner(curProvider)" >
+                    <option value="''" disabled="disabled">{{ translate('SELECT_PARTNER_TYPE') }}</option>
+                    <option data-ng-repeat="user in deal.partners"  value="{{user.id}}" data-ng-selected="user.id == curProvider">{{user.id}}. {{user.name}} {{user.middle_name}} {{user.lastname}} {{user.second_lastname}}</option>
+                </select>
+            </div>
+            <!--  -->
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(0)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_TYPE') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+						<div class="sub-accordion" data-ng-if="curCollapse == 0">
+							<div class="types" >
+                	
+                    <ion-checkbox style="width:25%;" class="checkbox-item" data-ng-repeat="subcats in deal.allactbtypes | orderBy:'id*1'" data-ng-model="subcats.active" data-ng-change="changeBusinessTypes(subcats)">
+                        {{ subcats.view_name }}
+                    </ion-checkbox>
+                
+                  
+                </div>
+							<div data-ng-if="curUser.level === 0" style="display:none;">
+								<div style="height: 30px;"></div>
+								<label class="color-primary" style="margin:15px !important;"> {{ translate('DYNAMIC_BUSINESS_TYPES') }} </label> <span style="font-size: 1.5rem;" class="format-subtitle">{{translate('ONLY_AVAILABLE_ON_REACT')}} <a href="https://reactdemo.ordering.co/">â€¢ {{translate('LEARN_MORE')}}</a></span>
+								<div class="types" style="display:flex; flex-wrap:wrap;">
+									<ion-checkbox style="width:25%;" class="checkbox-item" data-ng-repeat="businessType in businessTypes | orderBy:'id*1'" data-ng-model="businessType.activated" data-ng-change="updateDynamicTypes(businessType)">
+											{{ businessType.name }}
+									</ion-checkbox>
+								</div>
+							</div>
+                            
+                            <div data-ng-if="curUser.level === 0">
+								<div style="height: 30px;"></div>
+								<label class="color-primary" style="margin:15px !important;"> {{ translate('DYNAMIC_BUSINESS_TYPES') }}  </label> <span style="font-size: 1.5rem;" class="format-subtitle">{{translate('ONLY_AVAILABLE_ON_REACT')}} <a href="https://reactdemo.ordering.co/">• {{translate('LEARN_MORE')}}</a></span>
+								<div class="types" style="display:flex; flex-wrap:wrap;">
+									<ion-checkbox style="width:25%;" class="checkbox-item" data-ng-repeat="businessType in businessTypes | orderBy:'id*1'" data-ng-model="businessType.activated" data-ng-change="updateDynamicTypes(businessType)">
+											{{ businessType.name }}
+									</ion-checkbox>
+								</div>
+							</div>
+                            
+                            
+						</div>
+            <!--<ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(1)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_SCHEDULE') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 1">
+                <ion-item class="detail-item schedule editable" data-ng-repeat="day in deal.schedule track by $index">
+                    <span class="float-left mg-top-sm">{{getWeekdayName($index)}}</span>
+                    <span class="float-right">
+                        <select class="editable" data-ng-model="day.open.hour" data-ng-change="changeSchedule()">
+                            <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == day.open.hour">{{hour.text}}
+                            </option>
+                        </select> :
+                        <select class="editable" data-ng-model="day.open.minute" data-ng-change="changeSchedule()">
+                            <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == day.open.minute">{{minute.text}}
+                            </option>
+                        </select> -
+                        <select class="editable" data-ng-model="day.close.hour" data-ng-change="changeSchedule()">
+                            <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == day.close.hour">{{hour.text}}
+                            </option>
+                        </select> :
+                        <select class="editable" data-ng-model="day.close.minute" data-ng-change="changeSchedule()">
+                            <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == day.close.minute">{{minute.text}}
+                            </option>
+                        </select>
+                    </span>
+                </ion-item>
+            </div>-->
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(2)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_LOCATION') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 2">
+            <ion-item>
+                <div class="form editable">
+                    <div class="group">
+                        <label>{{ translate('CITY') }}</label><br>
+                        <select data-ng-model="deal.city_id" class="editable" style="width: 100%;" data-ng-change="changeCity(deal.city_id)">
+                            <option value="" disabled="true">{{ translate('SELECT_CITY') }}</option>
+                            <option data-ng-repeat="city in cities" value="{{city.id}}" data-ng-selected="deal.city_id == city.id" data-ng-if="city.enabled">{{city.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="address">
+                    <!-- <button data-ng-click="saveAddress()"><i class="fa fa-floppy-o"></i></button> -->
+                    <label>{{ translate('TIMEZONE') }}</label><br>
+                    <div class="input">
+                        <input data-ng-model="deal.timezone" class="editable" type="text" placeholder="{{ translate('TIMEZONE') }}" disabled="disabled">
+                    </div>
+                </div>
+                <div class="address">
+                    <!-- <button data-ng-click="saveAddress()"><i class="fa fa-floppy-o"></i></button> -->
+                    <label>{{ translate('ADDRESS') }}</label><br>
+                    <div class="input">
+                        <input id="business-info-map-address" data-ng-model="curInputAddress" class="editable" type="text" placeholder="{{ translate('TYPE_ADDRESS') }}" data-ng-change="changeAddress(curInputAddress)">
+                    </div>
+                </div>
+                <div class="address">
+                    <label>{{ translate('ADDRESS_NOTES') }}</label><br>
+                    <div class="input">
+                        <input name="address_notes" data-ng-model="deal.address_notes" class="editable" type="text" placeholder="{{ translate('TYPE_ADDRESS_NOTES') }}" data-ng-change="changeAddressNotes(deal.address_notes)">
+                    </div>
+                </div>
+                <div id="business-info-map" data-tap-disabled="true" style="height: 18em"></div>
+            </ion-item>
+            </div>
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(3)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_ABOUT') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 3">
+            <ion-item>
+                <div class="form editable">
+                    <div>
+                        <label>{{ translate('SHORT_BUSINESS_ABOUT') }}</label>
+                        <input data-ng-model="deal.about" class="editable" type="text" placeholder="{{ translate('TYPE_BUSINESS_ABOUT') }}" data-ng-change="changeAbout()">
+                    </div>
+                    <div>
+                        <label>{{ translate('BUSINESS_ABOUT') }}</label>
+                        <textarea class="editable" data-ng-model="deal.description" placeholder="{{ translate('TYPE_BUSINESS_DESCRIPTION') }}" rows="4" data-ng-change="changeAbout()"></textarea>
+                    </div>
+                </div>
+            </ion-item>
+            </div>
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(4)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_IMAGES') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 4">
+            <ion-item class="gallery editor">
+                <div class="upload">
+                    <div id="gallery_image" class="drag">
+                        <div class="edit">
+                            <p class="multiline">
+                                <i class="fa fa-picture-o"></i><br>
+                                {{ translate('DRAG_DROP') }}
+                            </p>
+                            <input id="gallery_image_file" type="file" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <div class="images">
+                    <ion-scroll direction="x" has-bouncing="true" class="h-images">
+                        <div data-ng-repeat="item in deal.gallery track by $index" style="padding-right: 5px;" data-ng-if="item.type == 1">
+                            <button class="remove" data-ng-click="removeGallery(item)"><i class="fa fa-times"></i></button>
+                            <img data-ng-cache data-ng-src="{{ optimizeImage(item.file) }}" class="h-images"/>
+                        </div>
+                    </ion-scroll>
+                </div>
+            </ion-item>
+            </div>
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="changeCollapse(5)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_VIDEOS') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="curCollapse == 5">
+            <ion-item class="text-center gallery editor">
+                <div>
+                    <div class="videos" data-ng-repeat="item in deal.gallery track by $index" data-ng-if="item.type == 2" data-ng-init="getUrlVideoGallery(item)">
+                        <div class="video">
+                            <div class="buttons">
+                                <button class="editable" data-ng-click="removeGallery(item)"><i class="fa fa-trash"></i></button>
+                            </div>
+                            <div class="input">
+                                <input type="text" class="editable" data-ng-model="item.video" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="videos">
+                        <div class="video">
+                            <div class="buttons">
+                                <button class="editable" data-ng-click="addVideoGallery()"><i class="fa fa-plus-circle"></i></button>
+                            </div>
+                           
+                            <div class="input">
+                                <form data-ng-submit="addVideoGallery()">
+                                    <input type="text" class="editable" data-ng-model="newVideo.url" placeholder="{{translate('VIDEO_URL')}}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            </div>
+            <ion-item data-ng-if="ADDONS.metafields_editor">
+                <button class="btn-accordion" data-ng-click="changeCollapse(7)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('BUSINESS_CUSTOM_FIELDS') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion no-h-padding" data-ng-if="ADDONS.metafields_editor && curCollapse == 7">
+            <ion-item class="text-center editor">
+                <!-- <div data-ng-bind-html="video.link | safeHtml" class="video-gallery"></div> -->
+                <div class="custom_files" data-ng-repeat="item in deal.metafields track by $index" data-ng-if="item.model == 'Business'" data-ng-init="getUrlVideoGallery(item)">
+                    <div class="c_field">
+                        <div class="col-xs-3">
+                                <input type="text" class="editable txt_bold" data-ng-model="item.value_type" placeholder="Key" disabled>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input">
+                                <form>
+                                    <input type="text" class="editable" data-ng-model="item.key" placeholder="Key" disabled>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="input has_action">
+                                <form>
+                                    <ng-container data-ng-if="isBoolVal(item.value_type)">
+                                        <input type="text" class="editable" value="{{item.value == 0 ? 'false' : 'true'}}" placeholder="Key" disabled>
+                                    </ng-container>
+                                    <ng-container data-ng-if="!isBoolVal(item.value_type)">
+                                        <div class="txt_wrapper">{{ item.value }}</div>
+                                    </ng-container>
+                                    <button class="editable" data-ng-click="removeCustomField(item, 'Business')"><i class="fa fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div class="custom_files">
+                    <div class="c_field">
+                        <div class="col-xs-3">
+                            <select class="editable" data-ng-model="newField.value_type" data-ng-change="onChangeType()" ng-options="type as type for type in valueTypes">
+                            </select>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input">
+                                <form>
+                                    <input type="text" class="editable" data-ng-model="newField.key" placeholder="Key" data-ng-change="isValidating('key')">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="input has_action">
+                                <!-- <form> -->
+                                    <ng-container data-ng-if="isBoolVal(newField.value_type)">
+                                        <select class="editable" data-ng-model="newField.value">
+                                            <option value="1">True</option>
+                                            <option value="0">False</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-container data-ng-if="!isBoolVal(newField.value_type)">
+                                        <input type="text" data-ng-change="isValid(newField.value)" class="editable" data-ng-if="!isJsonVal(newField.value_type)" data-ng-model="newField.value" ng-pattern="value_regx" placeholder="Value" value={{tmpVal}} ng-keypress="getEnterEvent($event, 'Business')">
+                                        <!-- <textarea data-ng-model="newField.value" rows="5" data-ng-if="isJsonVal(newField.value_type)" ng-keypress="getEnterEvent($event, 'Business')"></textarea> -->
+                                        <div data-ng-if="isJsonVal(newField.value_type)" id="custom_editor" class="json_editor"></div>
+                                    </ng-container>
+                                    <button class="editable" data-ng-click="addCustomField('Business')"><i class="fa fa-plus-circle"></i></button>
+                                <!-- </form> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>
+
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_INFOMATION')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_INFOMATION')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_INFOMATION')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_INFOMATION')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

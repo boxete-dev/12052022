@@ -1,0 +1,14 @@
+<ion-modal-view class="popup map">
+    <i class="fa fa-times close" data-ng-click="hideModal()"></i>
+    <ion-content class="order-view-cont color-bg view-map" scroll="false">
+        <div class="gp-container map-input" style="width:100%;position: absolute;z-index: 9999;border-radius:0;" data-ng-class="{'arabic_rtl': arabic_rtl}">
+            <input style="z-index: 99;" placeholder="{{ translate('MOBILE_FRONT_VISUALS_ADDRESS_OR_ZIPCODE') }}" data-ng-class="{cssArabic: $root.arabic_rtl, noncssArabic: !$root.arabic_rtl}" data-ng-model="map_address" class="font-mid" id="map_address"  data-ng-search-disabled="true"/>
+            
+            <i class="icon ion-close-circled icon-clear"  data-ng-if="map_address && map_address != ''" data-ng-click="clear()"></i>
+        </div>
+        <div id="map" style="width: 100%;"></div>
+    </ion-content>
+    <ion-footer-bar class="color-main-bg footer-style">
+        <div class="button find-btn font-large btn-bar-bottom color-font-white button-positive" data-ng-click="select()" >{{ translate('MOBILE_ACCEPT') }}</div>
+    </ion-footer-bar>
+</ion-modal-view>

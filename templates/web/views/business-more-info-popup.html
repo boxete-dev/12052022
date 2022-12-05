@@ -1,0 +1,256 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="closeInfo()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" style="margin-bottom: 15px;">
+            <span class="divider-padding no-padding-h">{{business.name}}</span>
+        </ion-item>
+        <div class="tab-item-cont">
+            <div class="button-bar" focus-group focus-group-index="1" fm-group="1" tabindex="0" fm-parent-group="14">
+                <button focus-index="2" fm-parent="1"  fm-id="2" class="button tab" data-ng-class="{'active': restTapNum.id == 1}" data-ng-click="setType($event);onClickCategory(1)">{{ menu.info }}</button>
+                <button focus-index="3" data-ng-if="ADDONS.order_reviews" fm-parent="1"  fm-id="3" class="button tab"  data-ng-class="{'active': restTapNum.id == 2}" data-ng-click="setType($event);onClickCategory(2)">{{ menu.review }}</button>
+                <button focus-index="4" fm-parent="1"  fm-id="4" class="button tab"  data-ng-class="{'active': restTapNum.id == 3}" data-ng-click="setType($event);onClickCategory(3)" data-ng-if="ADDONS.discount_offer && business.offers.length > 0">{{ menu.offer }}</button>
+            </div>
+        </div>
+        <div data-ng-if="restTapNum.id == 1"  focus-group="" focus-group-index="3">
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="collapsItem(0)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('FRONTMOBILE_BUSINESS') }} {{ translate('MENU_LIST_OPENING_TIME') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="subCollapsNum == 0">
+            <ion-item class="detail-item" data-ng-repeat="day in business.schedule track by $index">
+                <span class="float-left mg-top-sm">{{getWeekdayName($index)}}</span>
+                <span class="float-right">
+                    <span data-ng-repeat="lapse in day.lapses" data-ng-if="day.enabled">{{ parseTime(lapse.open) }} - {{ parseTime(lapse.close) }}<span data-ng-if="day.lapses.length-1 > $last"><br></span></span>
+                    <span data-ng-if="!day.enabled"><strong>{{ translate('CLOSED_TODAY') }}</strong></span>
+                </span>
+            </ion-item>
+            </div>
+            <ion-item>
+                <button class="btn-accordion" data-ng-click="collapsItem(1)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('FRONTMOBILE_BUSINESS') }} {{ translate('MOBILE_BUSINESS_LIST_LOCATION') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="subCollapsNum == 1">
+            <ion-item>
+                <p style="font-weight: bold;margin-bottom: 7px;">{{business.address}}</p>
+                <div id="business-info-map" data-tap-disabled="true" style="height: 18em"></div>
+            </ion-item>
+            </div>
+            <ion-item data-ng-if="business.about">
+                <button class="btn-accordion" data-ng-click="collapsItem(2)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('MOBILE_MENU_LIST_ABOUT_RESTAURANT') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="subCollapsNum == 2">
+            <ion-item>
+                <span class="float-left mg-top-sm" style="white-space: normal" data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">
+                    <p class="multiline" data-ng-bind-html="business.description | safeHtml"></p>
+                </span>
+            </ion-item>
+            </div>
+            <ion-item data-ng-if="(business.gallery | filter: { type: 1 }).length > 0">
+                <button class="btn-accordion" data-ng-click="collapsItem(3)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('MOBILE_MENU_LIST_PHOTO_GALLERY') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="subCollapsNum == 3">
+            <ion-item>
+                <ion-scroll direction="x" has-bouncing="true" class="h-images">
+                    <div data-ng-repeat="photo in business.gallery | filter: { type: 1 }" data-ng-click="showModalImage(photo.file, translate('MOBILE_MENU_LIST_PHOTO_GALLERY'))" style="padding-right: 5px;cursor: pointer;">
+                        <img data-ng-cache data-ng-src="{{ photo.file }}" class="h-images"/>
+                    </div>
+                </ion-scroll>
+            </ion-item>
+            </div>
+            <ion-item data-ng-if="(business.gallery | filter: { type: 2 }).length > 0">
+                <button class="btn-accordion" data-ng-click="collapsItem(4)">
+                    <span data-ng-class="{cssArabicMenuItem: $root.arabic_rtl}">{{ translate('MOBILE_MENU_LIST_VIDEO_GALLERY') }}</span>
+                    <div class="float-right icon-more-down"></div>
+                </button>
+            </ion-item>
+            <div class="sub-accordion" data-ng-if="subCollapsNum == 4">
+            <ion-item class="text-center">
+                <div data-ng-repeat="video in business.gallery | filter: { type: 2 }">
+                    <div data-ng-bind-html="getVideoEmbedded(video.video) | safeHtml" class="video-gallery"></div>
+                </div>
+            </ion-item>
+            </div>
+        </div>
+        <div data-ng-if="restTapNum.id == 3">
+            <ion-item class="text-center">
+                <h3>{{ translate('OFFERSSOF_V21') }} {{ business.name }}</h3>
+                <p>{{ business.address }} - {{ business.city.name }}</p>
+            </ion-item>
+            <ion-item data-ng-if="business.offers.length == 0">{{ translate('MOBILE_CHECKOUT_NO') }} {{ translate('OFFERS_V21') }}</ion-item>
+            <ion-item data-ng-if="business.offers.length > 0" class="offers">
+                <div class="row color-bg titles" style="border:1px solid #eee">
+                    <div class="col col-25">{{ translate('MOBILE_MENU_LIST_OFFER_NAME') }}</div>
+                    <div class="col col-25">{{ translate('MOBILE_MENU_LIST_OFFER_PRICE') }}</div>
+                    <div class="col col-25">{{ translate('MOBILE_MENU_LIST_START_DATE') }}</div>
+                    <div class="col col-25">{{ translate('MOBILE_MENU_LIST_END_DATE') }}</div>
+                </div>
+                <div class="row" data-ng-repeat="offer in business.offers track by $index"  style="border:1px solid #eee; margin-top: 0px; border-top: none;">
+                    <div class="col col-25" style="white-space: normal">{{ offer.name }}</div>
+                    <div class="col col-25"><span data-ng-if="offer.rate_type == '2'"> {{parsePrice(offer.rate)}} </span><span data-ng-if="offer.rate_type == '1'">{{ offer.rate | number:DECIMAL.length | separator }}%</span></span>
+                    <br>
+                    {{ translate('CHECKOUT_MIN') }}:{{parsePrice(offer.minimum)}}</span></div>
+                    <div class="col col-25 multiline">{{ parseDate(offer.start) }}</div>
+                    <div class="col col-25 multiline">{{ parseDate(offer.end) }}</div>
+                </div>
+            </ion-item>
+        </div>
+        <div data-ng-if="restTapNum.id == 2">
+            <ion-item class="text-center">
+                <h3>{{ translate('REVIEWSOF_V21_OF') }} {{ business.name }}</h3>
+                <p>{{ business.address }} - {{ business.city.name }}</p>
+            </ion-item>
+            <ion-item data-ng-if="bState.review == false" data-ng-class="{cssArabic: $root.arabic_rtl}">{{ translate('MOBILE_CHECKOUT_NO') }} {{ translate('REVIEWS_V21') }}</ion-item>
+            <ion-item class="review__filter">
+                <div class="review__filter-item" data-ng-class="curReview.idx == 0 ? 'active' : ''" data-ng-click="onFilterReview(0)">{{ translate('ALL') }}</div>
+                <div class="review__filter-item" data-ng-class="curReview.idx == 4 ? 'active' : ''" data-ng-click="onFilterReview(4)">4+&nbsp;<i class="fa fa-star"></i></div>
+                <div class="review__filter-item" data-ng-class="curReview.idx == 3 ? 'active' : ''" data-ng-click="onFilterReview(3)">3+&nbsp;<i class="fa fa-star"></i></div>
+                <div class="review__filter-item" data-ng-class="curReview.idx == 2 ? 'active' : ''" data-ng-click="onFilterReview(2)">2+&nbsp;<i class="fa fa-star"></i></div>
+                <div class="review__filter-item" data-ng-class="curReview.idx == 1 ? 'active' : ''" data-ng-click="onFilterReview(1)">1+&nbsp;<i class="fa fa-star"></i></div>
+            </ion-item>
+            <ion-item class="reviews" data-ng-repeat="review in reviews">
+                <div class="row row-no-padding">
+                    <div class="col col-50">
+                        <strong>{{ review.userName }}</strong><br>
+                        <div class="rating">
+                            <div class="base">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </div>
+                            <div class="points" ng-style="{'width': getWidthRating(review.total) + 'px'}">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                        <p class="multiline">{{ review.comment }}</p>
+                        {{ review.date }}<br>
+                        {{ review.cityname }}<br data-ng-if="review.cityname">
+                        {{ review.email }}<br>
+                    </div>
+                    <div class="col col-50">
+                        <table>
+                            <tr>
+                                <td>{{ translate('TEMPLATE_QUALITY_OF_FOOD') }}: </td>
+                                <td>
+                                    <div class="rating">
+                                        <div class="base">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="points" ng-style="{'width': getWidthRating(review.quality) + 'px'}">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ translate('TEMPLATE_PUNCTUALITY') }}: </td>
+                                <td>
+                                    <div class="rating">
+                                        <div class="base">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="points" ng-style="{'width': getWidthRating(review.delivery*1) + 'px'}">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ translate('TEMPLATE_SERVICE') }}: </td>
+                                <td>
+                                    <div class="rating">
+                                        <div class="base">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="points" ng-style="{'width': getWidthRating(review.service) + 'px'}">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ translate('TEMPLATE_FOOD_PACKAGING') }}: </td>
+                                <td>
+                                    <div class="rating">
+                                        <div class="base">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="points" ng-style="{'width': getWidthRating(review.package*1) + 'px'}">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="bottom-line-grey" style="margin-top: 0.1em"></div>
+            </ion-item>
+            <ion-infinite-scroll ng-if="canLoaded" immediate-check="false" on-infinite="reviewInfinite()" distance="10%" spinner="crescent"></ion-infinite-scroll>
+        </div>
+        <!--<ion-item class="bottom-cont">
+            <div class="row">
+                <div class="col-50 color-bg-white pd-btn" style="padding-left:5px">
+                    <button class="button-icon icon-btn-minus float-left" data-ng-click="onMinusQuantity()">
+                        <span class="icon ion-minus icon-primary"></span>
+                    </button>
+                    <button class="button-icon icon-btn-plus float-left" data-ng-click="onPlusQuantity()">
+                        <span class="icon ion-plus icon-primary"></span>
+                    </button>
+                    <p class="price float-right">{{currency}} {{myDish.total}}</p>
+                </div>
+                <div class="col-50 item-btn" data-ng-click="">
+                    <a class="button pd-right-2" data-ng-click="onAddToCart(productOptionList)" data-ng-if="gEditState == false"><div class="float-left btn-badge-cont">{{myDish.quantity}}</div>{{ translate('MOBILE_FRONT_BUTTON_ADD') }}</a>
+                    <a class="button pd-right-2" data-ng-click="onAddToCart(productOptionList)" data-ng-if="gEditState == true"><div class="float-left btn-badge-cont">{{myDish.quantity}}</div>{{ translate('MOBILE_FOURTH_PAGE_OK') }}</a>
+                </div>
+            </div>
+        </ion-item>-->
+    </ion-content>
+</ion-modal-view>

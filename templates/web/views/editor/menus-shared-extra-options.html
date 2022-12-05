@@ -1,0 +1,58 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="close()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('PRODUCT_SUBOPTIONS') }}</span>
+        </ion-item>
+        <label>{{ translate('FILTER') }}</label>
+        <input style="width: 50%;"class="editable" data-ng-model="FilterProducts" type="text" placeholder="{{ translate('FILTER') }}">
+        <div class="eitems fixdir" select-content>
+            <div class="eitem title">
+              <div class="dynamic product_options_container">
+                <input type="text" style="font-size: 14px; font-weight: 600;"value="{{ translate('NAME') }}" disabled="disabled">
+                <input type="text" style="text-align: end; font-size: 14px; font-weight: 600;" value="{{ translate('ENABLED') }}" disabled="disabled">     
+              </div>
+            </div>
+            <div class="eitem" data-ng-repeat="extra in extras | orderBy:'id' | filter:FilterProducts">
+                    <div class="dynamic product_options_container">
+                        <input class="editable" type="text" data-ng-model="extra.name" disabled="disabled">
+                        <div>
+                            <label class="toggle xs toggle-balanced">
+                                <input type="checkbox" data-ng-model="extra.enabled" data-ng-change="updateToggleProductExtra(extra)">
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="eitem" data-ng-repeat="option in extra.options | orderBy:'id' | filter:FilterProducts">
+                        <div class="dynamic product_options_container" style="padding-left: 10%;">
+                            <input class="editable" type="text" data-ng-model="option.name" disabled="disabled">
+                            <div>
+                                <label class="toggle xs toggle-balanced">
+                                    <input type="checkbox" data-ng-model="option.enabled" data-ng-change="updateToggleProductExtraOption(option)">
+                                    <div class="track">
+                                        <div class="handle"></div>
+                                    </div>
+                                </label>
+                            </div>
+                         </div>
+                         <div data-ng-repeat="suboption in option.suboptions | orderBy:'id' | filter:FilterProducts">
+                            <div class="dynamic product_options_container" style="padding-left: 20%;">
+                                <input class="editable" type="text" data-ng-model="suboption.name" disabled="disabled">
+                                <div>
+                                    <label class="toggle xs toggle-balanced">
+                                        <input type="checkbox" data-ng-model="suboption.enabled" data-ng-change="updateToggleProductExtraSubOption(suboption)">
+                                        <div class="track">
+                                            <div class="handle"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+            </div>
+            
+        </div>
+    </ion-content>
+</ion-modal-view>

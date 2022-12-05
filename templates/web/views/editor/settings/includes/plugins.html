@@ -1,0 +1,71 @@
+<div data-ng-controller="pluginsSettingsEditorCtrl">
+  <div class="col-sm-12">
+    <br>
+    <h3 class="h3">{{ translate('PLUGINS') }}</h3>
+    <div class="form editable">
+      <div class="group">
+        <label>{{ translate('FILTER') }}</label>
+        <input data-ng-model="filterUrl" class="editable" type="text" placeholder="{{ translate('SEARCH_FILTER') }}">
+      </div>
+    </div>
+    <div class="eitems">
+      <div class="eitem title">
+        <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i></button>
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ translate('PLUGIN') }}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem fixdir" data-ng-repeat="plugin in plugins | orderBy:'id*1' | filter:filterUrl | startFrom:((pagination.current-1)*pagination.items) | limitTo:pagination.items">
+        <button data-ng-click="remove(plugin)"><i class="fa fa-trash"></i></button>
+        <!--<button data-ng-click="showCitySettings(city)"><i class="fa fa-info-circle"></i></button>-->
+        <button data-ng-click="refresh(plugin)"><i class="fa fa-refresh"></i></button>
+        <div class="f50">
+          <label class="toggle xs toggle-balanced">
+            <input type="checkbox" data-ng-model="plugin.enabled" data-ng-change="changeStatus(plugin)">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+        <!--<div class="p40">
+          <select data-ng-model="city.country" class="editable" style="width: 100%;" data-ng-change="changeCity(city)" tabindex="{{($index*2)+3001}}">
+            <option value="">{{ translate('SELECT_COUNTRY') }}</option>
+            <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="city.country == country.id">{{country.name}}</option>
+          </select>
+        </div>-->
+        <!--<div class="f50 left">
+          <input class="editable" type="text" data-ng-model="plugin.id" value="{{ translate('ID') }}" disabled="disabled">
+        </div>-->
+        <div class="dynamic">
+          <input class="editable" type="text" value="{{ plugin.name }} ({{ plugin.hooks.length }} hooks)" tabindex="{{($index*2)+3000}}" disabled="disabled">
+        </div>
+      </div>
+      <div class="eitem">
+        <form data-ng-submit="add(curPlugin)">
+        <button type="submit"><i class="fa fa-plus-circle"></i></button>
+        <!--<div class="p50">
+          <select data-ng-model="curCity.country_id" class="editable" style="width: 100%;" tabindex="4001">
+            <option value="">{{ translate('SELECT_COUNTRY') }}</option>
+            <option data-ng-repeat="country in countries" value="{{country.id}}" data-ng-selected="curCity.country_id == country.id">{{country.name}}</option>
+          </select>
+        </div>-->
+        <div class="dynamic">
+          <input class="editable" type="text" data-ng-model="curPlugin.url" placeholder="{{ translate('URL') }}" tabindex="4000">
+        </div>
+        </form>
+      </div>
+      <div class="pages">
+        {{ translate('ITEMS_PER_PAGES') }}:
+        <select data-ng-model="pagination.items" data-ng-change="printpages()">
+          <option data-ng-repeat="items in pagination.itemsPerPage" value="{{items}}" data-ng-selected="pagination.items == items">{{items}}</option>
+        </select>
+        {{((pagination.current-1)*pagination.items)+1}}-<span data-ng-if="pagination.current*pagination.items <= plugins.length">{{pagination.current*pagination.items}}</span><span data-ng-if="pagination.current*pagination.items > plugins.length">{{plugins.length}}</span> {{ translate('OF') }} {{plugins.length}}
+        <i class="fa fa-chevron-left" data-ng-if="pagination.current > 1" data-ng-click="backPage(pagination)"></i>
+        <i class="fa fa-chevron-right" data-ng-if="pagination.current < pagination.pages" data-ng-click="nextPage(pagination)"></i>
+      </div>
+    </div>
+    <br><br>
+  </div>
+</div>
+ <!--SuperAdmin--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_PLUGINS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_PLUGINS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+ <!---Business--><div id="buttonFixed" style="z-index: 0;" ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxManager no-print"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_PLUGINS')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_PLUGINS')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

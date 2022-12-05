@@ -1,0 +1,355 @@
+<div data-ng-controller="generalSettingsEditorCtrl">
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="showValidationFields('checkout')">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('CHECKOUT_FIELDS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('CHECKOUT_FIELDS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="NEW_FEATURES.MULTI_ADDRESS">
+    <div class="panel panel-default" data-ng-click="showValidationFields('address')">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('ADDRESS_FIELDS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('ADDRESS_FIELDS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="showLanguageSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('LANGUAGE_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('LANGUAGE_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Checkout fields</h3>
+      </div>
+      <div class="panel-body">
+        Which fields do you want to show on the checkout page?
+      </div>
+    </div>
+  </div> -->
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="notificationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('PUSH_NOTIFICATIONS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('PUSH_NOTIFICATIONS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="facebookSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('FACEBOOK_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('FACEBOOK_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="comunicationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('COMUNICATION_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('COMUNICATION_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="configs.cloudinary_enabled.value == 1">
+    <div class="panel panel-default" data-ng-click="cloudinarySettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('CLOUDINARY_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('CLOUDINARY_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.stripe_payment || ADDONS.stripeconnect_payment">
+    <div class="panel panel-default" data-ng-click="stripeSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('STRIPE_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('STRIPE_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.stripeconnect_payment">
+    <div class="panel panel-default" data-ng-click="stripeConnectSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('STRIPE_CONNECT_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('STRIPE_CONNECT_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="autoAssignSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DRIVER_ASSIGMENT_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DRIVER_ASSIGMENT_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="formatNumberSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('FORMAT_NUMBER_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('FORMAT_NUMBER_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="signupBusinessSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('SIGNUP_BUSINESS_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('SIGNUP_BUSINESS_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="formatTimeSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('FORMAT_TIME_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('FORMAT_TIME_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="businessesSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('BUSINESSES_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('BUSINESSES_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="operationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('OPERATION_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('OPERATION_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="termsConditions()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('TERMS_AND_CONDITIONS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('TERMS_AND_CONDITIONS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="notification_toast()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('NOTIFICATION_TOAST') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('NOTIFICATION_TOAST_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="recaptcha()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('RECAPTCHA') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('RECAPTCHA_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4" data-ng-if="ADDONS.twilio_verify">
+    <div class="panel panel-default" data-ng-click="twilio()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('TWILIO') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('TWILIO_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="max_days_preorder()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('MAX_DAYS_PREORDER') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('MAX_DAYS_PREORDER_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="meters_to_change_address()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('METERS_TO_CHANGE_ADDRESS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('METERS_TO_CHANGE_ADDRESS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="default_order_type()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DEFAULT_ORDER_TYPE') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DEFAULT_ORDER_TYPE_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="order_types_allowed()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('ORDER_TYPES_ALLOWED') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('ORDER_TYPES_ALLOWED_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="google_maps_api_key()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('GOOGLE_MAPS_API_KEY') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('GOOGLE_MAPS_API_KEY_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="country_autocomplete()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('COUNTRY_AUTOCOMPLETE') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('COUNTRY_AUTOCOMPLETE_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="track_id_google_analytics()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('TRACK_ID_GOOGLE_ANALYTICS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('TRACK_ID_GOOGLE_ANALYTICS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="guest_uuid_max_days()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('GUEST_UUID_MAX_DAYS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('GUEST_UUID_MAX_DAYS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="guest_uuid_access()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('GUEST_UUID_ACCESS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('GUEST_UUID_ACCESS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="distance_unit()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DISTANCE_UNIT') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DISTANCE_UNIT_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="currencyPossition()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('MOBILE_CURRENCY_POSITION') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('CURRENCY_POSITION_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="defaultLocationSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DEFAULT_LOCATION_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DEFAULT_LOCATION_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="driverTipsSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DRIVER_TIPS_SETTINGS') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DRIVER_TIPS_SETTINGS_DESC') }}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="multiBussStripeSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('STRIPE_PAYMENT_SETTING') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('STRIPE_PAYMENT_SETTING') }}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4">
+    <div class="panel panel-default" data-ng-click="defaultOrderStatusSettings()">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ translate('DEFAULT_ORDER_STATUS_SETTING') }}</h3>
+      </div>
+      <div class="panel-body">
+        {{ translate('DEFAULT_ORDER_STATUS_SETTING_DESC') }}
+      </div>
+    </div>
+  </div>
+
+</div>

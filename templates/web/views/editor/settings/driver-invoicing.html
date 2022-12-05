@@ -1,0 +1,456 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('DRIVER_INVOICE') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable" style="margin-left:0px;" select-content>
+                <div class="group">
+                    <label>{{ translate('DATES_RANGE') }}</label><br>
+                    <div class="w50" style="position: relative;">
+                        <label>{{ translate('FROM') }}</label>
+                        <input id="driver-invoice-from" data-ng-model="invoice.from" class="editable" type="text">
+                    </div><!--
+                    --><div class="w50" style="position: relative;">
+                        <label>{{ translate('TO') }}</label>
+                        <input id="driver-invoice-to" data-ng-model="invoice.to" class="editable" type="text">
+                    </div>
+                </div>
+                <div class="group">
+                    <label>{{ translate('DRIVER') }}</label><br>
+                    <select class="editable" data-ng-model="invoice.driver" style="width: 100%;">
+                        <option value="" disabled="true">{{ translate('SELECT_DRIVER') }}</option>
+                        <option data-ng-repeat="driver in drivers" value="{{driver.id}}">{{ driver.id }}. {{ driver.name }}</option>
+                    </select>
+                </div>
+                <div class="group">
+                    <label>{{ translate('PAYMETHODS') }}</label>
+                    <div class="check-box" data-ng-repeat="paymethod in paymethods" data-ng-click="paymethod.selected=!paymethod.selected">
+                        <div class="icon" data-ng-class="{'uncheck': !paymethod.selected}">
+                            <i class="fa fa-square" data-ng-if="!paymethod.selected"></i>
+                            <i class="fa fa-check-square" data-ng-if="paymethod.selected"></i>
+                        </div>
+                        <div class="text">{{ translate(paymethod.gateway.toUpperCase()) }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="paymethod.selected">
+                    </div>
+                </div>
+                <div class="group">
+                    <!-- <label>{{ translate('DELIVERY_TYPE') }}</label>
+                    <div class="check-box" data-ng-repeat="type in delivery_types" data-ng-click="type.selected=!type.selected">
+                        <div class="icon" data-ng-class="{'uncheck': !type.selected}">
+                            <i class="fa fa-square" data-ng-if="!type.selected"></i>
+                            <i class="fa fa-check-square" data-ng-if="type.selected"></i>
+                        </div>
+                        <div class="text">{{ type.name }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="type.selected">
+                    </div> -->
+                    <div class="check-box" data-ng-click="invoice.cancelled=!invoice.cancelled">
+                        <div class="icon" data-ng-class="{'uncheck': !invoice.cancelled}">
+                            <i class="fa fa-square" data-ng-if="!invoice.cancelled"></i>
+                            <i class="fa fa-check-square" data-ng-if="invoice.cancelled"></i>
+                        </div>
+                        <div class="text">{{ translate('INCLUDE_CANCELED_ORDERS') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="invoice.cancelled">
+                    </div>
+                    <!-- <div class="check-box" data-ng-click="invoice.discounts=!invoice.discounts">
+                        <div class="icon" data-ng-class="{'uncheck': !invoice.discounts}">
+                            <i class="fa fa-square" data-ng-if="!invoice.discounts"></i>
+                            <i class="fa fa-check-square" data-ng-if="invoice.discounts"></i>
+                        </div>
+                        <div class="text">{{ translate('INCLUDE_DISCOUNTS_BY_PLATFORM') }}</div>
+                        <input type="checkbox" name="type" value="charge" data-ng-model="invoice.discounts">
+                    </div> -->
+                </div>
+                <div class="group">
+                    <label>{{ translate('PERCENTAGE_FEE') }}</label>
+                    <input data-ng-model="invoice.percentage_fee" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('FIXED_FEE') }}</label>
+                    <input data-ng-model="invoice.fixed_fee" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('DELIVERY_PRICE') }} ({{ translate('PERCENTAGE') }})</label>
+                    <input data-ng-model="invoice.percentage_delivery_price" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('DRIVER_TIP') }} ({{ translate('PERCENTAGE') }})</label>
+                    <input data-ng-model="invoice.percentage_driver_tip" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('TAX') }}</label>
+                    <input data-ng-model="invoice.tax" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 45)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('MISC_AMOUNT') }}</label>
+                    <input data-ng-model="invoice.misc_amount" class="editable" type="text" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 45)">
+                </div>
+                <div class="group">
+                    <label>{{ translate('MISC_DESCRIPTION') }}</label>
+                    <textarea class="editable" data-ng-model="invoice.misc_description" placeholder="{{ translate('MISC_DESCRIPTION') }}" rows="3"></textarea>
+                </div>
+                <div class="group">
+                    <label>{{ translate('NOTES') }}</label>
+                    <textarea class="editable" data-ng-model="invoice.notes" placeholder="{{ translate('NOTES') }}" rows="4" data-ng-trim="false"></textarea>
+                </div>
+                <div class="center">
+                    <button class="btn btn-primary" data-ng-click="export()">{{ translate('EXPORT').toUpperCase() }}</button>
+                </div>
+                <form style="display: none;" target="_blank" action="{{ action }}" method="POST">
+                    <input id="input-html" type="hidden" name="html">
+                    <button id="btn-submit" type="submit">Submit</button>
+                </form>
+                <div id="invoice_driver" style="display: none;">
+                    <style>
+                        .invoice {
+                        font-family: 'DejaVu Sans', serif, sans-serif;
+                        color: #333;
+                        }
+
+                        .invoice .logo {
+                        height: 45px;
+                        margin-bottom: 15px;
+                        }
+
+                        .invoice table {
+                        width: 100%;
+                        margin-top: 15px;
+                        margin-bottom: 15px;
+                        border-collapse: collapse;
+                        }
+
+                        .invoice table tr .number {
+                        text-align: right;
+                        }
+
+                        .invoice table thead th {
+                        text-align: center;
+                        font-size: 16px;
+                        }
+
+                        .invoice table tr td {
+                        padding: 3px 10px;
+                        }
+
+                        .invoice table thead tr {
+                        color: #fff;
+                        font-weight: bold;
+                        }
+
+                        .invoice table tbody tr td {
+                        border: 1px solid #ccc;
+                        color: #333;
+                        font-size: 15px;
+                        }
+
+                        .invoice table thead tr:first-child {
+                        border: 1px solid #222434;
+                        background-color: #222434;
+                        }
+
+                        .invoice table thead tr:last-child {
+                        border: 1px solid #393d57;
+                        background-color: #393d57;
+                        }
+
+                        .invoice table tfoot tr {
+                        border: 1px solid #ccc;
+                        background-color: #ddd;
+                        }
+
+                        .invoice table tfoot tr td {
+                        font-size: 15px;
+                        border: 1px solid #ccc;
+                        }
+
+                        .invoice table tfoot tr td:first-child {
+                        text-align: right;
+                        }
+
+                        .invoice .notes {
+                        padding: 10px;
+                        white-space: normal;
+                        font-size: 14px;
+                        background-color: #eee;
+                        }
+                    </style>
+                    <div class="invoice">
+                        <img class="logo" data-ng-src="{{logo}}" alt=""><br>
+                        {{ translate('INVOICE_FOR') }} <b>{{ export_invoice.driver.name }} {{ export_invoice.driver.lastname }}</b><br>
+                        <span data-ng-if="export_invoice.from && export_invoice.to">{{ translate('FROM') }} <b>{{ export_invoice.from }}</b> {{ translate('TO').toLowerCase() }} <b>{{ export_invoice.to }}</b><br></span>
+                        {{ translate('AMOUNT_TO_ORDERS') }}: {{ export_invoice.orders.length }}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="5">{{ translate('ORDERS') }}</th>
+                                </tr>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Datetime</th>
+                                    <th>Status</th>
+                                    <th>Subtotal</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="order in export_invoice.orders">
+                                    <td>{{ order.id }}</td>
+                                    <td>{{ parseDate(order.delivery_datetime) }}</td>
+                                    <td>{{ getOrderState(order.status) }}</td>
+                                    <td class="number">{{ parsePrice(Order.getSubtotal(order)) }}</td>
+                                    <td class="number">{{ parsePrice(Order.getTotal(order)) }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">{{ translate('SUBTOTAL') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_subtotal) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">{{ translate('TOTAL') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_total) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">{{ translate('TOTALS') }}</th>
+                                </tr>
+                                <!-- <tr>
+                                    <th>{{ translate('NAME') }}</th>
+                                    <th>{{ translate('TOTAL') }}</th>
+                                </tr> -->
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td> {{ translate('ORDERS') }} ({{ translate('SUBTOTAL') }})</td>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_subtotal) }}</td>
+                                </tr>
+                                <tr>
+                                    <td> {{ translate('DISCOUNT') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.discounts) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('PERCENTAGE_FEE') }} ({{ export_invoice.percentage_fee }}%)</td>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_fee_total) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('FIXED_FEE') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.fixed_fee_total) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('DELIVERY_PRICE') }} {{ translate('PERCENTAGE') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_delivery_price_total) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('DRIVER_TIP') }} {{ translate('PERCENTAGE') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_driver_tip_total) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('MISC') }} <small data-ng-if="export_invoice.misc_description">({{ export_invoice.misc_description }})</small></td>
+                                    <td class="number">{{ parsePrice(export_invoice.misc_amount) }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>{{ translate('SUBTOTAL') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.subtotal) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('TAX') }} ({{ export_invoice.tax }}%)</td>
+                                    <td class="number">{{ parsePrice(export_invoice.tax_total) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ translate('TOTAL') }}</td>
+                                    <td class="number">{{ parsePrice(export_invoice.total) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p class="notes" ng-bind-html="export_invoice.notes">
+                            <!-- {{ translate('NOTES') }}: {{ export_invoice.notes }} -->
+                        </p>
+                    </div>
+                </div>
+                <div id="invoice_driver_rtl" style="display: none;">
+                    <style>
+                        .arabic {
+                            text-align: right;
+                        }
+                        .invoice {
+                        font-family: 'DejaVu Sans', serif, sans-serif;
+                        color: #333;
+                        }
+
+                        .invoice .logo {
+                        height: 45px;
+                        margin-bottom: 15px;
+                        }
+
+                        .invoice table {
+                        width: 100%;
+                        margin-top: 15px;
+                        margin-bottom: 15px;
+                        border-collapse: collapse;
+                        }
+
+                        .invoice.arabic table tr .number {
+                        text-align: left;
+                        }
+
+                        .invoice table thead th {
+                        text-align: center;
+                        font-size: 16px;
+                        }
+
+                        .invoice table tr td {
+                        padding: 3px 10px;
+                        }
+
+                        .invoice table thead tr {
+                        color: #fff;
+                        font-weight: bold;
+                        }
+
+                        .invoice table tbody tr td {
+                        border: 1px solid #ccc;
+                        color: #333;
+                        font-size: 15px;
+                        }
+
+                        .invoice table thead tr:first-child {
+                        border: 1px solid #222434;
+                        background-color: #222434;
+                        }
+
+                        .invoice table thead tr:last-child {
+                        border: 1px solid #393d57;
+                        background-color: #393d57;
+                        }
+
+                        .invoice table tfoot tr {
+                        border: 1px solid #ccc;
+                        background-color: #ddd;
+                        }
+
+                        .invoice table tfoot tr td {
+                        font-size: 15px;
+                        border: 1px solid #ccc;
+                        }
+
+                        .invoice table tfoot tr td:first-child {
+                        text-align: right;
+                        }
+
+                        .invoice .notes {
+                        padding: 10px;
+                        white-space: normal;
+                        font-size: 14px;
+                        background-color: #eee;
+                        }
+                    </style>
+                    <div class="invoice arabic">
+                        <img class="logo" data-ng-src="{{logo}}" alt=""><br>
+                        <b>{{ reverseText(export_invoice.driver.name) }} {{ reverseText(export_invoice.driver.lastname) }}</b> {{ reverseText(translate('INVOICE_FOR')) }} <br>
+                        <span data-ng-if="export_invoice.from && export_invoice.to"><b>{{ export_invoice.to }}</b> {{ reverseText(translate('TO').toLowerCase()) }} <b>{{ export_invoice.from }}</b> {{ reverseText(translate('FROM')) }} <br></span>
+                        {{ export_invoice.orders.length }} :{{ reverseText(translate('AMOUNT_TO_ORDERS')) }} 
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="5">{{ reverseText(translate('ORDERS')) }}</th>
+                                </tr>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>Subtotal</th>
+                                    <th>Status</th>
+                                    <th>Datetime</th>
+                                    <th>Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="order in export_invoice.orders">
+                                    <td class="number">{{ parsePrice(Order.getTotal(order)) }}</td>
+                                    <td class="number">{{ parsePrice(Order.getSubtotal(order)) }}</td>
+                                    <td>{{ reverseText(getOrderState(order.status)) }}</td>
+                                    <td>{{ parseDate(order.delivery_datetime) }}</td>
+                                    <td>{{ order.id }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_subtotal) }}</td>
+                                    <td colspan="4">{{ reverseText(translate('SUBTOTAL')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_total) }}</td>
+                                    <td colspan="4">{{ reverseText(translate('TOTAL')) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">{{ reverseText(translate('TOTALS')) }}</th>
+                                </tr>
+                                <!-- <tr>
+                                    <th>{{ translate('NAME') }}</th>
+                                    <th>{{ translate('TOTAL') }}</th>
+                                </tr> -->
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.orders_subtotal) }}</td>
+                                    <td style="text-align: right;"> ({{ reverseText(translate('SUBTOTAL')) }}){{ reverseText(translate('ORDERS')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.discounts) }}</td>
+                                    <td style="text-align: right;"> {{ reverseText(translate('DISCOUNT')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_fee_total) }}</td>
+                                    <td style="text-align: right;">(%{{ export_invoice.percentage_fee }}){{ reverseText(translate('PERCENTAGE_FEE')) }} </td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.fixed_fee_total) }}</td>
+                                    <td style="text-align: right;">{{  reverseText(translate('FIXED_FEE')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_delivery_price_total) }}</td>
+                                    <td style="text-align: right;">{{ translate('DELIVERY_PRICE') }} {{ translate('PERCENTAGE') }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.percentage_driver_tip_total) }}</td>
+                                    <td style="text-align: right;"> {{ reverseText(translate('PERCENTAGE')) }} {{ reverseText(translate('DRIVER_TIP')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.misc_amount) }}</td>
+                                    <td style="text-align: right;"><small data-ng-if="export_invoice.misc_description">({{ reverseText(export_invoice.misc_description) }})</small> {{ reverseText(translate('MISC')) }} </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.subtotal) }}</td>
+                                    <td>{{ reverseText(translate('SUBTOTAL')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.tax_total) }}</td>
+                                    <td> (%{{ export_invoice.tax }}){{ reverseText(translate('TAX')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="number">{{ parsePrice(export_invoice.total) }}</td>
+                                    <td>{{ reverseText(translate('TOTAL')) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p class="notes" ng-bind-html="export_invoice.notes">
+                            <!-- {{ translate('NOTES') }}: {{ export_invoice.notes }} -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxMM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_INVOICE_MANAGER_DRIVER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_INVOICE_MANAGER_DRIVER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxMM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_INVOICE_MANAGER_DRIVER')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_INVOICE_MANAGER_DRIVER')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

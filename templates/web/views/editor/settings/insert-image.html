@@ -1,0 +1,59 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('INSERT_IMAGE') }}</span>
+        </ion-item>
+        <ion-item class="form editable">
+            <div class="group">
+                <label>{{ translate('IMAGE_URL') }}</label>
+                <input class="editable" type="text" data-ng-model="data.imageUrl">
+            </div>
+        </ion-item>
+        <div>
+            <center>
+                <button class="btn btn-primary" data-ng-click="insertImage()">{{ translate('INSERT').toUpperCase() }}</button>
+            </center> 
+        </div>
+        <ion-item class="gallery editor item">
+            <div class="upload" style="width: 100%;">
+                <div id="gallery_image" class="drag">
+                    <div class="edit">
+                        <p class="multiline ng-binding">
+                            <i class="fa fa-picture-o"></i><br>
+                            Drag &amp; Drop
+                        </p>
+                        <input id="gallery_image_file" type="file" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="images">
+                <ion-scroll direction="x" has-bouncing="true" class="h-images">
+                    <div data-ng-repeat="item in gallery track by $index | orderBy:'-id'" style="padding-right: 5px;" data-ng-if="item.type == 1">
+                        <button class="remove" data-ng-click="removeGallery(item)"><i class="fa fa-times"></i></button>
+                        <img data-ng-cache data-ng-src="{{ optimizeImage(item.source) }}" class="h-images" data-ng-click="selectImage(item.source)"/>
+                    </div>
+                </ion-scroll>
+            </div> -->
+        </ion-item>
+        <ion-item class="gallery editor">
+            <div class="images gallery-container">
+                <div data-ng-repeat="item in gallery track by $index | orderBy:'-id'" style="padding-right: 5px; padding-bottom: 5px;" data-ng-if="item.type == 1">
+                    <button class="remove" data-ng-click="removeGallery(item)"><i class="fa fa-times"></i></button>
+                    <img data-ng-cache data-ng-src="{{ optimizeImage(item.source) }}" class="h-images" data-ng-click="selectImage(item.source)"/>
+                </div>
+            </div>
+        </ion-item>
+        <!-- <ion-item class="form editable">
+            <div class="group">
+                <label>{{ translate('IMAGE_URL') }}</label>
+                <input class="editable" type="text" data-ng-model="data.imageUrl">
+            </div>
+        </ion-item>
+        <div>
+            <center>
+                <button class="btn btn-primary" data-ng-click="insertImage()">{{ translate('INSERT').toUpperCase() }}</button>
+            </center> 
+        </div> -->
+    </ion-content>
+</ion-modal-view>

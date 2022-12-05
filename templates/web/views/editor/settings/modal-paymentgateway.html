@@ -1,0 +1,59 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('STRIPE_SETTINGS') }}</span>
+        </ion-item>
+        <ion-item>
+            <!-- <div class="form editable">
+                <div class="group" data-ng-repeat="field in curForm.fields">
+                    <label>{{field.label}}</label>
+                    <input data-ng-if="field.type == 'text'" data-ng-model="field.value" class="editable" type="text">
+                    <div data-ng-if="field.type == 'select'">
+                        <select data-ng-model="field.value" class="editable" style="width: 100%;">
+                            <option data-ng-repeat="option in field.options" value="{{option.value}}" data-ng-selected="option.value == field.value">{{option.text}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div> -->
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('SANDBOX') }}</label><br>
+                    <select data-ng-model="configs.stripe_sandbox.value" class="editable" style="width: 100%;">
+                        <option value="0">{{ translate('NO') }}</option>
+                        <option value="1">{{ translate('YES') }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('PUBLISHABLE_KEY') }}</label>
+                    <input data-ng-model="configs.stripe_publishable.value" class="editable" type="text">
+                </div>
+            </div>
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('API_SECRET') }}</label>
+                    <input data-ng-model="configs.stripe_secret.value" class="editable" type="text">
+                </div>
+            </div>
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('PUBLISHABLE_KEY') }} ({{ translate('SANDBOX') }})</label>
+                    <input data-ng-model="configs.stripe_publishable_sandbox.value" class="editable" type="text">
+                </div>
+            </div>
+            <div class="form editable">
+                <div class="group">
+                    <label>{{ translate('API_SECRET') }} ({{ translate('SANDBOX') }})</label>
+                    <input data-ng-model="configs.stripe_secret_sandbox.value" class="editable" type="text">
+                </div>
+            </div>
+        </ion-item>
+        <br>
+        <center>
+            <button class="btn btn-primary" data-ng-click="savePaymentgateway(curForm)">{{ translate('SAVE').toUpperCase() }}</button>
+        </center>
+    </ion-content>
+</ion-modal-view>

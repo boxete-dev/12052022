@@ -1,0 +1,70 @@
+.btn-primary {
+  color: #fff;
+  background-color: #333;
+  border-color: #333;
+}
+
+h1.title,
+h2.title {
+  color: #333;
+}
+
+.input-group-addon:first-child, .input-group-addon {
+  border-color: #333;
+  color: #333;
+}
+
+.form-group input.form-control, .form-group select.form-control {
+  border: 1px solid #333;
+}
+
+.input-group input.form-control {
+  border: 1px solid #333;
+  border-left: 0;
+}
+
+.navbar-default .navbar-nav > li >a {
+  color: #333;
+  font-size: 15px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.navbar .dropdown .dropdown-toggle label.round {
+  border: 1px solid #333;
+}
+
+.navbar-default .navbar-nav > li label.notifications {
+  border: 1px solid #333;
+}
+
+.navbar-default .navbar-nav > li label.notifications .count {
+  background: #333;
+}
+
+.navbar-default .navbar-nav > li > a.cart.empty label {
+  color: #333;
+  border: 1px solid #333;
+}
+
+.btn-primary.active, .btn-primary:hover, .open>.dropdown-toggle.btn-primary {
+  background-color: #333;
+  border-color: #333;
+}
+
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary.activated,
+.btn-primary.focus, .btn-primary:focus {
+  background-color: #222;
+  border-color: #222;
+}
+
+.button.button-positive {
+  background: #333;
+}
+
+.button.button-positive:visited, .button.button-positive:active {
+  background: #222;
+}
+

@@ -1,0 +1,390 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideDrivergroupSettings()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('DRIVER_GROUP_SETTINGS') }}</span>
+        </ion-item>
+        <ion-item>
+            <div class="form editable" select-content>
+                <div class="group">
+                    <div class="w50">
+                        <label>{{ translate('SELECT_MANAGER') }}*</label>
+                        <div>
+                            <select data-ng-model="curDrivergroup.administrator_id" class="editable" style="width: 100%;" data-ng-change="save(['administrator_id'])">
+                                <option value="" disabled="disabled">{{ translate('SELECT_MANAGER') }}</option>
+                                <option data-ng-repeat="user in drivermanagers | filter: { level: 5 }" value="{{user.id}}" data-ng-selected="curDrivergroup.administrator_id == user.id">{{user.id}}. {{user.name}} {{user.lastname}}</option>
+                            </select>
+                        </div>
+                    </div><!--
+                    --><div class="w50">
+                        <label>{{ translate('NAME') }}*</label>
+                        <input data-ng-model="curDrivergroup.name" class="editable" type="text" data-ng-change="save(['name'])">
+                    </div>
+                </div>
+                <div class="group">
+                    <label>{{ translate('TYPE') }}*</label>
+                    <div>
+                        <select data-ng-model="curDrivergroup.type" class="editable" style="width: 100%;" data-ng-change="save(['type'])">
+                            <option value="" disabled="disabled">{{ translate('SELECT_TYPE') }}</option>
+                            <option value="0">{{ translate('IN_HOUSE_DRIVERS') }}</option>
+                            <option value="1">{{ translate('DRIVER_COMPANIES') }}</option>
+                        </select>
+                    </div>
+                    <br />
+                </div>
+                <div class="group" data-ng-if="curDrivergroup.type == 0">
+                    <label>{{ translate('DRIVERS') }}*</label>
+                    <ul>
+                        <li>
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_drivers.all" data-ng-change="toggleAllDrivers()">{{ translate('ALL') }}
+                            </ion-checkbox>
+                        </li>
+                        <li data-ng-repeat="user in drivers | orderBy:'id*1' | filter: { level: 4 }">
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_drivers[user.id]" data-ng-change="toggleDriver()">{{user.id}}. {{user.name}} {{user.lastname}}
+                            </ion-checkbox>
+                        </li>
+                    </ul>
+                </div>
+                <div class="group" data-ng-if="curDrivergroup.type == 1">
+                    <label>{{ translate('DRIVER_COMPANIES') }}*</label>
+                    <ul>
+                        <li>
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_driver_companies.all" data-ng-change="toggleAllDriverCompanies()">{{ translate('ALL') }}
+                            </ion-checkbox>
+                        </li>
+                        <li data-ng-repeat="driver_company in driver_companies | orderBy:'id*1'">
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_driver_companies[driver_company.id]" data-ng-change="toggleDriverCompany()">{{driver_company.id}}. {{driver_company.name}}
+                            </ion-checkbox>
+                        </li>
+                    </ul>
+                </div>
+                <div class="group">
+                    <label>{{ translate('BUSINESS') }}*</label>
+                    <ul>
+                        <li>
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_business.all" data-ng-change="toggleAllBusiness()">{{ translate('ALL') }}
+                            </ion-checkbox>
+                        </li>
+                        <li data-ng-repeat="cdeal in business | orderBy:'id*1'">
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_business[cdeal.id]" data-ng-change="toggleBusiness()">{{cdeal.id}}. {{cdeal.name}}
+                            </ion-checkbox>
+                        </li>
+                    </ul>
+                </div>
+                <div class="group">
+                    <label>{{ translate('PAYMETHODS') }}*</label>
+                    <ul>
+                        <li>
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_paymethods.all" data-ng-change="toggleAllPaymethods()">{{ translate('ALL') }}
+                            </ion-checkbox>
+                        </li>
+                        <li data-ng-repeat="paymethod in paymethods | orderBy:'id*1'">
+                            <ion-checkbox class="checkbox-item xs" style="border-left: none; border-right: none" data-ng-model="check_paymethods[paymethod.id]" data-ng-change="togglePaymethod()">{{paymethod.id}}. {{paymethod.name}}
+                            </ion-checkbox>
+                        </li>
+                    </ul>
+                </div>
+                <div data-ng-if="settings.logistic_module && settings.logistic_module.value && settings.autoassign_enabled.value == '1' && (settings.autoassign_type && settings.autoassign_type.value == 'enterprise')">
+                    <h2 class="subtitle color-primary">{{ translate('ORDER_GROUP_SETTINGS') }}</h2>
+
+                    <div class="group">
+                        <label>{{ translate('PRIORITY') }}*</label>
+                        <div>
+                            <select data-ng-model="curDrivergroup.priority" class="editable" style="width: 100%;" data-ng-change="save(['priority'])">
+                                <option value="" disabled="disabled">{{ translate('SELECT_PRIORITY') }}</option>
+                                <option value="2">{{ translate('URGENT') }}</option>
+                                <option value="1">{{ translate('HIGH') }}</option>
+                                <option value="0">{{ translate('NORMAL') }}</option>
+                                <option value="-1">{{ translate('LOW') }}</option>
+                            </select>
+                        </div>
+                        <br />
+                    </div>
+                    
+                    <!-- NEW DESIGN -->
+                    <div class="sub_title">
+                        <label class="color-primary">{{ translate('LOGISTIC_PROCESS') }}</label>
+                        <label class="toggle xs toggle-balanced mg-l-1">
+                            <input type="checkbox" data-ng-model="logistic.status" data-ng-change="onLogistic()">
+                            <div class="track">
+                            <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <ng-container data-ng-if="logistic.status">
+                    <div class="logistic_cont">
+                        <div class="item" data-ng-class="curDrivergroup.orders_group_start_in_status == '7' && logistic.status ? 'actived' : ''">
+                            <div class="rect">
+                                <span class="icon_delivery"></span>
+                            </div>
+                            <p>{{ translate('ACCEPT_BY_BUSINESS') }}</p>
+                            <i class="check" data-ng-click="onCheckLogistic($event, 'delivery')"></i>
+                        </div>
+                        <div class="item" data-ng-class="curDrivergroup.orders_group_start_in_status == '4' && logistic.status ? 'actived' : ''">
+                            <div class="rect">
+                                <span class="icon_pickup"></span>
+                            </div>
+                            <p>{{ translate('READY_FOR_PICKUP') }}</p>
+                            <i class="check" data-ng-click="onCheckLogistic($event, 'pickup')"></i>
+                        </div>
+                    </div>
+
+                    <label class="color-primary" data-ng-if="curDrivergroup.type == 0">{{ translate('GROUP_ORDERS') }}</label>
+                    <div class="group_cont" data-ng-if="curDrivergroup.type == 0">
+                        <div class="group_cont_sub">
+                            <div class="col-sm-6">
+                                <p>{{ translate('MAX_NUMBER_ORDERS') }}</p>
+                                <div class="flex">
+                                    <input type="text" data-ng-model="curDrivergroup.orders_group_max_orders" data-ng-change="save(['orders_group_max_orders'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 time">
+                                <p>{{ translate('MAX_TIME_BETWEEN_ORDER') }}</p>
+                                <span class="icon_clock"></span>
+                                <input type="text" data-ng-change="onChangeTimeBetweenOrder($event)" data-ng-model="maxTimeBetweenOrder.hour" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenOrder($event)" data-ng-model="maxTimeBetweenOrder.minute" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenOrder($event)" data-ng-model="maxTimeBetweenOrder.second" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub">
+                            <div class="col-sm-12 col-md-6">
+                                <p>{{ translate('MAX_DISTANCE_BETWEEN_BUSINESS') }}</p>
+                                <div class="flex">
+                                    <span class="icon_shop_to_shop"></span>
+                                    <input type="text" data-ng-model="curDrivergroup.orders_group_max_distance_between_pickup" data-ng-change="save(['orders_group_max_distance_between_pickup'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <p>{{ translate('MAX_DISTANCE_BETWEEN_DELIVERY') }}</p>
+                                <div class="flex">
+                                    <span class="icon_home_to_home"></span>
+                                    <input type="text" data-ng-model="curDrivergroup.orders_group_max_distance_between_delivery" data-ng-change="save(['orders_group_max_distance_between_delivery'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub">
+                            <div class="col-sm-6">
+                                <p class="in_block">{{ translate('USE_MAPS_API') }}</p>
+                                <label class="toggle xs toggle-balanced mg-l-1">
+                                    <input type="checkbox" data-ng-model="curDrivergroup.orders_group_use_maps_api" data-ng-change="save(['orders_group_use_maps_api'])">
+                                    <div class="track">
+                                    <div class="handle"></div>
+                                    </div>
+                                </label>
+                                <div class="flex">
+                                    <span class="icon_alert small mg-l-2"></span>
+                                    <span class="mg-l-1 text_small">{{translate('GOOGLE_MAPS_EXTRA_COST')}} <a href="https://console.cloud.google.com/home/dashboard" target="_blank">{{translate('GO_TO_GOOGLE_CONSOLE')}}</a></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub" data-ng-if="curDrivergroup.orders_group_use_maps_api">
+                            <div class="col-lg-6 col-md-12 time">
+                                <p>{{ translate('MAX_DISTANCE_BETWEEN_BUSINESS') }}</p>
+                                <span class="icon_shop_to_shop"></span>
+                                <span class="icon_clock"></span>
+                                <input type="text" data-ng-change="onChangeTimeBetweenBusiness($event)" data-ng-model="maxTimeBetweenBusiness.hour" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenBusiness($event)" data-ng-model="maxTimeBetweenBusiness.minute" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenBusiness($event)" data-ng-model="maxTimeBetweenBusiness.second" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                            </div>
+                            <div class="col-lg-6 col-md-12 time">
+                                <p>{{ translate('MAX_DISTANCE_BETWEEN_DELIVERY') }}</p>
+                                <span class="icon_home_to_home"></span>
+                                <span class="icon_clock"></span>
+                                <input type="text" data-ng-change="onChangeTimeBetweenDelivery($event)" data-ng-model="maxTimeBetweenDelivery.hour" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenDelivery($event)" data-ng-model="maxTimeBetweenDelivery.minute" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-change="onChangeTimeBetweenDelivery($event)" data-ng-model="maxTimeBetweenDelivery.second" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label class="color-primary">{{ translate('AUTOASSIGN_SETTINGS') }}</label>
+                    <div class="group_cont">
+                        <div class="grou_types" data-ng-if="curDrivergroup.type == 0">
+                            <div class="type_item" data-ng-class="autoAssign == 1 ? 'actived' : ''" data-ng-click="onSelectAssign(1)">
+                                <span class="icon_one_by_one"></span>
+                                <p>{{ translate('ONE_BY_ONE') }}<span class="icon_i"></span></p>
+                            </div>
+                            <div class="type_item" data-ng-class="autoAssign == 2 ? 'actived' : ''" data-ng-click="onSelectAssign(2)">
+                                <span class="icon_send_to_all"></span>
+                                <p>{{ translate('SEND_TO_ALL') }}<span class="icon_i"></span></p>
+                            </div>
+                            <div class="type_item" data-ng-class="autoAssign == 3 ? 'actived' : ''" data-ng-click="onSelectAssign(3)">
+                                <span class="icon_nearest_available"></span>
+                                <p>{{ translate('NEAREST_AVAILABLE') }}<span class="icon_i"></span></p>
+                            </div>
+                            <div class="type_item" data-ng-class="autoAssign == 4 ? 'actived' : ''" data-ng-click="onSelectAssign(4)">
+                                <span class="icon_batch_wise"></span>
+                                <p>{{ translate('BATCH_WISE') }}<span class="icon_i"></span></p>
+                            </div>
+                            <div class="type_item" data-ng-class="autoAssign == 5 ? 'actived' : ''" data-ng-click="onSelectAssign(5)">
+                                <span class="icon_round_robin"></span>
+                                <p>{{ translate('ROUND_ROBIN') }}<span class="icon_i"></span></p>
+                            </div>
+                            <div class="type_item" data-ng-class="autoAssign == 6 ? 'actived' : ''" data-ng-click="onSelectAssign(6)">
+                                <span class="icon_other"></span>
+                                <p>{{ translate('CUSTOM') }}</p>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub" data-ng-if="curDrivergroup.type == 0">
+                            <div class="col-sm-6">
+                                <p class="in_block">{{ translate('AUTO_ASSIGN_FORCED_ASSIGNMENT') }}</p>
+                                <label class="toggle xs toggle-balanced mg-l-1">
+                                    <input type="checkbox" data-ng-model="curDrivergroup.autoassign_forced_assignment" data-ng-change="save(['autoassign_forced_assignment'])">
+                                    <div class="track">
+                                    <div class="handle"></div>
+                                    </div>
+                                </label>
+                                <!-- <div class="flex">
+                                    <span class="icon_alert small mg-l-2"></span>
+                                    <span class="mg-l-1 text_small">{{translate('GOOGLE_MAPS_EXTRA_COST')}} <a href="https://console.cloud.google.com/home/dashboard" target="_blank">{{translate('GO_TO_GOOGLE_CONSOLE')}}</a></span>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="group_cont_sub">
+                            <div class="col-sm-12">
+                                <p>{{ translate('MAX_CUSTOMER_DISTANCE_FROM_BUSINESS') }} ({{ translate('METTERS') }})</p>
+                                <p class="small">{{ translate('EMPTY_OR_0_TO_DISABLED') }}</p>
+                                <div class="flex">
+                                    <input type="text" placeholder="{{ translate('DISABLED') }}" data-ng-model="curDrivergroup.autoassign_customer_max_distance_from_business" data-ng-change="save(['autoassign_customer_max_distance_from_business'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub">
+                            <div class="col-sm-6">
+                                <p>{{ translate('AUTO_ASSIGN_GROUP_ORDERS_TO_DRIVERS') }}</p>
+                                <div class="flex">
+                                    <input type="text" data-ng-model="curDrivergroup.autoassign_amount_drivers" ng-disabled="(curDrivergroup.type == '0' && autoAssign <= 3) || (curDrivergroup.type == '1' && curDrivergroup.autoassign_autoaccept_by_driver == '1')" data-ng-change="save(['autoassign_amount_drivers'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" data-ng-if="autoAssign != 2 && curDrivergroup.autoassign_amount_drivers < 2">
+                                <p>&nbsp;</p>
+                                <div class="flex accepted" data-ng-class="curDrivergroup.autoassign_autoaccept_by_driver == '0' ? 'unchecked' : ''">
+                                    <span class="icon_alert small mg-l-2"></span>
+                                    <span class="mg-l-1">{{ translate('ORDER_CONFIRMED_ACCEPTED_BY_DRIVER') }}</span>
+                                    <label class="toggle xs toggle-balanced mg-l-1">
+                                        <input type="checkbox" data-ng-model="acceptByDriver.status" data-ng-change="onChangeAcceptDriver()">
+                                        <div class="track">
+                                        <div class="handle"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub" data-ng-if="curDrivergroup.autoassign_autoaccept_by_driver == '0' || curDrivergroup.type == 1">
+                            <div class="col-sm-6 time">
+                                <p>{{ translate('AUTO_REJECT_ORDER_GROUP_AFTER') }}</p>
+                                <span class="icon_clock"></span>
+                                <input type="text" data-ng-model="autoRejectOrderGroup.hour" data-ng-change="onChangeAutoRejectOrderGroup($event)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-model="autoRejectOrderGroup.minute" data-ng-change="onChangeAutoRejectOrderGroup($event)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/> <strong>&#8282;</strong>
+                                <input type="text" data-ng-model="autoRejectOrderGroup.second" data-ng-change="onChangeAutoRejectOrderGroup($event)" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                            </div>
+                        </div>
+                        <div class="set_area" data-ng-if="curDrivergroup.type == 0">
+                            <div class="group_cont_sub">
+                                <div class="col-xs-6">
+                                    <p>{{ translate('INITIAL_RADIUS') }}</p>
+                                    <div class="flex">
+                                        <input type="text" class="a_input" ng-focus="curArea = 1" ng-blur="curArea = 0" data-ng-class="curArea == 1 ? 'border_blue' : ''" data-ng-model="curDrivergroup.autoassign_initial_radius" ng-disabled="autoAssign == 3" data-ng-change="save(['autoassign_initial_radius'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group_cont_sub">
+                                <div class="col-xs-6">
+                                    <p>{{ translate('INCREMENT_RADIUS') }}</p>
+                                    <div class="flex">
+                                        <input type="text" class="a_input" ng-focus="curArea = 2" ng-blur="curArea = 0" data-ng-class="curArea == 2 ? 'border_green' : ''" data-ng-model="curDrivergroup.autoassign_increment_radius" ng-disabled="autoAssign == 3" data-ng-change="save(['autoassign_increment_radius'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group_cont_sub">
+                                <div class="col-xs-6">
+                                    <p>{{ translate('MAX_RADIUS') }}</p>
+                                    <div class="flex">
+                                        <input type="text" class="a_input" ng-focus="curArea = 3" ng-blur="curArea = 0" data-ng-class="curArea == 3 ? 'border_red' : ''" data-ng-model="curDrivergroup.autoassign_max_radius" data-ng-change="save(['autoassign_max_radius'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="area_wrapper">
+                                <div class="a_large" data-ng-class="curArea == 3 ? 'border_red' : ''"></div>
+                                <div class="a_medium" data-ng-class="curArea == 2 ? 'border_green' : ''"></div>
+                                <div class="a_small" data-ng-class="curArea == 1 ? 'border_blue' : ''"></div>
+                                <div class="icon_pin"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <label class="color-primary" data-ng-if="curDrivergroup.type == 0">{{ translate('MARK_DRIVER_BUSY') }}</label>
+                    <div class="group_cont" data-ng-if="curDrivergroup.type == 0">
+                        <div class="group_cont_sub">
+                            <div class="col-xs-6">
+                                <p>{{ translate('MAX_AMOUNT_ORDERS_PER_DRIVER') }}</p>
+                                <div class="flex">
+                                    <input type="text" data-ng-model="curDrivergroup.autoassign_max_orders" data-ng-change="save(['autoassign_max_orders'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <p> &nbsp; &nbsp;</p>
+                                <button class="btn btn-primary toggle" data-ng-class="markDriverBusy.enabled ? '' : 'unchecked'" data-ng-click="onDriverAdvanced($event)">{{ translate('ADVANCED_OPTION') }}</button>
+                            </div>
+                        </div>
+                        <div class="group_cont_sub" data-ng-if="markDriverBusy.enabled">
+                            <div class="col-xs-12">
+                                <p>{{ translate('LIMITED_MAX_PER_ORDER_AMOUNT') }}</p>
+                                <div class="mg-t-2 pd-t-1">
+                                    <hr class="dotted" />
+                                    <div class="steps">
+                                        <div class="step_item">
+                                            <div class="num">1</div>
+                                            <div class="icon_pending"></div>
+                                            <p>{{ translate('ORDER_STATUS_PENDING') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_pending" data-ng-change="save(['autoassign_max_in_pending'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                        <div class="step_item">
+                                            <div class="num">2</div>
+                                            <div class="icon_delivery"></div>
+                                            <p>{{ translate('ORDER_STATUS_ACCEPTEDBYRESTAURANT') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_accepted_by_business" data-ng-change="save(['autoassign_max_in_accepted_by_business'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                        <div class="step_item">
+                                            <div class="num">3</div>
+                                            <div class="icon_pickup"></div>
+                                            <p>{{ translate('ORDER_READY') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_ready_for_pickup" data-ng-change="save(['autoassign_max_in_ready_for_pickup'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                        <div class="step_item">
+                                            <div class="num">4</div>
+                                            <div class="icon_accept_driver"></div>
+                                            <p>{{ translate('ORDER_CONFIRMED_ACCEPTED_BY_DRIVER') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_accepted_by_driver" data-ng-change="save(['autoassign_max_in_accepted_by_driver'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                        <div class="step_item">
+                                            <div class="num">5</div>
+                                            <div class="icon_driver_business"></div>
+                                            <p>{{ translate('ORDER_STATUS_IN_BUSINESS') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_driver_in_business" data-ng-change="save(['autoassign_max_in_driver_in_business'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                        <div class="step_item">
+                                            <div class="num">6</div>
+                                            <div class="icon_pickup_completed"></div>
+                                            <p>{{ translate('ORDER_PICKUP_COMPLETED_BY_DRIVER') }}</p>
+                                            <input type="text" data-ng-model="curDrivergroup.autoassign_max_in_pickup_completed" data-ng-change="save(['autoassign_max_in_pickup_completed'])" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 35 || event.charCode == 42 || event.charCode == 43)'/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </ng-container>
+                    <!-- END NEW DESIGN -->
+                </div>
+            </div>
+        </ion-item>
+        <br>
+        <div>
+            <div class="center" data-ng-if="curDrivergroup.id == -1">
+                <button class="btn btn-primary" data-ng-click="add()">{{ translate('ADD').toUpperCase() }}</button>
+            </div> 
+        </div>
+    </ion-content>
+</ion-modal-view>

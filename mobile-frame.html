@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title><!--TITLE-APP--></title>
+    <script type="text/javascript" src="lib/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            console.log(config_builder);
+            $("#id").html($('title').html());
+        });
+    </script>
+    <style type="text/css">
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          padding-top: 3%;
+          padding-bottom: 2%;
+          font-size: 5px;
+          background: #ddd;
+        }
+        .container {
+          max-width: 900px;
+          margin: 0 auto;
+        }
+        .ios, .android {
+          margin: 0 auto;
+          width: 75vh;
+          max-width: 700px;
+        }
+
+        .clearfix {
+          clear: both;
+        }
+
+        .wrapper {
+          max-width: 100%;
+          margin: 0 auto;
+        }
+
+        .iphone {
+          position: relative;
+          background: #202020;
+          width: 65%;
+          height: 0;
+          padding-top: 120%;
+          margin: 0 auto;
+          border-radius: 1.5em;
+        }
+
+        .iphone .power {
+          position: absolute;
+          background: #202020;
+          width: 13%;
+          height: .5%;
+          top: -.5%;
+          right: 12%;
+          border-top-left-radius: .5em;
+          border-top-right-radius: .5em;
+        }
+
+        .iphone .lock {
+          position: absolute;
+          background: #202020;
+          width: 1%;
+          height: 5%;
+          top: 12.5%;
+          left: -1%;
+          border-top-left-radius: .5em;
+          border-bottom-left-radius: .5em;
+        }
+
+        .iphone .volume {
+          position: absolute;
+          background: #202020;
+          width: 1%;
+          height: 4%;
+          top: 23%;
+          left: -1%;
+          border-top-left-radius: .5em;
+          border-bottom-left-radius: .5em;
+        }
+
+        .iphone .volume.down{ top: 31%; }
+
+        .iphone .camera {
+          position: absolute;
+          top: 4%;
+          left: 48.5%;
+          background: #3f3f3f;
+          width: 3%;
+          height: 0;
+          padding-top: 3%;
+          border-radius: 50%;
+        }
+
+        .iphone .speaker {
+          position: absolute;
+          top: 7%;
+          left: 42.5%;
+          background: #3f3f3f;
+          width: 15%;
+          height: 0;
+          padding-top: 3%;
+          border-radius: 1em;
+        }
+
+        .iphone .appleicon {
+          padding-top: 25%;
+          opacity: 0;
+          animation: unhide 5s infinite alternate;
+        }
+
+        .iphone .appleicon img{
+          width: 100%;
+          height: 100%;
+        }
+
+        .iphone .text {
+          opacity: 0;
+          font-size: 1.25rem;
+          text-align: center;
+          animation: unhide 5s infinite alternate;
+        }
+
+        .iphone .screen {
+          overflow: hidden;
+          background: #2f2f2f;
+          width: 90%;
+          height: 75%;
+          position: absolute;
+          top: 12.5%;
+          left: 5%;
+          animation: lighten 5s infinite alternate;
+        }
+
+        .iphone .button {
+          position: absolute;
+          bottom: 2.75%;
+          left: 42.5%;
+          background: #3f3f3f;
+          /* border: 1px solid #3f3f3f; */
+          width: 15%;
+          height: 0;
+          padding-top: 15%;
+          border-radius: 50%;
+        }
+
+        .iphone .square {
+          position: absolute;
+          top: 27.5%;
+          left: 27.5%;
+          border: 2px solid #d7d7d7;
+          border-radius: .3em;
+          width: 45%;
+          height: 45%;
+        }
+
+        @media screen and (min-width: 28em ) {
+          body{ font-size: 8px; }
+        }
+
+        @media screen and (min-width: 34em ) {
+          body{ font-size: 10px; }
+        }
+
+        @media screen and (min-width: 48em ) {
+          body{ font-size: 14px; }
+        }
+
+        @keyframes lighten {
+          0%, 45% { background: #2f2f2f; }
+          65%, 100% { background: #f7f7f7; }
+        }
+
+        @keyframes unhide {
+          0%, 55% { opacity: 0 }
+          75%, 100% { opacity: 1 }
+        }
+        .s3 {
+          position: relative;
+          background: #f7f7f7;
+          width: 65%;
+          height: 0;
+          padding-top: 120%;
+          margin: 0 auto;
+          border-radius: 2em;
+        }
+
+        .s3 .power {
+          position: absolute;
+          background: #c7c7c7;
+          width: 1%;
+          height: 8%;
+          top: 20%;
+          right: -1%;
+          border-top-right-radius: .5em;
+          border-bottom-right-radius: .5em;
+        }
+
+        .s3 .volume {
+          position: absolute;
+          background: #c7c7c7;
+          width: 1%;
+          height: 15%;
+          top: 23%;
+          left: -1%;
+          border-top-left-radius: .5em;
+          border-bottom-left-radius: .5em;
+        }
+
+        .s3 .volume.down{ top: 31%; }
+
+        .s3 .parif {
+          position: absolute;
+          top: 3.5%;
+          background: #3f3f3f;
+          width: 3%;
+          height: 0;
+          padding-top: 3%;
+          border-radius: 50%;
+        }
+
+        .s3 .one {
+          left: 67.5%;
+        }
+
+        .s3 .two {
+          left: 72%;
+        }
+
+        .s3 .big {
+          top: 2.8%;
+          left: 78%;
+          width: 5%;
+          padding-top: 5%;
+        }
+
+        .s3 .speaker {
+          position: absolute;
+          top: 3%;
+          left: 37.5%;
+          background: #c7c7c7;
+          width: 25%;
+          height: 0;
+          padding-top: 2%;
+          border-radius: 1em;
+        }
+
+        .s3 .sicon {
+          padding-top: 25%;
+          opacity: 0;
+          width: 90%;
+          margin: 0 auto;
+          animation: unhide 5s infinite alternate;
+        }
+
+        .s3 .sicon img{
+          width: 100%;
+          height: 100%;
+        }
+
+        .s3 .text {
+          opacity: 0;
+          font-size: 1.25rem;
+          text-align: center;
+          animation: unhide 5s infinite alternate;
+        }
+
+        .s3 .screen {
+          overflow: hidden;
+          background: #2f2f2f;
+          width: 90%;
+          height: 82%;
+          position: absolute;
+          top: 8%;
+          left: 5%;
+          border: 2px solid #2f2f2f;
+          animation: lighten 5s infinite alternate;
+        }
+
+        .s3 .button {
+          position: absolute;
+          bottom: 2.75%;
+          left: 37.5%;
+          background: #f7f7f7;
+          /* border: 1px solid #3f3f3f; */
+          width: 25%;
+          height: 0;
+          padding-top: 5.5%;
+          border: 2px solid #c7c7c7;
+          border-top-left-radius: .25em;
+          border-top-right-radius: .25em;
+          border-bottom-left-radius: 1em;
+          border-bottom-right-radius: 1em;
+        }
+
+        @media screen and (min-width: 28em ) {
+          body{ font-size: 16px; }
+        }
+
+        @media screen and (min-width: 34em ) {
+          body{ font-size: 18px; }
+        }
+
+        @media screen and (min-width: 48em ) {
+          body{ font-size: 22px; }
+        }
+
+        @keyframes lighten {
+          0%, 45% { background: #2f2f2f; }
+          65%, 100% { background: #fff; }
+        }
+
+        @keyframes unhide {
+          0%, 55% { opacity: 0 }
+          75%, 100% { opacity: 1 }
+        }
+        iframe {
+          width: 144%;
+          height: 143%;
+          border: 0;
+          -ms-zoom: 0.7;
+          -moz-transform: scale(0.7);
+          -moz-transform-origin: 0 0;
+          -o-transform: scale(0.7);
+          -o-transform-origin: 0 0;
+          -webkit-transform: scale(0.7);
+          -webkit-transform-origin: 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <!-- <div class="ios">
+        <div class="wrapper">
+          <div class="iphone">
+            <div class="power"></div>
+            <div class="lock"></div>
+            <div class="volume up"></div>
+            <div class="volume down"></div>
+            <div class="camera"></div>
+            <div class="speaker"></div>
+            <div class="screen">
+              <iframe src="index_movil.html" style="zoom: 50%;"></iframe>
+            </div>
+            <div class="button">
+              <div class="square"></div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="android">
+        <div class="wrapper">
+          <div class="s3">
+            <div class="power"></div>
+            <div class="volume"></div>
+            <div class="parif one"></div>
+            <div class="parif two"></div>
+            <div class="parif big"></div>
+            <div class="speaker"></div>
+            <div class="screen">
+              <iframe src="index_movil.html"></iframe>
+            </div>
+            <div class="button"></div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+</body>
+</html>

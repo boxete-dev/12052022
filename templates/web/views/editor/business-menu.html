@@ -1,0 +1,78 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hideBusinessMenu()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('BUSINESS_MENU') }}</span>
+        </ion-item>
+        <ion-item class="fixdir">
+            <div class="eitems">
+                <!-- <div class="eitem title">
+                    <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+                    <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">&nbsp;</div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate('MENU_NAME') }}" disabled="disabled">
+                    </div>
+                </div> -->
+                <div class="eitem" data-ng-repeat="menu in deal.menus">
+                    <button data-ng-click="removeMenu(menu)"><i class="fa fa-trash"></i></button>
+                    <button data-ng-click="showBusinessMenuSttings(menu)"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="menu.enabled" data-ng-change="updateMenu(menu, null, true)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" data-ng-model="menu.name" placeholder="{{ translate('MENU_NAME') }}" data-ng-change="updateMenu(menu)">
+                    </div>
+                </div>
+                <div class="eitem">
+                    <form data-ng-submit="showBusinessMenuSttings(curNewMenu)">
+                    <button type="button" data-ng-click="null" style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+                    <button type="button" data-ng-click="showBusinessMenuSttings(curNewMenu)"><i class="fa fa-plus-circle"></i> {{ translate('ADD') }}</button>
+                    <div class="f50">&nbsp;</div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" data-ng-model="curNewMenu.name" placeholder="{{ translate('MENU_NAME') }}">
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </ion-item>
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" data-ng-if="NEW_FEATURES.SHARED_MENUS">
+            <span class="divider-padding no-padding-h">{{ translate('SHARED_MENUS') }}</span>
+        </ion-item>
+        <ion-item class="fixdir" data-ng-if="NEW_FEATURES.SHARED_MENUS">
+            <div class="eitems">
+                <!-- <div class="eitem title">
+                    <button style="visibility: hidden;"><i class="fa fa-trash"></i></button>
+                    <button style="visibility: hidden;"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">&nbsp;</div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{ translate('MENU_NAME') }}" disabled="disabled">
+                    </div>
+                </div> -->
+                <div class="eitem title" data-ng-repeat="menu in deal.menus_shared">
+                    <button data-ng-click="deleteSharedMenus(menu)" ><i class="fa fa-trash"></i></button>
+                    <button data-ng-click="openMoreMenusShares(menu)"><i class="fa fa-ellipsis-v"></i> {{ translate('MORE') }}</button>
+                    <div class="f50">
+                        <label class="toggle xs toggle-balanced">
+                            <input type="checkbox" data-ng-model="menu.enabled" data-ng-change="enabledSharedMenu(menu)">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="dynamic">
+                        <input class="editable" type="text" value="{{menu.name}}" disabled="disabled">
+                    </div>
+                </div>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-modal-view>
+<!--SuperAdmin--><div ng-show="(TUTORIAL_SUPER && superAdmin)" class="bordRad  box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_MENU')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_MENU')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>
+<!---Business--><div  ng-show="(TUTORIAL_BUSINESS && !superAdmin)" class="bordRad box boxM"><a  class="helppBtn  btnHelp btnHelpGuides btn btn-white btn-animation-1" data-toggle="popover" data-placement="top" data-content="<a target='_blank' href='{{ translate('LINK_HELP_BUSINESS_MENU')}}' title=''><img class='imgVideo' src='templates/web/img/help_play.png' /><div class='postext'>{{ translate('TITLE_BUSINESS_MENU')}}</div></a>"><img class="foto" src="templates/web/img/help_button.png"><div class="postextHelp">{{ translate('TITLE_HELP')}}</div></img></a></div>

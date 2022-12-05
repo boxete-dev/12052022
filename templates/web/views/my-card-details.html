@@ -1,0 +1,43 @@
+<ion-modal-view class="popup">
+  <i class="fa fa-times close" data-ng-click="closeAddNewCard()"></i>
+  <ion-content class="order-cont popup-mode" data-ng-controller="cardDetailCtrl" overflow-scroll="true">
+    <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+      {{translate('MOBILE_ADD_NEW_CARD')}}
+    </ion-item>
+    <div class="form form-popup">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <div class="col-sm-12">
+            <div class="col-xs-12">
+              <input type="number" class="form-control" data-ng-model="myStripeRecord.creditno" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="{{translate('PAYMENT_BRAINTREE_ON_ENTER_CREDIT_CARD')}}">
+            </div>
+            <div class="col-xs-6">
+              <input type="text" class="form-control" placeholder="{{translate('MOBILE_CVC_CARD')}}" data-ng-model="myStripeRecord.CVC" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+            </div>
+            <div class="col-xs-6">
+              <input type="text" class="form-control" placeholder="{{translate('MOBILE_ZIP_POSTAL_CODE')}}" data-ng-model="myStripeRecord.zip" value="{{myStripeRecord.zip}}">
+            </div>
+            <div class="col-xs-6">
+              <select class="form-control" data-ng-model="myStripeRecord.MM">
+                <option data-ng-repeat="mm in selexpmonth" value="{{mm.value}}" data-ng-selected="{{mm.name == 'MM'}}" >
+                  {{mm.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-xs-6">
+              <select class="form-control" data-ng-model="myStripeRecord.YY" data-ng-selected="YY">
+                <option data-ng-repeat="yy in selexpyear" value="{{yy.value}}" data-ng-selected="{{yy.name == 'YY'}}" >
+                  {{yy.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-if="!myStripeRecord.creditno || !myStripeRecord.MM || !myStripeRecord.YY || !myStripeRecord.CVC || !myStripeRecord.zip">
+      {{translate('MOBILE_ADD_CARD')}}
+    </button>
+    <button class="btn btn-primary col-xs-6 col-xs-offset-3" data-ng-click="updateCardprofile()" data-ng-if="myStripeRecord.creditno && myStripeRecord.MM && myStripeRecord.YY && myStripeRecord.CVC && myStripeRecord.zip">{{translate('MOBILE_ADD_CARD')}}</button>
+    </ion-content>
+</ion-modal-view>

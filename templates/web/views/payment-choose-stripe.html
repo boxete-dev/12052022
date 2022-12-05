@@ -1,0 +1,29 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="padding popup-mode" overflow-scroll="true">
+        <!-- <i class="fa fa-times close" data-ng-click="offStripePaymentPopup()"></i> -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('MOBILE_CHOOSE_CARD') }} ({{ translate('FRONT_FORM_REQUIRED') }})</span>
+        </ion-item>
+        <ion-radio class="radio-item" data-ng-repeat="card in cards | orderBy: 'id'"
+                   data-ng-value="card.id"
+                   name="card"
+                   data-ng-model="cur_card"
+                   data-ng-checked="{{card.default}}"
+                   data-ng-click="change(card.id)">
+            <span class="float-left dynamic-radio" data-ng-if="!arabic_rtl"></span>
+            <span class="float-right dynamic-radio" data-ng-if="arabic_rtl"></span>
+            <p class="col col-80 font-small-x">XXXX-XXXX-XXXX-{{ card.last4 }} ({{ card.brand }})</p>
+            <!--<div class="row min-h-5">
+                <div class="col col-15"> </div>
+                <div class="col col-80 font-small-x">XXXX-XXXX-XXXX-{{ item.customerDatalast4 }}({{ item.customerDatabrand }})</div>
+            </div>-->
+        </ion-radio>
+        <ion-item class="no-border no-bg no-padding-h mg-top-nor" style="text-align: center;">
+            <button class="btn btn-gray" data-ng-click="add()">{{ translate('MOBILE_ADD_CARD') }}</button>
+            <button class="btn btn-primary" data-ng-click="accept()">{{ translate('MOBILE_ACCEPT') }}</button>
+        </ion-item>
+        <ion-item class="no-border no-bg no-padding-h mg-top-nor">
+        </ion-item> 
+    </ion-content>
+</ion-modal-view>

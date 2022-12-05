@@ -1,0 +1,52 @@
+<ion-modal-view class="popup">
+    <ion-content class="color-bg padding popup-mode" overflow-scroll="true">
+        <i class="fa fa-times close" data-ng-click="hide()"></i>
+        <ion-item class="item-divider title" ng-hide="review.manager" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('WRITE_REVIEW') }}</span>
+        </ion-item>
+        <ion-item class="item-divider title" ng-if="review.manager" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('REVIEW_DETAILS') }}</span>
+        </ion-item>
+        <br>
+        <form class="form-horizontal">
+        <!--<div class="form-group">
+                <label for="fullname" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_FULL_NAME') }}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" placeholder="{{ translate('MOBILE_FRONT_FULL_NAME') }}" data-ng-model="review.name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fullname" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_EMAIL') }}</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" placeholder="{{ translate('MOBILE_FRONT_EMAIL') }}" data-ng-model="review.email">
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label for="fullname" class="col-sm-3 control-label" data-ng-hide="user_review">{{ translate('REVIEWSOF_V21') }}:</label>
+                <label for="fullname" class="col-sm-3 control-label" data-ng-if="user_review"><img data-ng-src="{{ optimizeImage(driver.photo) }}" style="height: 60px; border-radius: 100%;"></label>
+                <div class="col-sm-9">
+                    <h3 data-ng-if="user_review" style="margin-top: 15px;">{{translate('RATE_YOUR_DRIVER')}}: {{driver.name}}</h3>
+                    <table>
+                        <tr data-ng-repeat="category in toReview">
+                            <th><strong>{{category.title}}:</strong></th>
+                            <td style="padding-left: 10px" class="review">
+                                <i class="fa fa-star" aria-hidden="true" data-ng-repeat="index in rangeReview()" data-ng-mouseover="paintStars(category, index)" data-ng-mouseleave="paintStars(category, 0)" data-ng-class="{ 'selected': (category.selected > index || category.review >= index) }" data-ng-click="chooseReview(category, index-1)"></i>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fullname" class="col-sm-3 control-label">{{ translate('MOBILE_FRONT_VISUALS_COMMENTS') }}</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" data-ng-model="review.comments" rows="4" placeholder="{{ translate('MOBILE_FRONT_VISUALS_COMMENTS') }}" ng-disabled="review.manager"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9" ng-hide="review.manager">
+                <button type="submit" class="btn btn-primary" data-ng-click="addReview()">{{ translate('SEND_REVIEW').toUpperCase() }}</button>
+            </div>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

@@ -1,0 +1,44 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <!-- Product Images -->
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}">
+            <span class="divider-padding no-padding-h">{{ translate('LAPSE') }}</span>
+        </ion-item>
+        <div style="margin-top: 20px;" select-content>
+            <ion-item class="detail-item schedule editable">
+                <span class="float-left mg-top-sm">{{ translate('OPEN') }}</span>
+                <span class="float-right">
+                    <select class="editable" data-ng-model="lapse.open.hour" data-ng-change="checkTime()">
+                        <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-selected="hour.hour == lapse.open.hour">{{hour.text}}
+                        </option>
+                    </select> :
+                    <select class="editable" data-ng-model="lapse.open.minute" data-ng-change="checkTime()">
+                        <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-selected="minute.minute == lapse.open.minute">{{minute.text}}
+                        </option>
+                    </select>
+                </span>
+            </ion-item>
+            <ion-item class="detail-item schedule editable">
+                <span class="float-left mg-top-sm">{{ translate('CLOSE') }}</span>
+                <span class="float-right">
+                    <select class="editable" data-ng-model="lapse.close.hour" data-ng-change="checkTime()">
+                        <option value="{{hour.hour}}" data-ng-repeat="hour in hours" data-ng-if="hour.hour >=timeCheck.hour" data-ng-selected="hour.hour == lapse.close.hour">{{hour.text}}
+                        </option>
+                    </select> :
+                    <select class="editable" data-ng-model="lapse.close.minute" data-ng-change="save()">
+                        <option value="{{minute.minute}}" data-ng-repeat="minute in minutes" data-ng-if="minute.minute >= timeCheck.minute" data-ng-selected="minute.minute == lapse.close.minute">{{minute.text}}
+                        </option>
+                    </select>
+                </span>
+            </ion-item>
+        </div>
+        <div>
+            <br>
+            <center>
+                <button class="btn btn-primary" data-ng-click="save()" data-ng-if="!autosave && edit_mode">{{ translate('SAVE').toUpperCase() }}</button>
+                <button class="btn btn-primary" data-ng-click="add()" data-ng-if="!edit_mode">{{ translate('ADD').toUpperCase() }}</button>
+            </center>
+        </div>
+    </ion-content>
+</ion-modal-view>

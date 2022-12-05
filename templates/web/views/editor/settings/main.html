@@ -1,0 +1,31 @@
+<div class="container-fluid full">
+  <div class="col-sm-8 col-md-9" style="padding-top: 10px;" data-ng-include="curTemplate" data-ng-if="arabic_rtl"></div>
+  <div class="col-sm-4 col-md-3 full">
+    <div class="sections buttons">
+      <ul>
+        <li data-ng-click="changeTemplate('general')" data-ng-class="{ 'active': curTemplateFile == 'general.html' }"><i class="fa fa-cog"></i> {{ translate('MOBILE_FRONT_SETTINGS') }}</li>
+        <li data-ng-click="changeTemplate('places')" data-ng-class="{ 'active': curTemplateFile == 'places.html' }"><i class="fa fa-map-marker"></i> {{ translate('COUNTRIES_CITIES') }}</li>
+        <li data-ng-click="changeTemplate('languages')" data-ng-class="{ 'active': curTemplateFile == 'languages.html' }"><i class="fa fa-language"></i> {{ translate('LANGUAGE_MANAGER') }}</li>
+        <!-- <li data-ng-click="changeTemplate('integration')" data-ng-class="{ 'active': curTemplateFile == 'integration.html' }"><i class="fa fa-cogs"></i> {{ translate('INTEGRATION') }}</li> -->
+        <li data-ng-click="changeTemplate('users')" data-ng-class="{ 'active': curTemplateFile == 'users.html' }"><i class="fa fa-users"></i> {{ translate('USERS') }}</li>
+        <li data-ng-click="changeTemplate('drivers')" data-ng-class="{ 'active': curTemplateFile == 'drivers.html' }"><i class="fa fa-car"></i> {{ translate('DELIVERY_MANAGER') }}</li>
+        <li data-ng-click="changeTemplate('channels')" data-ng-class="{ 'active': curTemplateFile == 'channels.html' }" data-ng-if="ADDONS.editor_channel_modal_widget || ADDONS.editor_channel_inline"><i class="fa fa-at"></i> {{ translate('ORDERING_CHANNELS') }}</li>
+        <li data-ng-click="changeTemplate('webhooks')" data-ng-class="{ 'active': curTemplateFile == 'webhooks.html' }"><i class="fa fa-globe"></i> {{ translate('WEBHOOKS') }}</li>
+        <li data-ng-click="changeTemplate('plugins')" data-ng-class="{ 'active': curTemplateFile == 'plugins.html' }"><i class="fa fa-puzzle-piece"></i> {{ translate('PLUGINS') }}</li>
+        <li data-ng-click="changeTemplate('reviews')" data-ng-class="{ 'active': curTemplateFile == 'reviews.html' }"><i class="fa fa-star"></i> {{translate('REVIEWS_MANAGER')}}</li>
+        <li data-ng-click="changeTemplate('invoicing')" data-ng-class="{ 'active': curTemplateFile == 'invoicing.html' }" data-ng-if="NEW_ADDONS.INVOICE_MANAGER"><i class="fa fa-file-text"></i> {{translate('INVOICE_MANAGER')}}</li>
+        <li data-ng-click="changeTemplate('pages')" data-ng-class="{ 'active': curTemplateFile == 'pages.html' }"><i class="fa fa-columns"></i> {{translate('PAGES_MANAGER')}}</li>
+        <li data-ng-click="changeTemplate('business-types')" data-ng-class="{ 'active': curTemplateFile == 'business-types.html' }">
+        <i class="fa fa-list-alt"></i> {{translate('BUSINESS_TYPE')}}</li>    
+        <li data-ng-click="changeTemplate('partener-type')" data-ng-class="{ 'active': curTemplateFile == 'partener-type.html' }">
+        <i class="fa fa-list-alt"></i> {{translate('PARTNER_TYPE')}}</li>
+        <!-- <li data-ng-click="changeTemplate('limits')" data-ng-class="{ 'active': curTemplateFile == 'limits.html' }"><i class="fa fa-tasks"></i> {{translate('PROJECT_LIMITS')}}</li> -->
+			</ul>
+			<ul>
+				<li><label class="color-primary">{{translate('ONLY_AVAILABLE_ON_REACT')}} <i class="fa fa-level-down"></i></label></li>
+				<li data-ng-click="changeTemplate('business-type')" data-ng-class="{ 'active': curTemplateFile == 'business-type.html' }"><i class="fa fa-list-alt"></i> {{translate('BUSINESS_TYPES')}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-sm-8 col-md-9" style="padding-top: 10px;" data-ng-include="curTemplate" data-ng-if="!arabic_rtl"></div>
+</div>

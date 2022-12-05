@@ -1,0 +1,38 @@
+<ion-modal-view class="popup">
+    <i class="fa fa-times close" data-ng-click="hide()"></i>
+    <ion-content class="color-bg popup-mode" delegate-handle="modalContent" overflow-scroll="true">
+        <ion-item class="item-divider title" data-ng-class="{cssArabicRight: $root.arabic_rtl}" style="margin-bottom: 15px;">
+            <span class="divider-padding no-padding-h">{{ translate('ADDRESSES') }}</span>
+        </ion-item>
+        <div class="loading" data-ng-if="loading">
+            <i class="fa fa-circle-o-notch fa-spin middle"></i> {{ translate('LOADING') }}...
+        </div>
+        <div class="list" data-ng-if="addresses.length > 0">
+            <div data-ng-click="change(address)" data-ng-repeat="address in addresses" class="list-item" data-ng-class="{ 'selected': address.default }">
+                <div class="left">
+                    <i data-ng-if="address.default" class="fa fa-check-circle"></i>
+                    <i data-ng-if="!address.default" class="fa fa-circle-o"></i>
+                    <i data-ng-if="address.tag == 'home'" class="fa fa-home"></i>
+                    <i data-ng-if="address.tag == 'office'" class="fa fa-building"></i>
+                    <i data-ng-if="address.tag == 'favorite'" class="fa fa-heart"></i>
+                    <i data-ng-if="address.tag == 'other'" class="fa fa-address-card"></i>
+                </div>
+                <div class="right">
+                    <i data-ng-click="edit(address);$event.stopPropagation();" class="fa fa-pencil-square-o"></i>
+                    <i data-ng-if="!address.default" data-ng-click="delete(address);$event.stopPropagation();" class="fa fa-trash-o"></i>
+                </div>
+                <div class="content">
+                    <div class="primary" data-ng-style="{'padding-top': (!address.internal_number)?'5px':'0'}">{{ address.address }}</div>
+                    <div class="secondary" data-ng-if="address.internal_number">{{translate('INTERNAL_NUMBER')}}: {{ address.internal_number }}</div>
+                </div>
+                <!-- 
+                    SHOW ADDRESS TAG UNTIL ADD THE FUNCTIONALITY TO EDIT IT
+                    <div class="secondary">{{ translate(address.tag.toUpperCase()) }}<span data-ng-if="address.internal_number"> &dot; {{ address.internal_number }}</span></div> 
+                -->
+            </div>
+        </div>
+        <div class="center">
+            <button class="btn btn-primary" data-ng-click="add()">{{ translate('ADD_NEW_ADDRESS') }}</button>
+        </div>
+    </ion-content>
+</ion-modal-view>
