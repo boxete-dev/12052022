@@ -4831,7 +4831,30 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
 
   }
 
-  $scope.placeOnSquareOnline = function (orderInfo) {
+  $scope.placeOnSquareOnline = function (orderInfo, discount = 0) {
+
+    //set Discount
+    if (orderInfo.summary.discount <= 0) {
+      orderInfo.summary.discount = discount;
+    }
+
+
+    //Modifers
+    orderInfo.products.forEach(product => {
+      product.modifiers = [];
+      if (product.options) {
+        product.options.forEach(option => {
+          if (option.suboptions) {
+            option.suboptions.forEach(sub_option => {
+              product.modifiers.push({
+                name: sub_option.name,
+                quantity: sub_option.quantity
+              })
+            });
+          }
+        });
+      }
+    });
 
     var buyer = gUser.getData();
     var order = {
@@ -4839,19 +4862,20 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
       email: buyer.email,
       name: buyer.name + ' ' + buyer.lastname,
       order: {
+        id: orderInfo.id,
         type: $scope.order.type,
-        products: orderInfo.products
+        products: orderInfo.products,
+        summary: orderInfo.summary,
       },
-      buyer: buyer
+      buyer: buyer,
     }
 
     Ordering.boxeteAPI.squareAPI(order, function (res) {
       console.log(res);
-      if (res.data == true) {
+      if (res.data && res.data.order && res.data.payment) {
         MyLoading.toast('transcarion is made on Square Online');
-        if (ADDONS.default_order_is_processing == '1') {
-          $scope.markAsProcesing(orderInfo.id);
-        }
+        // create delivery on Doordash.
+        $scope.placeOnDoordash(orderInfo, res.data.order, res.data.payment);
       }
       else {
         MyLoading.toast('Error while saving transction on Square Online' + res.message);
@@ -4860,13 +4884,13 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
 
   }
 
-  $scope.placeOnDoordash = function (orderInfo) {
+  $scope.placeOnDoordash = function (orderInfo, sqaureOrder, sqaurePayment) {
 
     if (orderInfo.delivery_type == 1) {
       var buyer = gUser.getData();
 
       var order = {
-        delivery_id: uuidv4() + '-D-' + orderInfo.id,
+        delivery_id: sqaureOrder.id + '-box-' + sqaurePayment.id + '-box-' + sqaureOrder.total_money.amount + '-box-' + orderInfo.id,
         order_value: parseInt(orderInfo.summary.subtotal.toString().replace('.', '')),
         buyer: buyer
       }
@@ -4912,8 +4936,12 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
         $rootScope.orderConfirmData.push(res.result);
       }
       $scope.last = 0;
+      var discount = 0;
       if ($scope.mcartdata1.length == $rootScope.loopCount) {
 
+        discount = $scope.cart_data.discount ? (+(Math.round($scope.cart_data.discount + "e+2") + "e-2")) : 0;
+        discount = discount <= 0 && $scope.mcartdata1.length > 0 ? (+(Math.round($scope.mcartdata1[0].discount + "e+2") + "e-2")) : 0;
+        
         //console\.log('place order');
         $scope.mcartdata1 = [];
         //console\.log($rootScope.loopCount);
@@ -4958,8 +4986,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           gPreorder.setData({});
           gBusiness.setData({});
           $scope.refreshNumCart();
-          $scope.placeOnSquareOnline(res.result);
-          $scope.placeOnDoordash(res.result);
+          $scope.placeOnSquareOnline(res.result, discount);
           if (ADDONS.web_template) {
             $state.go('main.confirm').then(function () {
               MyLoading.hide();

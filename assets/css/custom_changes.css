@@ -202,3 +202,26 @@ p {
         border-left: 0;
     }
   }
+
+  .discount-field {
+    margin-top: 13px;
+    margin-left: 5px;
+    padding: 5px 20px !important;
+    margin-bottom: 10px !important;
+    font-size: 15px;
+    outline: none;
+    box-shadow: none;
+    border-radius: 30px;
+    border-color: #edc900;
+    border: 1px solid #edc900 !important;
+    margin-right: 10px;
+}
+
+.discount-btn {
+    width: 40% !important;
+}
+
+.discount-container {
+    width: 100%;
+    margin-left: 5px;
+}

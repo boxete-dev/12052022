@@ -85,7 +85,7 @@ var DECIMAL = { // They are no longer configured from the builder, by default th
 var DRIVER_TIP = (validProp(config_builder.user_driver_tip)) ? config_builder.user_driver_tip : true;
 var DRIVER_TIPS = {
     tip_1: (validProp(config_builder.driver_tip_1)) ? parseInt(config_builder.driver_tip_1) : 0,
-    tip_2: (validProp(config_builder.driver_tip_2)) ? parseInt(config_builder.driver_tip_2) : 10,
+    // tip_2: (validProp(config_builder.driver_tip_2)) ? parseInt(config_builder.driver_tip_2) : 10,
     tip_3: (validProp(config_builder.driver_tip_3)) ? parseInt(config_builder.driver_tip_3) : 15,
     tip_4: (validProp(config_builder.driver_tip_4)) ? parseInt(config_builder.driver_tip_4) : 20,
     tip_5: (validProp(config_builder.driver_tip_5)) ? parseInt(config_builder.driver_tip_5) : 25

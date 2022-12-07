@@ -3646,7 +3646,8 @@ var app_states = {
 			var parts = time.split(':');
 			if (parts.length < 2) return '00:00';
 			else {
-				return (parseInt(parts[0])<10?'0':'')+parseInt(parts[0])+':'+(parseInt(parts[1])<10?'0':'')+parseInt(parts[1])
+				// return (parseInt(parts[0])<10?'0':'')+parseInt(parts[0])+':'+(parseInt(parts[1])<10?'0':'')+parseInt(parts[1])
+				return (parseInt(parts[0]) < 10 && parseInt(parts[0]) > 0 ? '0' : '') + (parseInt(parts[0]) > 0 ? parseInt(parts[0]) + ':' : '') + (parseInt(parts[1]) < 10 ? '0' : '') + parseInt(parts[1])
 			}
 		}
 
@@ -10488,12 +10489,10 @@ var app_states = {
 		$scope.order.driver_tip = DRIVER_TIPS.tip_1;
 		$scope.driver_tips = [
             { text: DRIVER_TIPS.tip_1+"%", value: DRIVER_TIPS.tip_1 },
-            { text: DRIVER_TIPS.tip_2+"%", value: DRIVER_TIPS.tip_2 },
+            // { text: DRIVER_TIPS.tip_2+"%", value: DRIVER_TIPS.tip_2 },
             { text: DRIVER_TIPS.tip_3+"%", value: DRIVER_TIPS.tip_3 },
             { text: DRIVER_TIPS.tip_4+"%", value: DRIVER_TIPS.tip_4 },
             { text: DRIVER_TIPS.tip_5+"%", value: DRIVER_TIPS.tip_5 },
-			{ text: "Other", value: -1 },
-			{ text: "Other", value: -1 }
         ];
         $scope.placing = false;
 
