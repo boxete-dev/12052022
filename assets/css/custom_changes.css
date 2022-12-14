@@ -130,7 +130,6 @@ p {
         margin: 14vh 0 0 0;
     }
     .mobilecol{
-        width: 25%;
         float: left;
     }
     .dishes div[class*=col-] {
@@ -156,7 +155,7 @@ p {
         margin: 5vh 0 0 0;
     }
     .mobilecol{
-        width: 25%;
+        width: 16.66%;
         float: left;
     }
     .dishes div[class*=col-] {
