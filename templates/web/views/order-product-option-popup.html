@@ -202,18 +202,18 @@
         </ion-item>
         <ion-item class="bottom-cont" data-ng-if="!product.inventoried || (product.inventoried && (orderProduct.balance - getCartCountByProduct(product).quantity) > 0) || (edit && (product.quantity > 0 && product.quantity > getCartCountByProduct(product).quantity))">
             <div class="row">
-                <div class="col-60 color-bg-white pd-btn" style="padding-left:5px">
+                <div class="col-60 color-bg-white pd-btn" style="padding-left:5px; max-width: 100%;">
                     <button type="button" class="button-icon icon-btn-minus float-left" data-ng-click="subtract()">
                         <span class="icon ion-minus icon-primary" data-ng-class="{'hide-minus': (orderProduct.quantity == 1)}"></span>
                     </button>
                     <button type="button" class="button-icon icon-btn-plus float-left" data-ng-click="add()">
                         <span class="icon ion-plus icon-primary" data-ng-class="{'hide-add': (edit && product.inventoried && orderProduct.quantity >= orderProduct.balance) || (!edit && product.inventoried && orderProduct.quantity >= orderProduct.balance - getCartCountByProduct(product).quantity) || (!product.inventoried && (orderProduct.quantity >= MAX_PRODUCT_AMOUNT))}"></span>
                     </button>
-                    <p class="price float-right">{{parsePrice(orderProduct.total)}}</p>
+                    <p class="price float-right" style="white-space:nowrap;">{{parsePrice(orderProduct.total)}}</p>
                 </div>
-                <div class="col-40 item-btn" data-ng-click="">
-                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="!edit"><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FRONT_BUTTON_ADD') }}</a>
-                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="edit"><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FOURTH_PAGE_OK') }}</a>
+                <div class="col-40 item-btn" style="max-width: 100%;" data-ng-click="">
+                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="!edit" style="margin-top: 20px; float: left;" ><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FRONT_BUTTON_ADD') }}</a>
+                    <a class="button pd-right-2" data-ng-click="ok()" data-ng-if="edit" style="margin-top: 20px; float: left;"><div class="float-left btn-badge-cont">{{orderProduct.quantity}}</div>{{ translate('MOBILE_FOURTH_PAGE_OK') }}</a>
                 </div>
             </div>
         </ion-item>

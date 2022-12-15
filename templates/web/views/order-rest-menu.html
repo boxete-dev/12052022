@@ -79,7 +79,7 @@
             <div class="form-group product-search">
               <div class="input-group">
                 <!-- <div class="input-group-addon"><i class="fa fa-search"></i></div> -->
-                <input type="text" class="form-control" data-ng-model="filterProduct" data-ng-change="changeFilterProduct(filterProduct)" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
+                <input type="text" class="form-control" style="border-radius: 30px;" data-ng-model="filterProduct" data-ng-change="changeFilterProduct(filterProduct)" placeholder="{{ translate('MOBILE_FRONT_VISUALS_SEARCH') }}">
               </div>
             </div>
           </div>
@@ -415,7 +415,7 @@
                   </select>
                 </div>
               </td>-->
-              <td>
+              <td colspan="3">
                 {{mproduct.name}}<br>
                 <p class="options" data-ng-if="(mproduct.ingredients | filter: { selected: false }).length > 0">
                   <strong>{{ translate('Ingredients_V2') }}</strong>
@@ -453,50 +453,52 @@
               </td>
             </tr>
             <tr class="fees">
-              <td colspan="3">{{ translate('SUBTOTAL') }}</td>                                          
+              <td colspan="4">{{ translate('SUBTOTAL') }}</td>                                          
               <td>{{parsePrice(mcart.subtotal + ((constants.fix_order_summary && business.tax_type == 1) ? cart_data.tax : 0) )}}</td>
             </tr>
             <tr class="fees" data-ng-if="ADDONS.discount_offer && cart_data.discount > 0">
-              <td colspan="3">{{ translate('APP_DISCOUNT') }} <span data-ng-if="cart_data.offer.rate_type == 1">({{cart_data.offer.rate}}%)</span><!-- (<span data-ng-if="discounttype=='2'"> <span data-ng-if="CURRENCY_POSITION == 'left'">{{currency}}</span></span>{{discountprice}}<span data-ng-if="discounttype=='1'">%</span>)--></td>
+              <td colspan="4">{{ translate('APP_DISCOUNT') }} <span data-ng-if="cart_data.offer.rate_type == 1">({{cart_data.offer.rate}}%)</span><!-- (<span data-ng-if="discounttype=='2'"> <span data-ng-if="CURRENCY_POSITION == 'left'">{{currency}}</span></span>{{discountprice}}<span data-ng-if="discounttype=='1'">%</span>)--></td>
               <td>- {{parsePrice(cart_data.discount)}}</td>
             </tr>
             <tr class="fees" data-ng-if="business.tax_type == 2">
-              <td colspan="3">{{ translate('Tax_V2') }} ({{ mcart.tax }}%)</td>
+              <td colspan="4">{{ translate('Tax_V2') }} ({{ mcart.tax }}%)</td>
               <td>{{parsePrice(mcart.tax_price)}}</td>
             </tr>
             <tr class="fees" data-ng-if="order.type == 1">
-              <td colspan="3">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+              <td colspan="4">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
               <td>{{parsePrice(mcart.delivery_price)}}</td>
             </tr>        
             <tr class="fees" data-ng-if="business.service_fee != 0">
-              <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ mcart.service_fee }}%)</td>
+              <td colspan="4">{{ translate('SERVICE_FEE_V2') }} ({{ mcart.service_fee }}%)</td>
               <td>{{parsePrice(mcart.service_fee_price)}}</td>
             </tr>
             
             <tr>
-              <td>{{mcart.quantity}}</td>
+              <td colspan="3" style="padding: 10px 0 10px 15px;">
+                {{mcart.quantity}}
+              </td>
               <td>
                 {{ translate('TRACKORDER_TOTAL_VALUE') }}
               </td>
               <td>
+                {{parsePrice(mcart.totalPrice)}}
               </td>
-              <td>{{parsePrice(mcart.totalPrice)}}</td>
             </tr>
           </table>
           </div>
           
           
-            <table data-ng-if="emptyCart >0"> 
+           <!-- <table data-ng-if="emptyCart >0"> 
            <tr>
-              <td></td>
+              <td colspan="3"></td>
               <td>
                 {{ translate('GRAND_TOTAL') }}
               </td>
               <td>
+                {{parsePrice(allTotal)}}
               </td>
-              <td>{{parsePrice(allTotal)}}</td>
             </tr>
-            <!-- <tr>
+             <tr>
               <td></td>
               <td>
                 {{ translate('DELIVERY_TOTAL') }}
@@ -504,8 +506,8 @@
               <td>
               </td>
               <td>{{parsePrice( sumDelv )}}</td>
-            </tr> -->
-            </table> 
+            </tr>
+            </table>  -->
             <!--ng-if="cart_data.subtotal >= business.minimum && cart.length > 0"-->
           <button class="btn btn-primary" data-ng-click="goCheckout()" data-ng-if=" minimumflag_status == true">
               {{ translate('MOBILE_FRONT_CHECKOUT') }} <!--data-ng-if=" minimumflag_status == true" && "business.minimum <= cart_data.subtotal + (business.tax_type == 1 ? cart_data.tax : 0)"-->
