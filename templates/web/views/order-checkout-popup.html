@@ -327,10 +327,10 @@
               <td colspan="3">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
               <td>{{parsePrice(mcart.delivery_price)}}</td>
             </tr>
-            <!-- <tr class="fees" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1 && order.driver_tip!=-1" >
+             <tr class="fees" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1 && order.driver_tip!=-1" >
               <td colspan="3">{{ translate('MOBILE_FRONT_DRIVER_TIP') }} ({{order.driver_tip}}%)</td>
               <td>{{ parsePrice(mcart.driver_tip) }}</td>
-            </tr> -->
+            </tr>
             <tr class="fees" data-ng-if="business.service_fee != 0">
               <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ business.service_fee }}%)</td>
               <td>{{ parsePrice(mcart.service_fee_price) }}</td>

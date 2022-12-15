@@ -346,7 +346,7 @@
         </div>
         
         
-        <!--  -->       
+        <!--       
         <table style="width: 100%; background: #f9f9f9;"> 
           <tr>
             <td></td>
@@ -357,7 +357,7 @@
             </td>
             <td align="right">{{parsePrice(allTotal_r)}}</td>
           </tr>
-          <!-- <tr>
+        <tr>
             <td></td>
             <td>
               {{ translate('DELIVERY_TOTAL') }}
@@ -365,9 +365,9 @@
             <td>
             </td>
             <td align="right">{{parsePrice( sumDelv_r )}}</td>
-          </tr> -->
+          </tr>
           </table>  
-
+        --> 
             </div>
 
             <div class="col-lg-9" style="padding: 0;">
@@ -382,9 +382,9 @@
     function myFunction() {
       var x = document.getElementById("customerInfo");
       if (x.style.display === "block") {
-        x.style.display = "none";
-      } else {
         x.style.display = "block";
+      } else {
+        x.style.display = "none";
       }
     }
     </script>
@@ -392,9 +392,9 @@
       function myFunction1() {
         var x = document.getElementById("orderinfo");
         if (x.style.display === "block") {
-          x.style.display = "none";
-        } else {
           x.style.display = "block";
+        } else {
+          x.style.display = "none";
         }
       }
       </script>

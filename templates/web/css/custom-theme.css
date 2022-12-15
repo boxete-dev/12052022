@@ -934,7 +934,9 @@ button.btn-gray {
   border-right: 1px solid #ccc;
   margin-right: -1px;
 }
-
+@media only screen and (max-width: 767) and (min-width: 200px){
+ 
+}
 .arabic_rtl .form {
   float: right;
   border-right: 0;
@@ -946,7 +948,7 @@ button.btn-gray {
   margin: 20px auto;
 }
 .form .form-horizontal .form-group {
-  border-top: 1px solid #eee;
+  border-top: 0;
   padding-top: 15px;
 }
 .form .form-horizontal .form-group input,
@@ -1342,7 +1344,7 @@ and (-webkit-min-device-pixel-ratio: 2) {
 }
 
 .modal .popup-mode .radio-item {
-  border-bottom: 1px solid #eee;
+  border-bottom: 0;
 }
 
 .modal .popup-mode .item-radio input:checked + .radio-content .item-content {
@@ -6629,6 +6631,13 @@ padding:8px;
 
 
 @media (max-width: 768px) {
+  .form {
+    border-right: 0 !important;
+  }
+  .cart.bordered {
+    border-left: 0;
+  }
+
   .mobile-type-b{
     display: block;
     margin-bottom: 15px;

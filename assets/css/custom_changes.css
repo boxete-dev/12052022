@@ -67,10 +67,6 @@ p {
     background-color: #edc900;
     border-color: #edc900;
 }
-.form {
-    border-right: 1px solid #ccc !important;
-    margin-right: -1px;
-}
 .cart.bordered {
     border-left: 0;
 }
@@ -201,7 +197,7 @@ p {
         border-left: 0;
     }
   }
-
+  
   .discount-field {
     margin-top: 13px;
     margin-left: 5px;
