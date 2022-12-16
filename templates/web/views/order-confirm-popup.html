@@ -58,7 +58,7 @@
           <h4>Customer</h4>
           <p>{{order.customer.name}} {{order.customer.lastname}} <button onclick="myFunction()" class="btn" style="float: right; padding: 0; height: 0; background: transparent; "><span >Show Contact Info</span></p>
         </div>
-        <div id="customerInfo" class="confirm-section" style="padding-top: 0; display: none;">
+        <div id="customerInfo" class="confirm-section" style="padding-top: 0;">
           <p>{{order.customer.cellphone}}<br/>{{order.customer.email}}</p>
        </div>
        <hr style="margin: 5px 0px;" />
@@ -67,7 +67,7 @@
         <h4>Order</h4>
          <p>{{order.business.name}}<button onclick="myFunction1()" class="btn" style="float: right; padding: 0; height: 0; background: transparent; "><span >Show Order Details</span></p>
        </div>
-       <div id="orderinfo" class="confirm-section" style="display: none;">
+       <div id="orderinfo" class="confirm-section" style="">
         <div class="checkout" style="margin: 0;background: #fff; "data-ng-repeat="order in orderConfirmData">
           <div class="content" style="padding: 0;">
             <!-- <table style="table-layout:fixed">
@@ -382,9 +382,9 @@
     function myFunction() {
       var x = document.getElementById("customerInfo");
       if (x.style.display === "block") {
-        x.style.display = "block";
-      } else {
         x.style.display = "none";
+      } else {
+        x.style.display = "block";
       }
     }
     </script>
@@ -392,9 +392,9 @@
       function myFunction1() {
         var x = document.getElementById("orderinfo");
         if (x.style.display === "block") {
-          x.style.display = "block";
-        } else {
           x.style.display = "none";
+        } else {
+          x.style.display = "block";
         }
       }
       </script>
