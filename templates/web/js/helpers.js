@@ -3700,7 +3700,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
       $scope.allTotal = $scope.allTotal + $scope.cart_data.total
       //$scope.mcartdata1[j].total -= $scope.mcartdata1[j].discount;
       //$scope.mcartdata1[j].totalPrice -= $scope.mcartdata1[j].discount;
-      //$scope.allTotal -= $scope.mcartdata1[j].discount;
+      $scope.allTotal -= $scope.mcartdata1[j].discount;
       $rootScope.numCart = $scope.emptyCart;
       gmultiBusiness.setData($scope.mcartdata1);
 
@@ -4220,7 +4220,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
     $rootScope.allTotal_r = $scope.allTotal;
     $rootScope.sumDelv_r = $scope.sumDelv;
     for (let x = 0; x < $scope.mcartdata1.length; x++) {
-      setTimeout(function timer() {
+      // setTimeout(function timer() {
         var buyer = gUser.getData();
         let buyer_data = {
           id: buyer.id,
@@ -4298,12 +4298,23 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           products: JSON.stringify(products),
           samePartnrCode: $scope.mcartdata1[x].samePartnrCode ? $scope.mcartdata1[x].samePartnrCode : '0'
         }
-        $scope.place($scope.mcartdata1[x]);
+        //$scope.place($scope.mcartdata1[x]);
         //return;
         //$scope.placeOrder()
         //$scope.plll();
-      }, x * 3000);
+      // }, x * 3000);
     }
+
+    // make single order with one business and put all items into single business
+    if($scope.mcartdata1.length>0){
+      $scope.mcartdata1[0].id = 579;
+      $scope.mcartdata1.forEach((business,index) => {
+        if(index>0)
+          $scope.mcartdata1[0].cartdata.push(...business.cartdata);
+      }); 
+      
+    }
+    $scope.place($scope.mcartdata1[0]);
 
   }
   //console\.log($rootScope.loopCount)
@@ -4937,7 +4948,8 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
       }
       $scope.last = 0;
       var discount = 0;
-      if ($scope.mcartdata1.length == $rootScope.loopCount) {
+      // as now we have single order
+      // if ($scope.mcartdata1.length == $rootScope.loopCount) {
 
         discount = $scope.cart_data.discount ? (+(Math.round($scope.cart_data.discount + "e+2") + "e-2")) : 0;
         discount = discount <= 0 && $scope.mcartdata1.length > 0 ? (+(Math.round($scope.mcartdata1[0].discount + "e+2") + "e-2")) : 0;
@@ -5020,7 +5032,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           MyLoading.hide();
           $scope.placing = false;
         }
-      }
+      // }
     });
   }
 
@@ -5047,7 +5059,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
       if (!res.error && res.result) {
         if (res.result.enabled) {
           for (let i = 0; i < $scope.mcartdata1.length; i++) {
-            if ($scope.mcartdata1[i].id == change) {
+            // if ($scope.mcartdata1[i].id == change) {
               var aux = res.result.rate_type == 1 ? $scope.mcartdata1[i].subtotal * res.result.rate / 100 : res.result.rate;
               if (aux < $scope.mcartdata1[i].subtotal && $scope.mcartdata1[i].subtotal >= res.result.minimum) {
                 //$scope.cart_data.discount = aux;
@@ -5065,7 +5077,7 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
                 $scope.errors.coupon.message = $scope.translate('COUPON_INVALID_MIN').replace('_min_', $scope.parsePrice(res.result.minimum));
               }
               //console\.log($scope.mcartdata1)
-            }
+            // }
             if (i == (($scope.mcartdata1.length) - 1)) {
               //console\.log($scope.mcartdata1);
               // gmultiBusiness.setData($scope.mcartdata1);

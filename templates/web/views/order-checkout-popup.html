@@ -256,17 +256,17 @@
         <p>{{translate('YOUR_ORDER_IS_EMPTY')}}</p>
       </div>
       {{dishe.total}}
-      <div data-ng-repeat="mcart in mcartdata1">
+      <div data-ng-repeat="mcart in mcartdata1 track by $index" class="ord-container">
         <div data-ng-if="cart.length > 0">
-          {{mcart.name}}<br>
-          <h3 class="back-edit-order" data-ng-click="backEditOrder(mcart.slug)">{{translate('ORDER_TAB_REORDER_EDIT')}}
+          <!-- {{mcart.name}}<br> -->
+          <h3 data-ng-if="$index==0" class="back-edit-order" data-ng-click="backEditOrder(mcart.slug)">{{translate('ORDER_TAB_REORDER_EDIT')}}
           </h3>
           <!--{{ translate('MINIMUM_ORDER') }}: {{ item.minimum  | number:DECIMAL.length | separator}}<br>-->
           <!--<button class="btn btn-primary" data-ng-click="onFinalCheckOut()">
               {{ translate('MOBILE_FRONT_CHECKOUT') }}
           </button>-->
           <table class="tbl_cart_list" data-ng-if="cart_ready">
-            <tr data-ng-repeat="mproduct in mcart.cartdata track by $index">
+            <tr data-ng-repeat="mproduct in mcart.cartdata">
               <td class="highlighted">{{ mproduct.quantity }}</td>
               <td colspan="2">
                 {{mproduct.name}}<br>
@@ -307,19 +307,19 @@
               </td>-->
               <td>{{ parsePrice(mproduct.total) }}</td>
             </tr>
-            <tr class="fees">
+            <!-- <tr class="fees">
               <td colspan="3">{{ translate('SUBTOTAL') }}</td>
               <td>{{ parsePrice(mcart.subtotal + ((constants.fix_order_summary && business.tax_type == 1) ?
                 cart_data.tax : 0)) }}</td>
-            </tr>
-            <tr class="fees" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && mcart.discount > 0">
+            </tr> -->
+            <!-- <tr class="fees" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && mcart.discount > 0">
               <td colspan="3">{{ translate('APP_DISCOUNT') }} <span
-                  data-ng-if="mcart.offer.rate_type == 1">({{mcart.offer.rate}}%)</span>
+                  data-ng-if="mcart.offer.rate_type == 1">({{mcart.offer.rate}}%)</span> -->
                 <!-- (<span data-ng-if="curBusiness.discounttype == 2">{{currency}}</span>{{curBusiness.discountrate}} <span data-ng-if="curBusiness.discounttype == 1">%</span>)-->
-              </td>
+              <!-- </td>
               <td>- {{ parsePrice(mcart.discount) }}</td>
-            </tr>
-            <tr class="fees" data-ng-if="business.tax_type == 2">
+            </tr> -->
+            <!-- <tr class="fees" data-ng-if="business.tax_type == 2">
               <td colspan="3">{{ translate('Tax_V2') }} ({{business.tax}}%)</td>
               <td>{{ parsePrice(mcart.tax_price) }}</td>
             </tr>
@@ -334,8 +334,8 @@
             <tr class="fees" data-ng-if="business.service_fee != 0">
               <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ business.service_fee }}%)</td>
               <td>{{ parsePrice(mcart.service_fee_price) }}</td>
-            </tr>
-            <tr>
+            </tr> -->
+            <tr data-ng-if="mcartdata1.length-1 == $index">
               <td colspan="4">
                 <div class="flexContainer discount-container">
                   <!-- data-ng-model="order.coupon[mcart.id]" data-ng-change="checkCoupon('change')" -->
@@ -353,8 +353,7 @@
                 <p class="help-error">{{errors.coupon.message}}</p>
               </td>
             </tr>
-            <tr>
-              <!-- <td>{{cart_data.quantity}}</td> -->
+            <!-- <tr>
               <td>
                 {{ translate('TRACKORDER_TOTAL_VALUE') }}
               </td>
@@ -363,7 +362,7 @@
               <td>
               </td>
               <td>{{parsePrice(mcart.totalPrice)}}</td>
-            </tr>
+            </tr> -->
           </table>
 
 
@@ -391,26 +390,22 @@
         </div>
       </div>
 
-      <!-- <table>
-        <tr>
+      <table>
+        <tr class="ord-total">
           <td></td>
-          <td>
-            {{ translate('GRAND_TOTAL') }}
-          </td>
-          <td>
-          </td>
-          <td>{{parsePrice(allTotal)}}</td>
+          <td>{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+          <td></td>
+          <td class="ord-amt">{{parsePrice( sumDelv )}}</td>
         </tr>
-        <tr>
-              <td></td>
-              <td>
-                {{ translate('DELIVERY_TOTAL') }}
-              </td>
-              <td>
-              </td>
-              <td>{{parsePrice( sumDelv )}}</td>
-            </tr>
-      </table> -->
+
+        <tr class="ord-total">
+          <td></td>
+          <td> {{ translate('TRACKORDER_TOTAL_VALUE') }}</td>
+          <td></td>
+          <td class="ord-amt">{{parsePrice(allTotal)}}</td>
+        </tr>
+        <tr></tr>
+      </table>
 
       <div id="paypal-button-container" style="margin-top: 15px;" ng-if="isPaypal"></div>
 

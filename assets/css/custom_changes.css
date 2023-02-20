@@ -220,3 +220,20 @@ p {
     width: 100%;
     margin-left: 5px;
 }
+
+.ord-amt{
+    text-align: center;
+    padding-left: 14px;
+}
+
+.ord-container table {
+    border-top: none !important;
+    margin-top: 0px !important;
+}
+.ord-container table tr:last-child {
+    background: none !important;
+}
+.ord-total{
+    background: #eee;
+    border-top: 2px solid #fff;
+}

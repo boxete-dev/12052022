@@ -400,9 +400,10 @@
           <img data-ng-src="{{rootTheme}}/img/empty-cart.png">
           <p>{{translate('YOUR_ORDER_IS_EMPTY')}}</p>
         </div>
-        <div data-ng-if="mcartdata.length > 0 && emptyCart >0">
+        <div data-ng-if="mcartdata.length > 0 && emptyCart >0" class="ord-container">
         <div data-ng-repeat="mcart in mcartdata">
-          <strong data-ng-if="mcart.cartdata.length > 0" >{{mcart.name}}</strong><!--<br>
+          <!-- <strong data-ng-if="mcart.cartdata.length > 0" >{{mcart.name}}</strong> -->
+          <!--<br>
           {{ translate('MIN_SUBTOTAL') }}:  {{ parsePrice(mcart.minimum) }}<br>-->
           <table class="tbl_cart_list" ng-if="mcart.subtotal > 0">
             <tr data-ng-repeat="mproduct in mcart.cartdata track by $index">
@@ -452,10 +453,10 @@
                 {{parsePrice(mproduct.total)}}
               </td>
             </tr>
-            <tr class="fees">
+            <!-- <tr class="fees">
               <td colspan="4">{{ translate('SUBTOTAL') }}</td>                                          
               <td>{{parsePrice(mcart.subtotal + ((constants.fix_order_summary && business.tax_type == 1) ? cart_data.tax : 0) )}}</td>
-            </tr>
+            </tr> -->
             <tr class="fees" data-ng-if="ADDONS.discount_offer && cart_data.discount > 0">
               <td colspan="4">{{ translate('APP_DISCOUNT') }} <span data-ng-if="cart_data.offer.rate_type == 1">({{cart_data.offer.rate}}%)</span><!-- (<span data-ng-if="discounttype=='2'"> <span data-ng-if="CURRENCY_POSITION == 'left'">{{currency}}</span></span>{{discountprice}}<span data-ng-if="discounttype=='1'">%</span>)--></td>
               <td>- {{parsePrice(cart_data.discount)}}</td>
@@ -464,16 +465,16 @@
               <td colspan="4">{{ translate('Tax_V2') }} ({{ mcart.tax }}%)</td>
               <td>{{parsePrice(mcart.tax_price)}}</td>
             </tr>
-            <tr class="fees" data-ng-if="order.type == 1">
+            <!-- <tr class="fees" data-ng-if="order.type == 1">
               <td colspan="4">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
               <td>{{parsePrice(mcart.delivery_price)}}</td>
-            </tr>        
-            <tr class="fees" data-ng-if="business.service_fee != 0">
+            </tr>         -->
+            <!-- <tr class="fees" data-ng-if="business.service_fee != 0">
               <td colspan="4">{{ translate('SERVICE_FEE_V2') }} ({{ mcart.service_fee }}%)</td>
               <td>{{parsePrice(mcart.service_fee_price)}}</td>
-            </tr>
+            </tr> -->
             
-            <tr>
+            <!-- <tr>
               <td colspan="3" style="padding: 10px 0 10px 15px;">
                 {{mcart.quantity}}
               </td>
@@ -483,31 +484,28 @@
               <td>
                 {{parsePrice(mcart.totalPrice)}}
               </td>
-            </tr>
+            </tr> -->
           </table>
           </div>
           
           
-           <!-- <table data-ng-if="emptyCart >0"> 
-           <tr>
-              <td colspan="3"></td>
-              <td>
-                {{ translate('GRAND_TOTAL') }}
-              </td>
-              <td>
-                {{parsePrice(allTotal)}}
-              </td>
-            </tr>
-             <tr>
+           <table data-ng-if="emptyCart >0"> 
+            <tr class="ord-total">
               <td></td>
-              <td>
-                {{ translate('DELIVERY_TOTAL') }}
-              </td>
-              <td>
-              </td>
-              <td>{{parsePrice( sumDelv )}}</td>
+              <td>{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
+              <td></td>
+              <td class="ord-amt">{{parsePrice( sumDelv )}}</td>
             </tr>
-            </table>  -->
+
+            <tr class="ord-total">
+              <td></td>
+              <td> {{ translate('TRACKORDER_TOTAL_VALUE') }}</td>
+              <td></td>
+              <td class="ord-amt">{{parsePrice(allTotal)}}</td>
+            </tr>
+            <tr></tr>
+            
+            </table> 
             <!--ng-if="cart_data.subtotal >= business.minimum && cart.length > 0"-->
           <button class="btn btn-primary" data-ng-click="goCheckout()" data-ng-if=" minimumflag_status == true">
               {{ translate('MOBILE_FRONT_CHECKOUT') }} <!--data-ng-if=" minimumflag_status == true" && "business.minimum <= cart_data.subtotal + (business.tax_type == 1 ? cart_data.tax : 0)"-->
