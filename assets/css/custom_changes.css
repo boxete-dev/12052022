@@ -237,3 +237,7 @@ p {
     background: #eee;
     border-top: 2px solid #fff;
 }
+
+.tb-total{
+    margin-left: 3px;
+}

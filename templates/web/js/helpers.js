@@ -3550,6 +3550,10 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
     var customsubtotal = 0
     var quantity = 0;
     $scope.allTotal = 0;
+    $scope.allSubTotal = 0;
+    $scope.offerRate = 0;
+    $scope.offerRateType = 0;
+    $scope.sumdiscount = 0;
     /*
           //console\.log('cc = '+$rootScope.cartval)
           //console\.log(JSON.stringify($scope.mcartdata1))*/
@@ -3656,6 +3660,8 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           $scope.cart_data.offer = offer;
           $scope.mcartdata1[j].offer = offer;
           $scope.mcartdata1[j].discount = offer.rate_type == 1 ? $scope.mcartdata1[j].subtotal * offer.rate / 100 : offer.rate;
+          $scope.offerRateType = offer.rate_type;
+          $scope.offerRate = offer.rate;
         } else {
           $scope.mcartdata1[j].discount = $scope.mcartdata1[j].discount ? $scope.mcartdata1[j].discount : 0;
           $scope.mcartdata1[j].offer = $scope.mcartdata1[j].offer ? $scope.mcartdata1[j].offer : offer;
@@ -3703,6 +3709,8 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
       $scope.allTotal -= $scope.mcartdata1[j].discount;
       $rootScope.numCart = $scope.emptyCart;
       gmultiBusiness.setData($scope.mcartdata1);
+      $scope.allSubTotal += $scope.mcartdata1[j].subtotal;
+      $scope.sumdiscount += $scope.mcartdata1[j].discount;
 
       console.log($rootScope.numCart)
       $scope.refreshNumCart();

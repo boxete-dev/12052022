@@ -268,7 +268,7 @@
           <table class="tbl_cart_list" data-ng-if="cart_ready">
             <tr data-ng-repeat="mproduct in mcart.cartdata">
               <td class="highlighted">{{ mproduct.quantity }}</td>
-              <td colspan="2">
+              <td colspan="2" class="">
                 {{mproduct.name}}<br>
                 <p class="options" data-ng-if="(mproduct.ingredients | filter: { selected: false }).length > 0">
                   <strong>{{ translate('Ingredients_V2') }}</strong>
@@ -312,13 +312,13 @@
               <td>{{ parsePrice(mcart.subtotal + ((constants.fix_order_summary && business.tax_type == 1) ?
                 cart_data.tax : 0)) }}</td>
             </tr> -->
-            <!-- <tr class="fees" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && mcart.discount > 0">
+             <!-- <tr class="fees" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && mcart.discount > 0">
               <td colspan="3">{{ translate('APP_DISCOUNT') }} <span
-                  data-ng-if="mcart.offer.rate_type == 1">({{mcart.offer.rate}}%)</span> -->
+                  data-ng-if="mcart.offer.rate_type == 1">({{mcart.offer.rate}}%)</span>  -->
                 <!-- (<span data-ng-if="curBusiness.discounttype == 2">{{currency}}</span>{{curBusiness.discountrate}} <span data-ng-if="curBusiness.discounttype == 1">%</span>)-->
               <!-- </td>
               <td>- {{ parsePrice(mcart.discount) }}</td>
-            </tr> -->
+            </tr>  -->
             <!-- <tr class="fees" data-ng-if="business.tax_type == 2">
               <td colspan="3">{{ translate('Tax_V2') }} ({{business.tax}}%)</td>
               <td>{{ parsePrice(mcart.tax_price) }}</td>
@@ -326,12 +326,12 @@
             <tr class="fees" data-ng-if="order.type == 1">
               <td colspan="3">{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
               <td>{{parsePrice(mcart.delivery_price)}}</td>
-            </tr>
-             <tr class="fees" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1 && order.driver_tip!=-1" >
+            </tr>-->
+             <!--<tr class="fees" data-ng-if="checkoutfields.driver_tip.enabled && order.type == 1 && order.driver_tip!=-1" >
               <td colspan="3">{{ translate('MOBILE_FRONT_DRIVER_TIP') }} ({{order.driver_tip}}%)</td>
               <td>{{ parsePrice(mcart.driver_tip) }}</td>
             </tr>
-            <tr class="fees" data-ng-if="business.service_fee != 0">
+             <tr class="fees" data-ng-if="business.service_fee != 0">
               <td colspan="3">{{ translate('SERVICE_FEE_V2') }} ({{ business.service_fee }}%)</td>
               <td>{{ parsePrice(mcart.service_fee_price) }}</td>
             </tr> -->
@@ -390,7 +390,33 @@
         </div>
       </div>
 
-      <table>
+      <table class="tb-total">
+        <tr class="ord-total">
+          <td></td>
+          <td>{{ translate('SUBTOTAL') }}</td>
+          <td></td>
+          <td class="ord-amt">
+            {{ parsePrice(allSubTotal + ((constants.fix_order_summary && business.tax_type == 1) ?
+              cart_data.tax : 0)) }}
+          </td>
+        </tr>
+
+        <tr class="ord-total" data-ng-if="(ADDONS.discount_code || ADDONS.discount_offer) && sumdiscount > 0">
+          <td></td>
+          <td>{{ translate('APP_DISCOUNT') }} <span
+              data-ng-if="offerRateType == 1">({{offerRate}}%)</span> 
+          </td>
+          <td></td>
+          <td class="ord-amt">- {{ parsePrice(sumdiscount) }}</td>
+        </tr> 
+        
+        <tr class="ord-total">
+          <td></td>
+          <td>{{ translate('MOBILE_FRONT_DRIVER_TIP') }}</td>
+          <td></td>
+          <td class="ord-amt">{{parsePrice( sumTip )}}</td>
+        </tr>
+
         <tr class="ord-total">
           <td></td>
           <td>{{ translate('MOBILE_CHECKOUT_DELIVERY_FEE') }}</td>
