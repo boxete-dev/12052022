@@ -3660,12 +3660,14 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           $scope.cart_data.offer = offer;
           $scope.mcartdata1[j].offer = offer;
           $scope.mcartdata1[j].discount = offer.rate_type == 1 ? $scope.mcartdata1[j].subtotal * offer.rate / 100 : offer.rate;
-          $scope.offerRateType = offer.rate_type;
-          $scope.offerRate = offer.rate;
         } else {
           $scope.mcartdata1[j].discount = $scope.mcartdata1[j].discount ? $scope.mcartdata1[j].discount : 0;
           $scope.mcartdata1[j].offer = $scope.mcartdata1[j].offer ? $scope.mcartdata1[j].offer : offer;
         }
+
+        $scope.offerRateType = $scope.mcartdata1[j].offer.rate_type;
+        $scope.offerRate = $scope.mcartdata1[j].offer.rate;
+
       } else {
         $scope.cart_data.discount = 0;
         $scope.mcartdata1[j].offer = offer;

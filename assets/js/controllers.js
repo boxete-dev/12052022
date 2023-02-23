@@ -10493,6 +10493,7 @@ var app_states = {
             { text: DRIVER_TIPS.tip_3+"%", value: DRIVER_TIPS.tip_3 },
             { text: DRIVER_TIPS.tip_4+"%", value: DRIVER_TIPS.tip_4 },
             { text: DRIVER_TIPS.tip_5+"%", value: DRIVER_TIPS.tip_5 },
+			{ text: "Other", value: -1 }
         ];
         $scope.placing = false;
 

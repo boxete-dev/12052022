@@ -217,7 +217,10 @@
                 <span class="text-radio">{{driver_tip.text}}</span>
               </ion-radio>
             </div>
-
+            <div class="flexContainer discount-amount" data-ng-if="order.driver_tip==-1">
+              <span>$</span>
+              <input type="text" id="cutom_tip" class="form-control" data-ng-model="order.driver_tip_amount" data-ng-change="refreshCartData()" onkeypress="return ((event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)">
+            </div>
             <div class="color-font-placeholder pd-top-4">{{ translate('MOBILE_FRONT_GOES_TO_YOUR_DRIVER') }}</div>
           </div>
         </div>
