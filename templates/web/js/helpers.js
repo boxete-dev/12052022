@@ -3665,8 +3665,8 @@ Extensions.add_action('enter_checkout_view', function (user, $scope) {
           $scope.mcartdata1[j].offer = $scope.mcartdata1[j].offer ? $scope.mcartdata1[j].offer : offer;
         }
 
-        $scope.offerRateType = $scope.mcartdata1[j].offer.rate_type;
-        $scope.offerRate = $scope.mcartdata1[j].offer.rate;
+        $scope.offerRateType = $scope.mcartdata1[j].offer ? $scope.mcartdata1[j].offer.rate_type :'';
+        $scope.offerRate = $scope.mcartdata1[j].offer ? $scope.mcartdata1[j].offer.rate : 0;
 
       } else {
         $scope.cart_data.discount = 0;
